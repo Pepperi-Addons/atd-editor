@@ -1,0 +1,35 @@
+    <div class="addon-page-container">
+        <pep-top-bar >
+            <div header-start-content>
+                <button mat-button class="spacing-element pep-button icon-button md weak pull-left flip"
+                (click)="goBack();">
+                <mat-icon>
+                    <pep-icon name="arrow_left_alt"></pep-icon>
+                </mat-icon>
+                </button>
+                <div *ngIf="atd?.ExternalID?.length > 0" class="spacing-element title pull-left flip">
+                    <span [title]="atd?.ExternalID" >{{ atd?.ExternalID }}</span>
+                </div>
+            </div>
+        </pep-top-bar>
+
+        <div class="main-content ">
+
+            <div class="content">
+
+                <mat-tab-group
+                    dynamicHeight #tabGroup
+                    [selectedIndex]="activeTab?.Index"
+                    (selectedTabChange)="tabClick($event)"
+                    animationDuration="0ms" class="fixed-header"
+                >
+                    <mat-tab  *ngFor="let tab of tabs;" id="tab.Key"  label="{{ tab.Title | translate}}">
+                        <ng-template matTabContent>
+                            <atd-editor-backoffice-iframe [atd]="atd" (atdChange)="getAtd();"></atd-editor-backoffice-iframe>
+                        </ng-template>
+                     </mat-tab>
+                </mat-tab-group>
+
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,18 @@
+<pep-dialog class="dialog-new-type-container" [title]="'Add_New_Header' | translate">
+    <ng-container pep-dialog-content>
+
+        <pep-textbox [required]="true" [value]="atdName" [label]="'Name' | translate" (valueChange)="atdName = $event.value"></pep-textbox>
+
+        <pep-textarea [required]="true" [value]="atdDescription" [label]="'Description' | translate" [rowSpan]="2" (valueChange)="atdDescription = $event.value"></pep-textarea>
+    </ng-container>
+    <div pep-dialog-actions class="spacing-element-negative">
+
+            <button mat-button [mat-dialog-close]="null" class="spacing-element pep-button md weak">
+                {{ 'ACTIONS.CANCEL' | translate }}
+            </button>
+            <button mat-button class="spacing-element pep-button md strong" (click)="closeDialog({'name': atdName, 'description': atdDescription})"
+            >
+                {{ 'ACTIONS.SAVE' | translate }}
+            </button>
+    </div>
+</pep-dialog>

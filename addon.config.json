@@ -1,0 +1,36 @@
+{
+  "AddonUUID": "04de9428-8658-4bf7-8171-b59f6327bbf1",
+  "AddonVersion": "0.0.30",
+  "DebugPort": 4400,
+  "WebappBaseUrl": "https://app.sandbox.pepperi.com",
+  "DefaultEditor": "main",
+  "Endpoints": [
+    "installation.ts"
+  ],
+  "Editors": [
+    "main"
+  ],
+  "Assets": [
+    "en.json",
+    "en.ngx-lib.json",
+    "he.json"
+  ],
+  "PublishConfig": {
+    "ClientStack": "ng10",
+    "Editors": [
+      {
+        "ParentPackageName": "Sales Activites",
+        "PackageName": "transaction_types",
+        "Description": "Transaction Types"
+      }
+    ],
+    "Dependencies": {
+      "papi": "9.5.354",
+      "webapp": "16.55.84",
+      "adal": "1.0.12"
+    }
+  },
+  "Client": {
+    "Mode": "SingleSpa"
+  }
+}

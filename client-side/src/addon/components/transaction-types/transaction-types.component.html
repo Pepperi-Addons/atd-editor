@@ -1,0 +1,34 @@
+<!-- <main> -->
+<div class="addon-page-container">
+
+    <!-- (totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows }"> -->
+    <pep-top-bar [title]="totalRows > 0 ? ('ListTotal_ShowingResults' | translate: { totalRows: totalRows }) : null">
+        <div header-start-content>
+
+        </div>
+        <div header-end-content>
+            <pep-search  class="pull-left flip" [autoCompleteValues]="searchAutoCompleteValues"
+                [value]="searchString" (search)="onSearchChanged($event)">
+        </pep-search>
+            <button mat-button (click)="addNewATD();"
+            class="spacing-element pep-button icon-button md weak pull-right flip">
+            <mat-icon>
+                <pep-icon name="number_plus"></pep-icon>
+            </mat-icon>
+        </button>
+
+        </div>
+
+        <pep-list-actions *ngIf="showListActions" (actionClick)="onMenuItemClicked($event)" [actions]="menuItems | async"></pep-list-actions>
+
+    </pep-top-bar>
+    <div class="main-content ">
+        <div class="content">
+            <pep-table [dataSource]="transactionTypes" [displayedColumns]="displayedColumns"
+             [customizeTable]="customizeDataRowField" (selectedItemsChanged)="selectedRowsChanged($event)"
+             (sortingChanged)="onSortingChanged($event);"></pep-table>
+
+        </div>
+    </div>
+
+</div>
