@@ -24,7 +24,6 @@ export class AtdEditorComponent implements OnInit {
     private http: PepHttpService,
     private dialogService: PepDialogService,
     private translate: TranslateService
-
     ) {
 
    }

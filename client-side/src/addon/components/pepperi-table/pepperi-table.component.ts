@@ -5,8 +5,21 @@ import { PepListComponent } from '@pepperi-addons/ngx-lib/list';
 
 @Component({
   selector: 'pep-table',
-  templateUrl: './pepperi-table.component.html',
-  styleUrls: ['./pepperi-table.component.scss']
+  template: `<div class="list-container" #listContainer>
+  <pep-list
+      [firstFieldAsLink]="false"
+      [isReport]="true"
+      [supportSorting]="true"
+      [supportResizing]="false"
+      [selectionTypeForActions]="'single'"
+      [noDataFoundMsg]="'No data'"
+      [parentScroll]="listContainer"
+      (listChange)="listChanged.emit($event)"
+      (sortingChange)="sortingChanged.emit($event)"
+      (fieldClick)="fieldClicked.emit($event)"
+      (selectedItemsChange)="selectedItemsChanged.emit($event)">
+  </pep-list>
+</div>`
 })
 export class PepperiTableComponent implements OnInit, OnChanges {
 
