@@ -103,11 +103,9 @@ export class TransactionTypesComponent implements OnInit {
                 this.displayedColumns = ['Name', 'Description'];
                 this.transactionTypes = transactionTypes;
                 this.totalRows = transactionTypes.length;
-
-                console.log(transactionTypes);
             },
             (error) => {
-                console.log(error);
+                // console.log(error);
             },
             () => {
             }
@@ -163,7 +161,7 @@ export class TransactionTypesComponent implements OnInit {
         const title = this.translate.instant('Delete');
         const actionButtons = [
             new PepDialogActionButton(this.translate.instant('Yes'),'main strong', () => this.setHidden(atdInfo.InternalID) ),
-            new PepDialogActionButton(this.translate.instant('No'),'main weak', () => console.log('no test works'))
+            new PepDialogActionButton(this.translate.instant('No'),'main weak')
         ];
         const dialogData = new PepDialogData({ title, content: msg, type: 'custom', actionButtons });
         this.dialogService.openDefaultDialog(dialogData)

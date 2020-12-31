@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { TransactionTypesComponent } from './components/transaction-types/transaction-types.component';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
 import { AtdEditorComponent } from './components/atd-editor/atd-editor.component';
+import { SubAddonLoaderComponent } from './components/sub-addon-loader/sub-addon-loader.component';
 
 const routes: Routes = [{
     path: 'settings/:addon_uuid',
@@ -15,6 +16,10 @@ const routes: Routes = [{
         {
             path: 'transaction_types',
             component: TransactionTypesComponent
+        },
+        {
+            path: 'loader',
+            component: SubAddonLoaderComponent
         }
     ]
     },

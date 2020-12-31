@@ -29,47 +29,63 @@ export class SubAddonLoaderComponent  {
         // this.load();
      }
 
-    async load(){
-        this.service.setModules();
-        const module = await this.service.load('http://localhost:4401/editor.plugin.bundle.js');
-        const moduleFactory = await this.loadModuleFactory(module);
-        const moduleRef = moduleFactory.create(this.injector);
-        const componentProvider = moduleRef.injector.get('plugins');
+    // async load(){
+    //     const moduleToCompile = await this.service.load('http://localhost:4401/editor.plugin.bundle.js');
 
-        //from plugins array load the component on position 0
-        const componentFactory = moduleRef.componentFactoryResolver
-            .resolveComponentFactory<any>(
-                componentProvider[0][0].component
-            );
-        const entryComponent = (moduleFactory as any).entry;
-        const compFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(entryComponent);
-        this.anchor.clear();
-        this.anchor.createComponent(compFactory);
-    }
+    //     const staticModuleName: string = 'LazyCModule';
+    //     const statupAppComponentName: string = 'LazyCComponent';
 
+    //     let moduleFactory: NgModuleFactory<any>;
 
+    //     if (moduleToCompile[staticModuleName] instanceof NgModuleFactory) {
+    //       moduleFactory = moduleToCompile[staticModuleName];
+    //     } else {
+    //       moduleFactory = this.compiler.compileModuleSync(moduleToCompile[staticModuleName]);
+    //     }
 
-    // async loadComponent() {
-    //  this.componentFactories = [];
-    //   const { BackofficeIframeModule } = await import('../atd-editor/backoffice-iframe/backoffice-iframe.module');
-    //   const moduleFactory = await this.loadModuleFactory(BackofficeIframeModule);
-    //   const factory = this.moduleRef.componentFactoryResolver.resolveComponentFactory(BackofficeIframeComponent);
-    //   this.anchor.clear();
-    //   this.anchor.createComponent(factory);
+    //     // const moduleFactory = await this.loadModuleFactory(module);
+    //     const moduleRef = moduleFactory.create(this.injector);
+    //     const componentProvider = moduleRef.injector.get('plugins');
+
+    //     //from plugins array load the component on position 0
+    //     const componentFactory = moduleRef.componentFactoryResolver
+    //         .resolveComponentFactory<any>(
+    //             componentProvider[0][0].component
+    //         );
+    //     const entryComponent = (moduleFactory as any).entry;
+    //     const compFactory = moduleRef.componentFactoryResolver.resolveComponentFactory(entryComponent);
+    //     this.anchor.clear();
+    //     this.anchor.createComponent(compFactory);
     // }
 
-    private async loadModuleFactory(t: any) {
-      if (t instanceof NgModuleFactory) {
-        return t;
-      } else {
-        return await this.compiler.compileModuleAsync(t);
-      }
-    }
 
-    private loadModule(moduleType: Type<any>) {
-        this.anchor.clear();
-        const moduleFactories = this.compiler.compileModuleAndAllComponentsSync(moduleType);
-        this.componentFactories = moduleFactories.componentFactories;
-    }
+
+    // // async loadComponent() {
+    // //  this.componentFactories = [];
+    // //   const { BackofficeIframeModule } = await import('../atd-editor/backoffice-iframe/backoffice-iframe.module');
+    // //   const moduleFactory = await this.loadModuleFactory(BackofficeIframeModule);
+    // //   const factory = this.moduleRef.componentFactoryResolver.resolveComponentFactory(BackofficeIframeComponent);
+    // //   this.anchor.clear();
+    // //   this.anchor.createComponent(factory);
+    // // }
+
+    // private async loadModuleFactory(t: any) {
+    //     const staticModuleName: string = 'LazyCModule';
+    //     const statupAppComponentName: string = 'LazyCComponent';
+
+    //     let moduleFactory: NgModuleFactory<any>;
+
+    //     if (moduleToCompile[staticModuleName] instanceof NgModuleFactory) {
+    //       moduleFactory = moduleToCompile[staticModuleName];
+    //     } else {
+    //       moduleFactory = this.compiler.compileModuleSync(moduleToCompile[staticModuleName]);
+    //     }
+    // }
+
+    // private loadModule(moduleType: Type<any>) {
+    //     this.anchor.clear();
+    //     const moduleFactories = this.compiler.compileModuleAndAllComponentsSync(moduleType);
+    //     this.componentFactories = moduleFactories.componentFactories;
+    // }
 
 }

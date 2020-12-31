@@ -17,7 +17,7 @@ export class AtdEditorComponent implements OnInit {
   atd;
   tabs: Array<any>;
   activeTab;
-
+  showTabs;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -30,8 +30,12 @@ export class AtdEditorComponent implements OnInit {
 
   async ngOnInit() {
     this.getAtd();
-    this.tabs = await this.getTabs();
-    this.activeTab = this.tabs.find(tab => tab.Key === this.route.snapshot.params['tab_id']);
+    // if (this.route.snapshot.queryParams.tabs){
+        // this.showTabs = true;
+        this.tabs = await this.getTabs();
+        this.activeTab = this.tabs.find(tab => tab.Key === this.route.snapshot.params['tab_id']);
+    // }
+
   }
 
   getAtd() {
@@ -59,8 +63,13 @@ export class AtdEditorComponent implements OnInit {
         const currentTabKey = this.activeTab.Key;
         const selectedTab = this.tabs.find(tab => tab.Index === e.index);
         if (selectedTab.Key !== currentTabKey){
+            // const path = selectedTab.Editor.replace('ATD_ID', this.atd['InternalID'])
+            // this.router.navigate([`/settings/${selectedTab.AddonUUID}/${path}`],
             this.router.navigate([`../${selectedTab.Key}`],
-            { relativeTo: this.route });
+            { relativeTo: this.route
+                // , queryParams: { tabs: true }
+            });
+
         }
   }
 

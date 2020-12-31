@@ -32,17 +32,5 @@
       "src/**/*.d.ts"
     ],
     "paths": {
-        // "ngx-lib": [
-        //     "../../../ngx-lib/dist/ngx-lib"
-        // ],
-        // "ngx-lib/*": [
-        //     "../../../ngx-lib/dist/ngx-lib/*"
-        // ],
-        // "@pepperi-addons/ngx-lib": [
-        //     "../../../ngx-lib/dist/ngx-lib"
-        // ],
-        // "@pepperi-addons/ngx-lib/*": [
-        //     "../../../ngx-lib/dist/ngx-lib/*"
-        // ]
     }
 }

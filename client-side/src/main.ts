@@ -43,3 +43,4 @@ if (environment.production) {
 export const bootstrap = lifecycles.bootstrap;
 export const mount = lifecycles.mount;
 export const unmount = lifecycles.unmount;
+export const update = lifecycles.update;
