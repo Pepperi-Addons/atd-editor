@@ -1,4 +1,3 @@
-import { BackofficeIframeModule } from './components/atd-editor/backoffice-iframe/backoffice-iframe.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -9,9 +8,9 @@ import { PepUIModule } from './modules/pepperi.module';
 import { MaterialModule } from './modules/material.module';
 import { AtdEditorComponent } from './components/atd-editor/atd-editor.component';
 import { AddTypeDialogComponent } from './components/transaction-types/add-type-dialog/add-type-dialog.component';
-import { PepperiTableComponent } from './components/pepperi-table/pepperi-table.component';
-import { SubAddonLoaderComponent } from './components/sub-addon-loader/sub-addon-loader.component';
+import { PepperiTableComponent } from './components/transaction-types/pepperi-table/pepperi-table.component';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
+import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-remote-loader';
 
 @NgModule({
     declarations: [
@@ -20,7 +19,6 @@ import { EmptyRouteComponent } from './components/empty-route/empty-route.compon
         AtdEditorComponent,
         AddTypeDialogComponent,
         PepperiTableComponent,
-        SubAddonLoaderComponent,
         EmptyRouteComponent
     ],
     imports: [
@@ -29,7 +27,7 @@ import { EmptyRouteComponent } from './components/empty-route/empty-route.compon
         AddonRoutingModule,
         PepUIModule,
         MaterialModule,
-        BackofficeIframeModule
+        PepRemoteLoaderModule
     ],
     providers: [],
     bootstrap: [AddonComponent]

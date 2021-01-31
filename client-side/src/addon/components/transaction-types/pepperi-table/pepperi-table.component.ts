@@ -63,14 +63,17 @@ export class PepperiTableComponent implements OnInit, OnChanges {
             });
             const pepperiListObj = this.dataConvertorService.convertListData(tableData);
             const buffer = [];
-            if (pepperiListObj.Rows) {
-                pepperiListObj.Rows.forEach( row => {
-                    const osd = new ObjectSingleData(pepperiListObj.UIControl, row);
+            const uiControl = this.dataConvertorService.getUiControl(
+                tableData[0]
+            );
+            if (pepperiListObj) {
+                pepperiListObj.forEach( row => {
+                    const osd = new ObjectSingleData(uiControl, row);
                     buffer.push(osd);
                 });
             }
 
-            this.customList.initListData(pepperiListObj.UIControl, buffer.length, buffer, 'table', '', true);
+            this.customList.initListData(uiControl, buffer.length, buffer, 'table', '', true);
         }
     }
 

@@ -1,4 +1,4 @@
-import { PepperiTableComponent } from '../pepperi-table/pepperi-table.component';
+import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
