@@ -25,7 +25,7 @@
                 >
                     <mat-tab  *ngFor="let tab of tabs;" id="tab.Key"  label="{{ tab.Title | translate}}">
                         <ng-template matTabContent>
-                            <pep-addon [options]="tab" [data]="data" (change)="getAtd();"></pep-addon>
+                            <pep-addon *ngIf="data?.tab" [options]="tab" [data]="data" (change)="getAtd();"></pep-addon>
                             <!-- <atd-editor-backoffice-iframe [atd]="atd" (atdChange)="getAtd();"></atd-editor-backoffice-iframe> -->
                         </ng-template>
                      </mat-tab>
