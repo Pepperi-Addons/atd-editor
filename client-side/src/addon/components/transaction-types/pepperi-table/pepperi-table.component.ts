@@ -58,22 +58,10 @@ export class PepperiTableComponent implements OnInit, OnChanges {
     initPepList(dataSource, displayedColumns = null, customizeFn = null) {
         if (this.customList && dataSource) {
             const tableData = new Array<PepRowData>();
-            dataSource.forEach((addon: any) => {
-                tableData.push(this.convertObjectToPepRowData(addon, displayedColumns, customizeFn));
-            });
-            const pepperiListObj = this.dataConvertorService.convertListData(tableData);
-            const buffer = [];
-            const uiControl = this.dataConvertorService.getUiControl(
-                tableData[0]
-            );
-            if (pepperiListObj) {
-                pepperiListObj.forEach( row => {
-                    const osd = new ObjectSingleData(uiControl, row);
-                    buffer.push(osd);
-                });
-            }
-
-            this.customList.initListData(uiControl, buffer.length, buffer, 'table', '', true);
+            dataSource.forEach((row: any) => tableData.push(this.convertObjectToPepRowData(row, displayedColumns, customizeFn)));
+            const uiControl = this.dataConvertorService.getUiControl(tableData[0]);
+            const rows = this.dataConvertorService.convertListData(tableData);
+            this.customList.initListData(uiControl, rows.length, rows, 'table', '', true);
         }
     }
 

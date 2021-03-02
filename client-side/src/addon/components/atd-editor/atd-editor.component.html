@@ -2,13 +2,13 @@
 
         <pep-top-bar >
             <div header-start-content>
-                <button mat-button class="spacing-element pep-button icon-button md weak pull-left flip"
+                <button mat-button class="pep-spacing-element pep-button icon-button md weak pull-left flip"
                 (click)="goBack();">
                 <mat-icon>
                     <pep-icon name="arrow_left_alt"></pep-icon>
                 </mat-icon>
                 </button>
-                <div *ngIf="atd?.ExternalID?.length > 0" class="spacing-element title pull-left flip">
+                <div *ngIf="atd?.ExternalID?.length > 0" class="pep-spacing-element title pull-left flip">
                     <span [title]="atd?.ExternalID" >{{ atd?.ExternalID }}</span>
                 </div>
             </div>
@@ -23,13 +23,17 @@
                     (selectedTabChange)="tabClick($event)"
                     animationDuration="0ms" class="fixed-header"
                 >
-                    <mat-tab  *ngFor="let tab of tabs;" id="tab.Key"  label="{{ tab.Title | translate}}">
+                    <mat-tab  *ngFor="let tab of tabs; let i = index; " id="tab.Key"  label="{{ tab.Title | translate}}">
                         <ng-template matTabContent>
-                            <pep-addon *ngIf="data?.tab" [options]="tab" [data]="data" (change)="getAtd();"></pep-addon>
+
+
                             <!-- <atd-editor-backoffice-iframe [atd]="atd" (atdChange)="getAtd();"></atd-editor-backoffice-iframe> -->
                         </ng-template>
                      </mat-tab>
+
                 </mat-tab-group>
+                <addon-proxy *ngIf="activeTab" [options]="activeTab"  (change)="getAtd();"></addon-proxy>
+
             </div>
         </div>
 

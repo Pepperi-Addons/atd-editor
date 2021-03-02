@@ -1,11 +1,13 @@
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentRef, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
 import { PepDialogService, PepDialogActionButton, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { PepMenuItem, IPepMenuItemClickEvent } from '@pepperi-addons/ngx-lib/menu';
+import { MatDialog } from '@angular/material/dialog';
+
 export enum AddonType {
     System = 1,
     Public = 2,
@@ -20,7 +22,10 @@ export enum AddonType {
 })
 export class TransactionTypesComponent implements OnInit {
 
+    @ViewChild('dialogTemplate', { read: TemplateRef }) dialogTemplate: TemplateRef<any>;
     @ViewChild(PepperiTableComponent) table: PepperiTableComponent;
+
+    // List variables
     menuItems: Promise<any>;
     totalRows = 0;
     displayedColumns;
@@ -29,10 +34,16 @@ export class TransactionTypesComponent implements OnInit {
     searchAutoCompleteValues;
     addonUUID;
     showListActions = false;
+    dialogRef;
+    dialogAddon;
+    viewContainer: ViewContainerRef;
+    compRef: ComponentRef<any>;
+
     constructor(
         private translate: TranslateService,
         private http: PepHttpService,
         private dialogService: PepDialogService,
+        private dialog: MatDialog,
         private router: Router,
         private route: ActivatedRoute
 
@@ -41,14 +52,14 @@ export class TransactionTypesComponent implements OnInit {
     }
 
     ngOnInit() {
-        // this.http.postHttpCall('http://localhost:4404/installation/install', { AddonUUID: this.addonUUID}).subscribe(res =>{
-        //     debugger;
-        // })
-        this.menuItems = this.getMenuItems();
+        const addonUUID = this.route.snapshot.params.addon_uuid;
+        this.menuItems = this.lookup(addonUUID);
         this.loadlist();
 
     }
 
+
+    // List functions
     customizeDataRowField(object: any, key: any, dataRowField: any) {
 
         switch (key) {
@@ -77,17 +88,6 @@ export class TransactionTypesComponent implements OnInit {
             this.showListActions = selectedRowsCount > 0;
     }
 
-    getMenuItems() {
-        const apiNames: Array<PepMenuItem> = [];
-        return this.http.getPapiApiCall(`/addons/data/${this.route.snapshot.params.addon_uuid}/tabs?where=Type=menu`)
-            .toPromise().then(menuItems => { menuItems.forEach( item => {
-                const path = item?.AddonUUID && item?.Editor ? `${item.AddonUUID}/${item.Editor}` : '';
-                apiNames.push(new PepMenuItem({ key: path, text: item.Title}));
-                });
-                return apiNames;
-        });
-    }
-
     loadlist(change = { sortBy: 'Name', isAsc: true, searchString: ''}) {
         let url = `/types?fields=Name,Description,UUID,InternalID&order_by=${change.sortBy} ${change.isAsc ? 'asc' : 'desc'}&where=Type=2`;
         const search = change?.searchString;
@@ -95,21 +95,15 @@ export class TransactionTypesComponent implements OnInit {
             url = url + (` AND (Name like '%${search}%' OR Description like '%${search}%')`);
             this.showListActions = false;
         }
-
-        // this.http.postHttpCall('http://localhost:4401/api/transaction_types', {}).subscribe(res => res);
-        // this.http.postPapiApiCall(`${this.addon_uuid}`, {}).subscribe(res => res);
         this.http.getPapiApiCall(encodeURI(url)).subscribe(
             (transactionTypes) => {
                 this.displayedColumns = ['Name', 'Description'];
                 this.transactionTypes = transactionTypes;
                 this.totalRows = transactionTypes.length;
             },
-            (error) => {
-                // console.log(error);
-            },
-            () => {
-            }
-    );
+            (error) => {},
+            () => {}
+        );
     }
 
     onMenuItemClicked(e: IPepMenuItemClickEvent): void{
@@ -117,22 +111,33 @@ export class TransactionTypesComponent implements OnInit {
         const rowData = this.table.getItemDataByID(selectedRow);
         const atdInfo = rowData && rowData.Fields[0] && rowData.Fields[0].AdditionalValue ? rowData.Fields[0].AdditionalValue : null;
 
-        switch (e.source.key) {
-            case '':
-                switch (e.source.text){
-                    case 'Delete':
+        switch (e?.source?.key['Action']){
+                    case 'delete':
                         this.deleteATD(atdInfo);
                         break;
-                }
-                break;
-            default:
-                const path = e.source.key.replace('ATD_ID', atdInfo['InternalID'])
-                this.router.navigate([`/settings/${path}`]);
-                break;
-
-
+                    case 'navigate':
+                          const path = e.source.key['Editor'].replace('ATD_ID', atdInfo['InternalID'])
+                          this.router.navigate([`settings/${e.source.key['UUID']}/${path}`]);
+                        break;
 
         }
+    }
+
+    openAddonInDialog(plugin): void {
+        const config = this.dialogService.getDialogConfig(
+        {},
+          'regular'
+        );
+        this.dialogAddon = plugin;
+        this.dialogRef = this.dialogService
+          .openDialog(this.dialogTemplate, { addon: plugin}, config)
+            .afterOpened().subscribe((res) => {});
+    }
+
+    closeDialog(){
+    // this.dialogRef.close(data);
+
+        this.dialog.closeAll();
     }
 
     addNewATD(){
@@ -194,6 +199,25 @@ export class TransactionTypesComponent implements OnInit {
         this.loadlist({sortBy: 'Name', isAsc: true, searchString: value });
 
 
+    }
+
+    async lookup(addonUUID): Promise<any[]> {
+        const apiNames: Array<PepMenuItem> = [];
+        const body = {
+            // TableName: "addons_menus",
+            // Type: "menu"
+            DataViewName: "AtdEditor_Transactions_Menu"
+         };
+        // debug locally
+        //  const addons = await this.http.postHttpCall('http://localhost:4500/api/lookup', body).toPromise().then(tabs => tabs.sort((x,y) => x['Index'] - y['Index']));
+         const addons = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/lookup`, body).toPromise().then(tabs => tabs.sort((x,y) => x['Index'] - y['Index']));
+         addons.forEach(addon => {
+             if (addon.Type === "menu"){
+                apiNames.push(new PepMenuItem({ key: addon, text: addon.Title}));
+             }
+         });
+
+        return apiNames;
     }
 
 }

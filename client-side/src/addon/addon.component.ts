@@ -9,7 +9,6 @@ import { PepCustomizationService, PepStyleType } from '@pepperi-addons/ngx-lib';
 export class AddonComponent implements OnInit {
 
     footerHeight: number;
-
     showLoading = false;
 
     constructor(public customizationService: PepCustomizationService) {

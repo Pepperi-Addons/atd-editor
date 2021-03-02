@@ -1,4 +1,4 @@
-import { PapiClient, InstalledAddon } from '@pepperi-addons/papi-sdk'
+import { PapiClient, InstalledAddon, DataView } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 
 class MyService {
@@ -8,36 +8,37 @@ class MyService {
     constructor(private client: Client) {
         this.papiClient = new PapiClient({
             baseURL: client.BaseURL,
-            token: client.OAuthAccessToken
+            token: client.OAuthAccessToken,
+            addonUUID: client.AddonUUID,
+            addonSecretKey: client.AddonSecretKey,
+            actionUUID: client.ExecutionUUID
         });
     }
 
-    addTableScheme(scheme, addonUUID, secretKey): Promise<any> {
-        return this.papiClient.post('/addons/data/schemes', scheme,
-        {
-            "X-Pepperi-OwnerID": addonUUID,
-            "X-Pepperi-SecretKey": secretKey
-        }
-        );
+    addTableScheme(scheme): Promise<any> {
+        return this.papiClient.post('/addons/data/schemes', scheme);
     }
 
-    addDataToTable(rowData, tableName, addonUUID, secretKey): Promise<any> {
-        return this.papiClient.post(`/addons/data/${addonUUID}/${tableName}`, rowData,
-        {
-            "X-Pepperi-OwnerID": addonUUID,
-            "X-Pepperi-SecretKey": secretKey
-        });
+    addDataToTable(rowData, tableName, addonUUID): Promise<any> {
+        return this.papiClient.post(`/addons/data/${addonUUID}/${tableName}`, rowData);
     }
 
+    getTableData(tableName, uuid, options = {}): Promise<any> {
+        return this.papiClient.addons.data.uuid(uuid).table(tableName).find(options);
+    }
 
+    getInstalledAddon(uuid: string): Promise<InstalledAddon> {
+        return this.papiClient.addons.installedAddons.addonUUID(uuid).get();
+    }
 
-    // getTransactionTypes(): Promise<InstalledAddon[]> {
-    //     return this.papiClient.types.find({});
-    // }
+    addDataView(dataView: DataView): Promise<DataView> {
+        return this.papiClient.metaData.dataViews.upsert(dataView);
+    }
 
-    // getListMenu(): Promise<InstalledAddon[]> {
-    //     return this.papiClient.addons.data.addonUUID.find({});
-    // }
+    getDataView(dataViewName: string): Promise<DataView[]> {
+        return this.papiClient.metaData.dataViews.find({ where: 'Context.Name='+dataViewName,});
+    }
+
 
 }
 

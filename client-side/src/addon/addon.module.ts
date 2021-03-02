@@ -20,6 +20,7 @@ import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-remote-loader';
         AddTypeDialogComponent,
         PepperiTableComponent,
         EmptyRouteComponent
+
     ],
     imports: [
         BrowserModule,
@@ -28,6 +29,7 @@ import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-remote-loader';
         PepUIModule,
         MaterialModule,
         PepRemoteLoaderModule
+
     ],
     providers: [],
     bootstrap: [AddonComponent]

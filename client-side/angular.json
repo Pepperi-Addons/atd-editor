@@ -75,7 +75,12 @@
               ],
               "optimization": true,
               "outputHashing": "none",
-              "sourceMap": false,
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": false,
+                "vendor": true
+              },
               "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
@@ -99,7 +104,13 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "client-side:build"
+            "browserTarget": "client-side:build",
+            "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": false,
+                "vendor": true
+              },
           },
           "configurations": {
             "production": {
