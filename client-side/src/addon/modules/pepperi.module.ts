@@ -127,21 +127,21 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
 
 
-// export function createTranslateLoader(http: HttpClient) {
-//    return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
-// }
-
-export function createTranslateLoader(http: HttpClient, fileService: PepFileService, addonService: PepAddonService) {
-
-    const translationsPrefix: string = fileService.getAssetsTranslationsPath();
-    const translationsSuffix: string = fileService.getAssetsTranslationsSuffix();
-    const addonPublicURL = addonService.getAddonStaticFolder();
-
-    return new MultiTranslateHttpLoader(http, [
-        {prefix: addonPublicURL, suffix: translationsSuffix},
-        {prefix: addonPublicURL, suffix: '.json'},
-    ]);
+export function createTranslateLoader(http: HttpClient) {
+   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 }
+
+// export function createTranslateLoader(http: HttpClient, fileService: PepFileService, addonService: PepAddonService) {
+
+//     const translationsPrefix: string = fileService.getAssetsTranslationsPath();
+//     const translationsSuffix: string = fileService.getAssetsTranslationsSuffix();
+//     const addonPublicURL = addonService.getAddonStaticFolder();
+
+//     return new MultiTranslateHttpLoader(http, [
+//         {prefix: addonPublicURL, suffix: translationsSuffix},
+//         {prefix: addonPublicURL, suffix: '.json'},
+//     ]);
+// }
 
 @NgModule({
     declarations: [

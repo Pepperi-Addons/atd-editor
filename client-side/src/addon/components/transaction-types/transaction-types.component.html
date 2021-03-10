@@ -19,7 +19,7 @@
 
         </div>
 
-        <pep-list-actions *ngIf="showListActions" (actionClick)="onMenuItemClicked($event)" [actions]="menuItems | async"></pep-list-actions>
+        <pep-list-actions #listActions *ngIf="showListActions" (menuClick)="onMenuClicked();" (actionClick)="onMenuItemClicked($event)" [actions]="menuItems | async"></pep-list-actions>
 
     </pep-top-bar>
     <div class="main-content ">
@@ -34,16 +34,16 @@
 </div>
 
 <ng-template #dialogTemplate>
-    <pep-dialog class="dialog-textarea-container" [title]="'Addon In Dialog'">
+    <pep-dialog class="dialog-textarea-container" [title]="dialogAddon?.Title | translate">
       <ng-container pep-dialog-content>
-          <addon-proxy #addonTemplate [options]="dialogAddon"></addon-proxy>
+          <addon-proxy #addonTemplate [options]="dialogAddon" ></addon-proxy>
 
         </ng-container>
-      <div pep-dialog-actions class="pep-spacing-element-negative">
+      <!-- <div pep-dialog-actions class="pep-spacing-element-negative">
               <button mat-button (click)="closeDialog()" class="pep-spacing-element pep-button md weak">
                   {{ 'Close' | translate }}
               </button>
 
-      </div>
+      </div> -->
     </pep-dialog>
   </ng-template>

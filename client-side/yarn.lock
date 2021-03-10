@@ -1573,10 +1573,10 @@
     yargs "15.4.1"
     yargs-parser "20.0.0"
 
-"@pepperi-addons/ngx-lib@^0.1.128":
-  version "0.1.128"
-  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-lib/-/ngx-lib-0.1.128.tgz#89a37a9075fc907de387266558ed3e852acf1efe"
-  integrity sha512-PCePgDQM8+ZOTVJ0WBHz/MSGElzLq8/lxacfRC35MTULOhCyzQo4a0mPBSRPyv9/GndYLlQToIjxE7NrwyzgTQ==
+"@pepperi-addons/ngx-lib@^0.1.161":
+  version "0.1.161"
+  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-lib/-/ngx-lib-0.1.161.tgz#1ff2959e51dcdac4c40b0686f2232d3e25892ac5"
+  integrity sha512-b1wVmJaoHP/l2U0MXQfqpCiBHQ1Juw7yiK+N20GyCLqhKNe7Xw4jEe8rEokAS5I/+PwSCYS/PLu9XnGMD+Hh7w==
   dependencies:
     tslib "^2.0.0"
 
@@ -8114,6 +8114,13 @@ simple-swizzle@^0.2.2:
   integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
   dependencies:
     is-arrayish "^0.3.1"
+
+single-spa-angular-webpack5@^4.9.3:
+  version "4.9.3"
+  resolved "https://registry.yarnpkg.com/single-spa-angular-webpack5/-/single-spa-angular-webpack5-4.9.3.tgz#55b7904b79ef55c26557e876913c9016f79109ba"
+  integrity sha512-Dls3cG52AKj0j4w0Ro/na4bF/VF6Whe4K5tt0dAFbyXr/fUfl65SKe/n+mBb2S+OHoeN0cDhExXtbhck+ln/GA==
+  dependencies:
+    tslib "^2.0.0"
 
 single-spa-angular@^4.9.2:
   version "4.9.2"

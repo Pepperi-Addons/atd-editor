@@ -1,4 +1,4 @@
-import { getTabsData, menuMetaData } from './metadata';
+import { menuMetaData } from './metadata';
 import { Client, Request } from '@pepperi-addons/debug-server';
 import MyService from './my.service';
 import { MenuDataView, MenuDataViewField} from '@pepperi-addons/papi-sdk';
@@ -6,9 +6,9 @@ import { MenuDataView, MenuDataViewField} from '@pepperi-addons/papi-sdk';
 import { ParsedUrlQuery, stringify } from 'querystring';
 
 export async function install(client: Client, request: Request){
-    const menu = await addDataView(client, "AtdEditor_Transactions_Menu", menuMetaData);
-    const tabs = await addDataView(client, "AtdEditor_Tabs", getTabsData());
-    return menu && tabs ?  {success:true, menu, tabs} : {success:false, result: null};
+    const menu = await upsertDataView(client, "AtdEditor_Transactions_Menu", menuMetaData);
+    return {success:true, menu};
+
 }
 
 export async function uninstall(client: Client, request: Request){
@@ -16,42 +16,50 @@ export async function uninstall(client: Client, request: Request){
 }
 
 export async function upgrade(client: Client, request: Request){
-    const menu = await addDataView(client, "AtdEditor_Transactions_Menu", menuMetaData);
-    const tabs = await addDataView(client, "AtdEditor_Tabs", getTabsData());
-    return menu && tabs ? {success:true, menu, tabs} : {success:false, result: null};
+    const menu = await upsertDataView(client, "AtdEditor_Transactions_Menu", menuMetaData);
+    return {success:true, menu};
 }
 
 export async function downgrade(client: Client, request: Request){
     return {success:true}
 }
 
-async function addDataView(client: Client, contextName: string, data: object[]){
+async function upsertDataView(client: Client, contextName: string, addons: object[]){
     const service = new MyService(client);
-    const dataView: MenuDataView = {
-        Type: "Menu",
-        Context: {
-            Profile: {
-                Name: "Rep"
+    const existingDataViews = await service.getDataView(contextName);
+    if (existingDataViews?.length > 0){
+        existingDataViews.forEach( dataView => prepareDataview(addons, dataView));    
+        const promises: Promise<any>[] = [];
+        existingDataViews.forEach(dataView => promises.push(service.upsertDataView(dataView)));
+        const result = await Promise.all(promises);
+        return result;
+    } else {
+        const dataView: MenuDataView = {
+            Type: "Menu",
+            Context: {
+                Profile: {
+                    Name: "Rep"
+                },
+                Name: contextName,
+                ScreenSize: "Landscape"     
             },
-            Name: contextName,
-            ScreenSize: "Landscape"     
-        },
-        Fields: []
-    };
+            Fields: []
+        };
+        prepareDataview(addons, dataView);
+        const result = await service.upsertDataView(dataView);
+        return result;
+    }
+}
 
-    data.forEach( addon => {
+function prepareDataview(addons, dataView){
+    addons.forEach( addon => {
         const menuItem: MenuDataViewField = {
             FieldID: `ADO?${stringify(addon)}`,
             Title: addon['Title']
         }
-        dataView.Fields?.push(menuItem);
+        if (dataView.Fields?.findIndex( field => field.FieldID !== menuItem.FieldID) > 1){
+            dataView.Fields?.push(menuItem);
+        }
     });
-    const result = await service.addDataView(dataView);
-    return result;
-
-
-
-
-    
-
+    return dataView;
 }

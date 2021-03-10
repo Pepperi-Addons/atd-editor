@@ -31,12 +31,12 @@ class MyService {
         return this.papiClient.addons.installedAddons.addonUUID(uuid).get();
     }
 
-    addDataView(dataView: DataView): Promise<DataView> {
+    upsertDataView(dataView: DataView): Promise<DataView> {
         return this.papiClient.metaData.dataViews.upsert(dataView);
     }
 
     getDataView(dataViewName: string): Promise<DataView[]> {
-        return this.papiClient.metaData.dataViews.find({ where: 'Context.Name='+dataViewName,});
+        return this.papiClient.metaData.dataViews.find({ where: 'Context.Name='+dataViewName });
     }
 
 
