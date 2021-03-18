@@ -1,20 +1,24 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TransactionTypesComponent } from './components/transaction-types/transaction-types.component';
+import { TypesListComponent } from './components/types-list/types-list.component';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
-import { AtdEditorComponent } from './components/atd-editor/atd-editor.component';
+import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
 
 const routes: Routes = [{
     path: 'settings/:addon_uuid',
 
     children: [
+        // {
+        //     path: ':type/:type_id',
+        //     component: SettingsTabsComponent
+        // },
         {
-            path: 'transaction_types/:type_id/:tab_id',
-            component: AtdEditorComponent
+            path: ':type/:sub_type/:type_id/:tab_id',
+            component: SettingsTabsComponent
         },
         {
-            path: 'transaction_types',
-            component: TransactionTypesComponent
+            path: ':type/:sub_type',
+            component: TypesListComponent
         }
     ]
     },

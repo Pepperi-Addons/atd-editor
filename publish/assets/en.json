@@ -19,7 +19,7 @@
     "ListTotal_ShowingResult": "Transaction Types - {{ totalRows }} result",
     "ListTotal_ShowingResultsOutOf": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> results",
     "ListTotal_ShowingResultOutOfResult": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> result",
-    "Add_New_Header": "Add New Transaction Type",
+    "Add_New_Header": "Add New {{objectType}} Type",
     "Name": "Name",
     "Description": "Description",
     "ACTIONS.CANCEL": "Cancel",

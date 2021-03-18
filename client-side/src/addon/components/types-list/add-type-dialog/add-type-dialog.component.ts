@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'addon-add-type-dialog',
@@ -11,6 +12,7 @@ export class AddTypeDialogComponent implements OnInit {
   atdName = '';
   atdDescription = '';
   constructor(
+      public translate: TranslateService,
       private dialogRef: MatDialogRef<AddTypeDialogComponent>,
       @Inject(MAT_DIALOG_DATA) public data: any
     ) {

@@ -1,14 +1,12 @@
-import { menuMetaData } from './metadata';
+import { MenuAddonField, menuDataView } from './metadata';
 import { Client, Request } from '@pepperi-addons/debug-server';
 import MyService from './my.service';
 import { MenuDataView, MenuDataViewField} from '@pepperi-addons/papi-sdk';
-// import { AddonUUID } from '../addon.config.json'
-import { ParsedUrlQuery, stringify } from 'querystring';
+import { stringify } from 'querystring';
 
 export async function install(client: Client, request: Request){
-    const menu = await upsertDataView(client, "AtdEditor_Transactions_Menu", menuMetaData);
+    const menu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
     return {success:true, menu};
-
 }
 
 export async function uninstall(client: Client, request: Request){
@@ -16,7 +14,7 @@ export async function uninstall(client: Client, request: Request){
 }
 
 export async function upgrade(client: Client, request: Request){
-    const menu = await upsertDataView(client, "AtdEditor_Transactions_Menu", menuMetaData);
+    const menu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
     return {success:true, menu};
 }
 
@@ -24,13 +22,14 @@ export async function downgrade(client: Client, request: Request){
     return {success:true}
 }
 
-async function upsertDataView(client: Client, contextName: string, addons: object[]){
+async function addDataView(client: Client, contextName: string, addons: MenuAddonField[]){
     const service = new MyService(client);
-    const existingDataViews = await service.getDataView(contextName);
+    const existingDataViews: DataView[] = await service.getDataView(contextName);
     if (existingDataViews?.length > 0){
-        existingDataViews.forEach( dataView => prepareDataview(addons, dataView));    
+        const preparedDataViews: MenuDataView[] = [];
+        existingDataViews.forEach( dataView => preparedDataViews.push(updateDataViewFields(addons, dataView)));    
         const promises: Promise<any>[] = [];
-        existingDataViews.forEach(dataView => promises.push(service.upsertDataView(dataView)));
+        preparedDataViews.forEach(dataView => promises.push(service.upsertDataView(dataView)));
         const result = await Promise.all(promises);
         return result;
     } else {
@@ -45,21 +44,28 @@ async function upsertDataView(client: Client, contextName: string, addons: objec
             },
             Fields: []
         };
-        prepareDataview(addons, dataView);
-        const result = await service.upsertDataView(dataView);
+        const dataViewAfter = updateDataViewFields(addons, dataView);
+        const result = await service.upsertDataView(dataViewAfter);
         return result;
     }
 }
 
-function prepareDataview(addons, dataView){
-    addons.forEach( addon => {
-        const menuItem: MenuDataViewField = {
-            FieldID: `ADO?${stringify(addon)}`,
-            Title: addon['Title']
-        }
-        if (dataView.Fields?.findIndex( field => field.FieldID !== menuItem.FieldID) > 1){
-            dataView.Fields?.push(menuItem);
-        }
-    });
-    return dataView;
-}
+
+    function updateDataViewFields(fields: (MenuDataViewField & any)[], dataView: MenuDataView & any): MenuDataView{
+        fields.forEach( (menuField: MenuDataViewField & any) => {
+            const fieldId = `ADO?${stringify(menuField.FieldID)}`
+            const existingFieldIndex = dataView?.Fields?.findIndex( field => field.Title === menuField.Title);
+            if (existingFieldIndex > -1){
+                if (dataView.Fields[existingFieldIndex].FieldID !== fieldId) {
+                    dataView.Fields[existingFieldIndex] = {Title: menuField.Title, FieldID: fieldId};
+                }
+            }
+            else {
+                dataView?.Fields?.push({Title: menuField.Title, FieldID: fieldId});
+            }
+        });
+        // uncomment to empty array of fields
+        // dataView.Fields = [];
+        return dataView;
+    }
+

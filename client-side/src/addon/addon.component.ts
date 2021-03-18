@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { PepCustomizationService, PepStyleType } from '@pepperi-addons/ngx-lib';
-
+import { PepCustomizationService, PepSessionService, PepStyleType } from '@pepperi-addons/ngx-lib';
 @Component({
     selector: 'addon-root',
     templateUrl: './addon.component.html',
     styleUrls: ['./addon.component.scss']
 })
 export class AddonComponent implements OnInit {
-
+    addons = [];
     footerHeight: number;
     showLoading = false;
+    constructor(public customizationService: PepCustomizationService,
+        private session: PepSessionService) {
 
-    constructor(public customizationService: PepCustomizationService) {
+
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.customizationService.setThemeVariables();
 
         this.customizationService.footerHeight.subscribe(footerHeight => {

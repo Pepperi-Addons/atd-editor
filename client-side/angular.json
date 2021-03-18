@@ -22,6 +22,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.json",
+            "sourceMap": false,
             "aot": true,
             "stylePreprocessorOptions": {
                 "includePaths": [
@@ -41,6 +42,7 @@
                 "input": "./src/assets/i18n/",
                 "output": "/"
               }
+
             ],
             "styles": [
               "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",

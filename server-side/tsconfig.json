@@ -10,7 +10,17 @@
     "sourceMap": true,
     "noImplicitAny": false,
     "allowJs": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "@pepperi-addons/ngx-remote-loader": [
+        "../../../ngx-remote-loader/dist/remote-loader"
+      ],
+      "@pepperi-addons/ngx-remote-loader/*": [
+        "../../../ngx-remote-loader/dist/remote-loader/*"
+      ]
+
+    }
     
   },
   "exclude": [

@@ -8,7 +8,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = (angularWebpackConfig, options) => {
     const mfConfig = {
         output: {
-          uniqueName: "atdEditor"
+          uniqueName: "settingsEditor"
         },
         optimization: {
           // Only needed to bypass a temporary bug

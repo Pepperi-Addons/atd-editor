@@ -1,6 +1,6 @@
 {
   "AddonUUID": "04de9428-8658-4bf7-8171-b59f6327bbf1",
-  "AddonVersion": "0.0.39",
+  "AddonVersion": "0.0.41",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -21,8 +21,11 @@
     "Editors": [
       {
         "ParentPackageName": "Sales Activites",
-        "PackageName": "transaction_types",
-        "Description": "Transaction Types"
+        "PackageName": "transactions",
+        "Description": "Transaction Types",
+        "remoteName": "atd_editor",
+        "exposedModule": "./AddonModule",
+        "componentName": "AddonComponent"
       }
     ],
     "Dependencies": {

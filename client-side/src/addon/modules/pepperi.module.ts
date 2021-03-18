@@ -128,7 +128,7 @@ import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
 
 
 export function createTranslateLoader(http: HttpClient) {
-   return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+   return new TranslateHttpLoader(http, 'http://localhost:4400/assets/i18n/', '.json');
 }
 
 // export function createTranslateLoader(http: HttpClient, fileService: PepFileService, addonService: PepAddonService) {

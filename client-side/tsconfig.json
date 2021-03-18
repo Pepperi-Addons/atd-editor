@@ -13,6 +13,7 @@
         "moduleResolution": "node",
         "importHelpers": true,
         "target": "es2015",
+        "esModuleInterop": true,
         "types": ["systemjs"],
         "typeRoots": [
             "node_modules/@types"
@@ -27,7 +28,13 @@
             ],
             "@pepperi-addons/ngx-remote-loader/*": [
               "../../../ngx-remote-loader/dist/remote-loader/*"
-            ]
+            ],
+            // "@pepperi-addons/papi-sdk": [
+            //     "../../../pepperi_addons/papi-sdk/"
+            // ],
+            // "@pepperi-addons/papi-sdk/*": [
+            //     "../../../pepperi_addons/papi-sdk/*"
+            // ]
 
           }
     },
@@ -40,6 +47,7 @@
     ],
     "include": [
       "src/**/*.d.ts"
-    ]
+    ],
+
 
 }

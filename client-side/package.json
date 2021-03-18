@@ -31,11 +31,12 @@
     "@hallysonh/ngx-imageviewer": "^2.0.4",
     "@mat-datetimepicker/core": "^5.0.1",
     "@mat-datetimepicker/moment": "^5.0.1",
+    "@ngstack/code-editor": "^3.0.0",
     "@ngx-gallery/core": "^5.0.0-beta.0",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@pepperi-addons/ngx-lib": "^0.1.161",
-    "@pepperi-addons/papi-sdk": "^1.17.3",
+    "@pepperi-addons/papi-sdk": "1.20.8",
     "@tweenjs/tween.js": "^17.1.1",
     "@types/systemjs": "^6.1.0",
     "angular2-signaturepad": "^3.0.4",
@@ -92,5 +93,8 @@
   },
   "browserslist": [
     "supports es6-module"
-  ]
+  ],
+  "browser": {
+    "perf_hooks": false
+  }
 }

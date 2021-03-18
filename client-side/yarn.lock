@@ -1397,6 +1397,13 @@
   dependencies:
     tslib "^2.0.0"
 
+"@ngstack/code-editor@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@ngstack/code-editor/-/code-editor-3.0.0.tgz#4a8a5f7d13dfad01897e58098bb4afb0034b9255"
+  integrity sha512-ihlcghAcAABnYRS4lgzh/xGFrTTumQ/uC6d18Ob0nG7JtSlQAaKDkboJIIwEkLVKE8UKGgIHheRdX9f10ARc1w==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngtools/webpack@11.1.4":
   version "11.1.4"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-11.1.4.tgz#8c7a9f6d9ade5610e3baf7299c50250cac02ca2a"
@@ -1580,10 +1587,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@pepperi-addons/papi-sdk@^1.17.3":
-  version "1.20.2"
-  resolved "https://registry.yarnpkg.com/@pepperi-addons/papi-sdk/-/papi-sdk-1.20.2.tgz#41688412a124303e881b19bcead98b1bad9c6b8c"
-  integrity sha512-nyEBg3dtxHHYQjvixFa3A2eybopZCf4uUJY+/ZZDLB8OSWPQcV9bQlhbRjfiSBocxL9UUSj/SrYqD6Yk8Qhnjw==
+"@pepperi-addons/papi-sdk@1.20.8":
+  version "1.20.8"
+  resolved "https://registry.yarnpkg.com/@pepperi-addons/papi-sdk/-/papi-sdk-1.20.8.tgz#390ff667a70460afea780418a8c6ec09af9fb303"
+  integrity sha512-Udzeh2483gHS6tbD2w8JSxZnV5HX0RxSVRf2UcvpL7ZHH/iXGVZ+sPlVQ5jcsgreK4McQRXsZCXOWMsWu7Ka+A==
   dependencies:
     node-fetch "^2.6.0"
 

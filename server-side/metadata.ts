@@ -1,34 +1,35 @@
-export type AddonOptions = {
-  remoteEntry?: string;
-  remoteName: string;
-  exposedModule: string;
-  useModule?: boolean;
-  update?: boolean;
-  componentName?: string;
-  addonData?: object;
-}
-    
-export type AddonKey = {​​​​​​  
-    AddonUUID?:string;
-    Editor?:string;
-    VisibleFunction?:string;
-    VisibleSelectionMode?:string;
-    OpenType:"full"|"popup"|"none";
-}
+import { AddonField } from "@pepperi-addons/papi-sdk";
+  
 
-export const menuMetaData: AddonKey[] =[
+export type PepDataObjectType = | 'transactions' | 'activities' | 'accounts';
+export type PepDataObjectSubType = | 'types' | 'meta_data' | 'data';
+export type MenuAddonField = {
+    Title: string;
+    FieldID: AddonField;
+}
+export const menuDataView: MenuAddonField[]  =[
 
         {
-            AddonUUID: "04de9428-8658-4bf7-8171-b59f6327bbf1",
-            Editor: "transaction_types/ATD_ID/general",
-            VisibleFunction: "api/show_editor",	
-            VisibleSelectionMode: "single",
-            OpenType: "full",
+            Title: "Edit",
+            FieldID: {
+                Type: "Navigation",
+                SubType: "Settings",
+                AddonUUID: "04de9428-8658-4bf7-8171-b59f6327bbf1",
+                RelativeURL: "TYPE/SUB_TYPE/TYPE_ID/general",
+                VisibleEndpoint: "api/sync_func",	
+                MultiSelection: false
+            }   
         },
         {
-            VisibleFunction: "api/show_editor",	
-            VisibleSelectionMode: "single",
-            OpenType: "none",
+            Title: "Delete",
+            FieldID: {
+                Type: "BackgroundJob",
+                SubType: "None",
+                AddonUUID: "04de9428-8658-4bf7-8171-b59f6327bbf1",
+                RelativeURL: "api/delete_object",
+                VisibleEndpoint: "api/sync_func",	
+                Confirmation: true
+            }           
         }      
       
 ];

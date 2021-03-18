@@ -1,4 +1,4 @@
-export enum AtdEditorTabs {
+export enum SettingsEditorTabs {
     'general',
     'views',
     'actions',

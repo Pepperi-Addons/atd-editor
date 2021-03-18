@@ -15,11 +15,11 @@
     "Behaivour": "Behaivour",
     "Conditions": "Conditions",
     "Fields": "Fields",
-    "ListTotal_ShowingResults": "Transaction Types - {{ totalRows }} results",
+    "ListTotal_ShowingResults": "{{objectType}} Types - {{ totalRows }} results",
     "ListTotal_ShowingResult": "{{ totalRows }} result",
     "ListTotal_ShowingResultsOutOf": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> results",
     "ListTotal_ShowingResultOutOfResult": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> result",
-    "Add_New_Header": "Add New Transaction Type",
+    "Add_New_Header": "Add New {{objectType}} Type",
     "Name": "Name",
     "Description": "Description",
     "ACTIONS.CANCEL": "Cancel",
@@ -27,6 +27,14 @@
     "ACTIONS.CLOSE": "Close",
     "SEARCH.HINT": "Search here",
     "ExternalID": "Name",
-    "MESSAGES.TITLE_NOTICE": "Error"
+    "MESSAGES.TITLE_NOTICE": "Error",
+    "AddonApi_Dialog_Success": "Task {{taskName}} completed successfully.",
+    "AddonApi_Dialog_Failure": "Task {{taskName}} faild due to an error.",
+    "accounts": "Account",
+    "activities": "Activity",
+    "contacts": "Contact",
+    "transactions": "Transaction",
+    "transaction_lines": "Transaction Lines",
+    "Confirmation_Message": "Click continue to start the {{title}} opertaion."
 
 }
