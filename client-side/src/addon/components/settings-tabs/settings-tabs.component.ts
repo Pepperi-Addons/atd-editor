@@ -104,8 +104,8 @@ export class SettingsTabsComponent implements OnInit {
     getTabs(addonUUID, dataViewName = `SettingsEditor${this.titleCase.transform(this.type)}Tabs`): Promise<any[]> {
         const body = { DataViewName: dataViewName };
         // debug locally
-        return this.http.postHttpCall('http://localhost:4500/api/ui_control', body)
-        // return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/ui_control`, body)
+        // return this.http.postHttpCall('http://localhost:4500/api/ui_control', body)
+        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/ui_control`, body)
                     .toPromise();
     }
 

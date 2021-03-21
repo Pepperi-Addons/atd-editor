@@ -25,6 +25,7 @@
     "ACTIONS.CANCEL": "Cancel",
     "ACTIONS.SAVE": "Add",
     "ACTIONS.CLOSE": "Close",
+    "ACTIONS.CONTINUE": "Continue",
     "SEARCH.HINT": "Search here",
     "ExternalID": "Name",
     "MESSAGES.TITLE_NOTICE": "Error",
