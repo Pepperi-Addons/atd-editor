@@ -16,7 +16,7 @@
     "Conditions": "Conditions",
     "Fields": "Fields",
     "ListTotal_ShowingResults": "{{objectType}} Types - {{ totalRows }} results",
-    "ListTotal_ShowingResult": "{{ totalRows }} result",
+    "ListTotal_ShowingResult": "{{objectType}} Types - {{ totalRows }} result",
     "ListTotal_ShowingResultsOutOf": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> results",
     "ListTotal_ShowingResultOutOfResult": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> result",
     "Add_New_Header": "Add New {{objectType}} Type",
@@ -36,6 +36,5 @@
     "contacts": "Contact",
     "transactions": "Transaction",
     "transaction_lines": "Transaction Lines",
-    "Confirmation_Message": "Click continue to start the {{title}} opertaion."
-
+    "Confirmation_Message": "Are you sure you want to proceed?"
 }

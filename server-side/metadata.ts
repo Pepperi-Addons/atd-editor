@@ -28,6 +28,7 @@ export const menuDataView: MenuAddonField[]  =[
                 AddonUUID: "04de9428-8658-4bf7-8171-b59f6327bbf1",
                 RelativeURL: "api/delete_object",
                 VisibleEndpoint: "api/sync_func",	
+                MultiSelection: false,
                 Confirmation: true
             }           
         }      

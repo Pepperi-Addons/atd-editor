@@ -1587,6 +1587,13 @@
   dependencies:
     tslib "^2.0.0"
 
+"@pepperi-addons/ngx-remote-loader@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-remote-loader/-/ngx-remote-loader-0.0.14.tgz#cfbb9966c2814216c961b61550d750441844c0a4"
+  integrity sha512-11tbp60mZvv/3ZqNSU3qoQ89WV7VVD5ZkSO4GStk6fHKLSf9aCPzmIWVBMQlIRu2ClACWjb1W/RoQwvkE7n2cw==
+  dependencies:
+    tslib "^2.0.0"
+
 "@pepperi-addons/papi-sdk@1.20.8":
   version "1.20.8"
   resolved "https://registry.yarnpkg.com/@pepperi-addons/papi-sdk/-/papi-sdk-1.20.8.tgz#390ff667a70460afea780418a8c6ec09af9fb303"

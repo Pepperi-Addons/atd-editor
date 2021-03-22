@@ -63,11 +63,14 @@ export class TypesListComponent implements OnInit {
     }
 
     async ngOnInit() {
-        this.type = this.route.snapshot.params.type;
-        this.subType = this.route.snapshot.params.sub_type;
-        const addonUUID = this.route.snapshot.params.addon_uuid;
-        this.menuItems = this.getMenu(addonUUID);
-        this.loadlist();
+        this.route.params.subscribe( params => {
+            this.type = params.type;
+            this.subType = params.sub_type;
+            const addonUUID = params.addon_uuid;
+            this.menuItems = this.getMenu(addonUUID);
+            this.loadlist();
+        })
+
 
     }
 
@@ -134,7 +137,7 @@ export class TypesListComponent implements OnInit {
         });
 
         // const filteredActionsByApi = await this.http.postHttpCall(`http://localhost:4500/api/filter_entries`, { addons:filteredActionsBySelectionMode}).toPromise();
-        const filteredActionsByApi = await this.http.postPapiApiCall(`/installed_addons/addons/api/${this.addonUUID}/api/filter_entries`, { addons:filteredActionsBySelectionMode}).toPromise();
+        const filteredActionsByApi = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/api/filter_entries`, { addons:filteredActionsBySelectionMode}).toPromise();
         this.listActions.actions = filteredActionsByApi;
     }
 

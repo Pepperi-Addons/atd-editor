@@ -5,8 +5,10 @@ import { MenuDataView, MenuDataViewField} from '@pepperi-addons/papi-sdk';
 import { stringify } from 'querystring';
 
 export async function install(client: Client, request: Request){
-    const menu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
-    return {success:true, menu};
+    const activitiesMenu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
+    const transactionsMenu = await addDataView(client, "SettingsEditorActivitiesMenu", menuDataView);
+    const accountsMenu = await addDataView(client, "SettingsEditorAccountsMenu", menuDataView);
+    return {success:true, activitiesMenu, transactionsMenu, accountsMenu};
 }
 
 export async function uninstall(client: Client, request: Request){
@@ -14,8 +16,10 @@ export async function uninstall(client: Client, request: Request){
 }
 
 export async function upgrade(client: Client, request: Request){
-    const menu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
-    return {success:true, menu};
+    const activitiesMenu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
+    const transactionsMenu = await addDataView(client, "SettingsEditorActivitiesMenu", menuDataView);
+    const accountsMenu = await addDataView(client, "SettingsEditorAccountsMenu", menuDataView);
+    return {success:true, activitiesMenu, transactionsMenu, accountsMenu};
 }
 
 export async function downgrade(client: Client, request: Request){

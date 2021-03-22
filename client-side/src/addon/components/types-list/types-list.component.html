@@ -1,8 +1,7 @@
 <!-- <main> -->
 <div class="addon-page-container">
 
-    <!-- (totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows }"> -->
-    <pep-top-bar [title]="'ListTotal_ShowingResults' | translate: { totalRows: totalRows, objectType: type | translate  }">
+    <pep-top-bar [title]="(totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows, objectType: type | translate  }">
         <div header-start-content>
 
         </div>
@@ -37,13 +36,6 @@
     <pep-dialog class="dialog-textarea-container" [title]="dialogAddon?.title | translate">
       <ng-container pep-dialog-content>
           <addon-proxy #addonTemplate [options]="dialogAddon" ></addon-proxy>
-
-        </ng-container>
-      <!-- <div pep-dialog-actions class="pep-spacing-element-negative">
-              <button mat-button (click)="closeDialog()" class="pep-spacing-element pep-button md weak">
-                  {{ 'Close' | translate }}
-              </button>
-
-      </div> -->
+      </ng-container>
     </pep-dialog>
-  </ng-template>
+</ng-template>

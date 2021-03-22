@@ -26,8 +26,8 @@ module.exports = (angularWebpackConfig, options) => {
 
           new ModuleFederationPlugin({
             remotes: {},
-            name: "atd_editor",
-            filename: "atd_editor.js",
+            name: "settings_editor",
+            filename: "settings_editor.js",
             exposes: {
             },
             shared: {

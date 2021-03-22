@@ -3,7 +3,6 @@
     "List_Example_Title": "Transaction Types",
     "Delete_Validate": "Are you sure you want to remove this transaction type?",
     "Delete": "Delete",
-    "ATD_Editor_Title": "Transaction Type Editor - {{transactionTypeExtenalID}}",
     "General_Info": "General Info",
     "Views_Forms": "Views & Forms",
     "Actions": "Actions",
@@ -15,8 +14,8 @@
     "Behaivour": "Behaivour",
     "Conditions": "Conditions",
     "Fields": "Fields",
-    "ListTotal_ShowingResults": "Transaction Types - {{ totalRows }} results",
-    "ListTotal_ShowingResult": "Transaction Types - {{ totalRows }} result",
+    "ListTotal_ShowingResults": "{{objectType}} Types - {{ totalRows }} results",
+    "ListTotal_ShowingResult": "{{ totalRows }} result",
     "ListTotal_ShowingResultsOutOf": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> results",
     "ListTotal_ShowingResultOutOfResult": "<span class='bold number'>{{ xRows }}</span> of <span class='bold number'>{{ totalRows }}</span> result",
     "Add_New_Header": "Add New {{objectType}} Type",
@@ -26,8 +25,15 @@
     "ACTIONS.SAVE": "Add",
     "ACTIONS.CLOSE": "Close",
     "ACTIONS.CONTINUE": "Continue",
-        "SEARCH.HINT": "Search here",
+    "SEARCH.HINT": "Search here",
     "ExternalID": "Name",
-    "MESSAGES.TITLE_NOTICE": "Error"
-
+    "MESSAGES.TITLE_NOTICE": "Error",
+    "AddonApi_Dialog_Success": "Task {{taskName}} completed successfully.",
+    "AddonApi_Dialog_Failure": "Task {{taskName}} faild due to an error.",
+    "accounts": "Account",
+    "activities": "Activity",
+    "contacts": "Contact",
+    "transactions": "Transaction",
+    "transaction_lines": "Transaction Lines",
+    "Confirmation_Message": "Are you sure you want to proceed?"
 }

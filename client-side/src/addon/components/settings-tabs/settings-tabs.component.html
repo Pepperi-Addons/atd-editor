@@ -9,7 +9,7 @@
                 </mat-icon>
                 </button>
                 <div *ngIf="atd?.ExternalID?.length > 0" class="pep-spacing-element title pull-left flip">
-                    <span [title]="atd?.ExternalID" >{{ atd?.ExternalID }}</span>
+                    <span [title]="atd?.ExternalID" >{{ atd?.ExternalID }} - {{ type | translate }}</span>
                 </div>
             </div>
         </pep-top-bar>
