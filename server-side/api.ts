@@ -32,7 +32,12 @@ export async function ui_control(client: Client, request: Request): Promise<Remo
         const remoteEntryByType = (type, remoteName = 'remoteEntry') => {
             switch (type){
                 case "Component":
-                    return entryAddon?.PublicBaseURL + remoteName + '.js';
+                    if (field?.RelativeURL){
+                        return entryAddon?.PublicBaseURL +  field?.RelativeURL + '.js';
+                    }
+                    else {
+                        return entryAddon?.PublicBaseURL +  remoteName + '.js';
+                    }
                     break;
                 default:
                     return field?.RelativeURL;
