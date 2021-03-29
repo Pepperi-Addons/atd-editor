@@ -58,6 +58,7 @@ export class SettingsTabsComponent implements OnInit {
            let i = 0;
            this.activeTab = this.tabs.find((tab,index) => {
            this.activeTabIndex = index;
+        //    tab.remoteEntry = 'http://localhost:4401/uom_module.js';
            return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
         });
            this.getAtd();
@@ -75,7 +76,7 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     getIframePath(tabName, atd) {
-        let URI = `Views/Agents/${this.typesEnum[this.type]}Types.aspx?tranUUID=${atd.InternalID}&tabName=${tabName.toUpperCase()}`;
+        let URI = `Views/Agents/${this.typesEnum[this.type]}Types.aspx?objectUUID=${atd.InternalID}&tabName=${tabName.toUpperCase()}`;
         URI += `&name=${atd.ExternalID}&description=${atd.Description}&icon_name=${atd.Icon}`;
         return URI;
     }
@@ -97,7 +98,7 @@ export class SettingsTabsComponent implements OnInit {
 
 
         const currentTabKey = this.activeTab?.title;
-        const selectedTab = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
+        const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
         if (this.activeTab?.remoteName === 'settings_iframe'){
             const addonInstance = this.addonProxy?.compRef?.instance;
             const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
@@ -108,7 +109,8 @@ export class SettingsTabsComponent implements OnInit {
             if (selectedTab.uuid === this.activeTab.uuid){
                 selectedTab.update = true;
             }
-            if (this.activeTab?.remoteName !== 'settings_iframe' && selectedTab?.remoteName !== 'settings_iframe'){
+
+            if (this.activeTab?.remoteName !== selectedTab?.remoteName){
                 this.activeTab = selectedTab;
             }
             this.activeTabIndex = e.index;
