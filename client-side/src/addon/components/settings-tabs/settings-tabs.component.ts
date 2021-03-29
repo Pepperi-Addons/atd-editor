@@ -1,9 +1,14 @@
+import { RemoteModuleOptions } from './../../../../../model';
 import { TranslateService } from '@ngx-translate/core';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ComponentFactory, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
 import { TitleCasePipe } from '@angular/common';
+import { Types } from '@pepperi-addons/papi-sdk/dist/endpoints';
+import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
+
+
 
 
 @Component({
@@ -15,12 +20,20 @@ export class SettingsTabsComponent implements OnInit {
 
     atd;
     tabs: Array<any>;
-    activeTab;
+    activeTab: RemoteModuleOptions;
     activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
+    @ViewChild('addonProxy', {static: false}) addonProxy: PepRemoteLoaderComponent;
     @Input() title = '';
     @Input() type;
     @Input() subType;
+    typesEnum = {
+        'accounts': 'Account',
+        'transactions': 'Orders',
+        'activities': 'Activity',
+        'transaction_lines': 'Lines',
+        'contacts': 'Contact'
+    }
     private titleCase = new TitleCasePipe();
 
 
@@ -36,6 +49,7 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     async ngOnInit() {
+
       this.type = this.route.snapshot.params.type;
       this.subType = this.route.snapshot.params.sub_type;
       const addonUUID = this.route.snapshot.params.addon_uuid;
@@ -61,20 +75,18 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     getIframePath(tabName, atd) {
-    let URI = `Views/Agents/OrdersTypes.aspx?tranUUID=${atd.InternalID}&tabName=${tabName.toUpperCase()}`
-    if (tabName === 'general'){
-      URI += `&name=${atd.ExternalID}&description=${atd.Description}&icon_name=${atd.Icon}`;
-    }
-    return URI;
+        let URI = `Views/Agents/${this.typesEnum[this.type]}Types.aspx?tranUUID=${atd.InternalID}&tabName=${tabName.toUpperCase()}`;
+        URI += `&name=${atd.ExternalID}&description=${atd.Description}&icon_name=${atd.Icon}`;
+        return URI;
     }
 
     openErrorDialog(error){
-    const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
-    const data = new PepDialogData({
-        title,
-        content: error?.fault?.faultstring
-    });
-    this.dialogService.openDefaultDialog(data);
+        const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
+        const data = new PepDialogData({
+            title,
+            content: error?.fault?.faultstring
+        });
+        this.dialogService.openDefaultDialog(data);
     }
 
     getAddon(tab) {
@@ -83,14 +95,22 @@ export class SettingsTabsComponent implements OnInit {
 
     tabClick(e){
 
+
         const currentTabKey = this.activeTab?.title;
         const selectedTab = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
+        if (this.activeTab?.remoteName === 'settings_iframe'){
+            const addonInstance = this.addonProxy?.compRef?.instance;
+            const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
+            iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
+        }
         if (selectedTab && selectedTab?.title !== currentTabKey){
             // this.cd.detectChanges();
             if (selectedTab.uuid === this.activeTab.uuid){
                 selectedTab.update = true;
             }
-            this.activeTab = selectedTab;
+            if (this.activeTab?.remoteName !== 'settings_iframe' && selectedTab?.remoteName !== 'settings_iframe'){
+                this.activeTab = selectedTab;
+            }
             this.activeTabIndex = e.index;
             this.router.navigate([`../${selectedTab.title.toLowerCase()}`],
             { relativeTo: this.route});

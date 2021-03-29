@@ -1587,10 +1587,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@pepperi-addons/ngx-remote-loader@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-remote-loader/-/ngx-remote-loader-0.0.14.tgz#cfbb9966c2814216c961b61550d750441844c0a4"
-  integrity sha512-11tbp60mZvv/3ZqNSU3qoQ89WV7VVD5ZkSO4GStk6fHKLSf9aCPzmIWVBMQlIRu2ClACWjb1W/RoQwvkE7n2cw==
+"@pepperi-addons/ngx-remote-loader@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-remote-loader/-/ngx-remote-loader-0.0.15.tgz#1603ab74494c922215d459b274ab58cd87d5c780"
+  integrity sha512-9qfGYxlcTEgKLur1iuQF9RTeEWivNEPcbiJ+Cm+lFubADkRBDq5vt3tLGRLltV1j3/rVR8Qi034mYvdxbMYeKQ==
   dependencies:
     tslib "^2.0.0"
 
