@@ -1,5 +1,4 @@
-import { ObjectType } from './../../../../../model';
-import { ListSearch, RemoteModuleOptions } from '../../../../../model';
+import { ListSearch, ObjectType, RemoteModuleOptions } from './../../../../../model';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
 import { Component, ComponentRef, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
@@ -107,7 +106,7 @@ export class TypesListComponent implements OnInit {
     buildUrlByParams(params){
         let url = '';
         let type = ObjectType[this.type];
-        url = `/types?fields=Name,Description,UUID,InternalID&order_by=${params.sortBy} ${params.isAsc ? 'asc' : 'desc'}&where=Type=${type}`;
+        url = `/types?fields=Name,Description,UUID,InternalID&order_by=${params.sortBy} ${params.isAsc ? 'asc' : 'desc'}&where=Type=${type} AND Hidden=0`;
         return url;
     }
 
@@ -124,7 +123,7 @@ export class TypesListComponent implements OnInit {
                 this.transactionTypes = transactionTypes;
                 this.totalRows = transactionTypes.length;
             },
-            (error) => {},
+            (error) => this.openErrorDialog(error),
             () => {}
         );
     }
@@ -152,7 +151,7 @@ export class TypesListComponent implements OnInit {
         switch (remoteModule.type){
                     case 'BackgroundJob':
                         if (remoteModule.remoteEntry) {
-                           this.runAddonApi(remoteModule);
+                           this.runAddonApiEntry(remoteModule);
                         }
                         break;
                     case 'Navigation':
@@ -179,7 +178,7 @@ export class TypesListComponent implements OnInit {
             .afterOpened().subscribe((res) => {});
     }
 
-    async runAddonApi(remoteModule: RemoteModuleOptions){
+    runAddonApiEntry(remoteModule: RemoteModuleOptions){
         const dialogData: PepDialogData = {
             content: this.translate.instant('Confirmation_Message',{title: remoteModule.title}),
             title: remoteModule.title,
@@ -194,25 +193,25 @@ export class TypesListComponent implements OnInit {
             const dialogRef = this.dialogService.openDefaultDialog(dialogData);
              dialogRef.afterClosed().subscribe(async confirmed =>{
                  if (confirmed){
-                     remoteModule.addonData['objectType'] = this.type;
-                     remoteModule.addonData['objectId'] = remoteModule.addonData['atd'].InternalID;
-                    // const success = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-                    const success = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-                    dialogData.content = this.translate.instant(success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title});
-                    dialogData.type = "close";
-                    this.dialogService.openDefaultDialog(dialogData).afterClosed().subscribe(async confirmed => this.loadlist());
+
+                     this.postAddonApi(remoteModule, dialogData);
                  }
             });
         }
         else {
-            // const success = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-            const success = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-            dialogData.content = this.translate.instant(success)
-            dialogData.type = "close";
-            this.dialogService.openDefaultDialog(dialogData).afterClosed().subscribe(async confirmed => this.loadlist());
-
+            this.postAddonApi(remoteModule, dialogData);
         }
 
+    }
+
+    async postAddonApi(remoteModule: RemoteModuleOptions, dialogData){
+        remoteModule.addonData['objectType'] = this.type;
+        remoteModule.addonData['objectId'] = remoteModule.addonData['atd'].InternalID;
+         // const success = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        const success = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        dialogData.content = this.translate.instant(success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title});
+        dialogData.type = "close";
+        this.dialogService.openDefaultDialog(dialogData).afterClosed().subscribe(async confirmed => this.loadlist());
     }
 
     closeDialog(e){
@@ -236,7 +235,7 @@ export class TypesListComponent implements OnInit {
                         .subscribe(res => {
                             this.router.navigate([`/settings/${this.route.snapshot.params.addon_uuid}/${this.route.snapshot.params.type}/types/${res.InternalID}/general`]);
                             // this.loadlist();
-                        });
+                        }, err => this.openErrorDialog(err));
         }
     }
 
@@ -253,6 +252,15 @@ export class TypesListComponent implements OnInit {
         const addons = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/ui_control`, body).toPromise();
         addons.forEach(addon => apiNames.push(new PepMenuItem({ key: JSON.stringify(addon), text: addon.title})));
         return apiNames;
+    }
+
+    openErrorDialog(error){
+        const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
+        const data = new PepDialogData({
+            title,
+            content: error?.fault?.faultstring || error
+        });
+        this.dialogService.openDefaultDialog(data);
     }
 
     // deleteATD(atdInfo){

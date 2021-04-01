@@ -58,7 +58,6 @@ export class SettingsTabsComponent implements OnInit {
            let i = 0;
            this.activeTab = this.tabs.find((tab,index) => {
            this.activeTabIndex = index;
-        //    tab.remoteEntry = 'http://localhost:4401/uom_module.js';
            return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
         });
            this.getAtd();
@@ -85,7 +84,7 @@ export class SettingsTabsComponent implements OnInit {
         const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
         const data = new PepDialogData({
             title,
-            content: error?.fault?.faultstring
+            content: error?.fault?.faultstring || error
         });
         this.dialogService.openDefaultDialog(data);
     }
@@ -105,12 +104,14 @@ export class SettingsTabsComponent implements OnInit {
             iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
         }
         if (selectedTab && selectedTab?.title !== currentTabKey){
-            // this.cd.detectChanges();
+            this.cd.detectChanges();
             if (selectedTab.uuid === this.activeTab.uuid){
                 selectedTab.update = true;
             }
 
             if (this.activeTab?.remoteName !== selectedTab?.remoteName){
+                this.activeTab = null;
+                this.cd.detectChanges();
                 this.activeTab = selectedTab;
             }
             this.activeTabIndex = e.index;

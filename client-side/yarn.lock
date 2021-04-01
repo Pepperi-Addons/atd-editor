@@ -1581,16 +1581,16 @@
     yargs-parser "20.0.0"
 
 "@pepperi-addons/ngx-lib@^0.1.161":
-  version "0.1.161"
-  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-lib/-/ngx-lib-0.1.161.tgz#1ff2959e51dcdac4c40b0686f2232d3e25892ac5"
-  integrity sha512-b1wVmJaoHP/l2U0MXQfqpCiBHQ1Juw7yiK+N20GyCLqhKNe7Xw4jEe8rEokAS5I/+PwSCYS/PLu9XnGMD+Hh7w==
+  version "0.1.202"
+  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-lib/-/ngx-lib-0.1.202.tgz#6b960b3d60b3a200c8ab030a6da01d2dea2a9ea8"
+  integrity sha512-yUWrnJFFif86FacyUxjLAV3lbT2DgFQsvyahHK68N5Wkj29Rkl6ELxmHVv+7h6aaAUTD6RnGGI+eCrKui64IWA==
   dependencies:
     tslib "^2.0.0"
 
-"@pepperi-addons/ngx-remote-loader@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-remote-loader/-/ngx-remote-loader-0.0.15.tgz#1603ab74494c922215d459b274ab58cd87d5c780"
-  integrity sha512-9qfGYxlcTEgKLur1iuQF9RTeEWivNEPcbiJ+Cm+lFubADkRBDq5vt3tLGRLltV1j3/rVR8Qi034mYvdxbMYeKQ==
+"@pepperi-addons/ngx-remote-loader@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@pepperi-addons/ngx-remote-loader/-/ngx-remote-loader-0.0.16.tgz#d45fae0c3d1e05a97cffda691ef762974f8f455e"
+  integrity sha512-0aD3x1jZBhDQn5bbgOE7NzgpiBnJqku4wczlLyN6JGH3DEgXXjhm0dr+DFMoMQ2KnKfvyozjJKt20y427lXYgg==
   dependencies:
     tslib "^2.0.0"
 

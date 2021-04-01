@@ -44,7 +44,7 @@ export async function ui_control(client: Client, request: Request): Promise<Remo
                     break;
             }
         } 
-        const remoteName = field?.Type === "Component" ? toSnakeCase(field.ModuleName.replace('Module','')) : '';
+        const remoteName = field?.RelativeURL ? field.RelativeURL : field?.Type === "Component" ? toSnakeCase(field.ModuleName.replace('Module','')) : '';
         const menuEntry: RemoteModuleOptions & any = {  
             type: field.Type,
             subType: field.SubType, 
