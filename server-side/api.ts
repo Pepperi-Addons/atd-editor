@@ -72,11 +72,10 @@ export async function ui_control(client: Client, request: Request): Promise<Remo
 
 export async function filter_entries(client: Client, request: Request) {
     const service = new MyService(client);
-    const addons: RemoteModuleOptions[] = request.body['addons'];
+    const addons: any[] = request.body['addons'];
     const promises: Promise<boolean>[] = [];
-    addons.filter(addon => addon.visibleEndpoint).forEach(addon => promises.push(service.isItemVisible(addon).then(res => res).catch(e => false)));
-    // const visible = await Promise.all(promises);
-    const visible = [true, true];
+    addons.forEach(addon => promises.push(service.isItemVisible(addon).then(res => res).catch(e => false)));
+    const visible = await Promise.all(promises);
     return addons.filter((addon,i) => visible[i]);
 }
 

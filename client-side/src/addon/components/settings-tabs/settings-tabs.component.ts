@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { ChangeDetectorRef, Component, ComponentFactory, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PepHttpService } from '@pepperi-addons/ngx-lib';
+import { PepHttpService, PepLoaderService } from '@pepperi-addons/ngx-lib';
 import { TitleCasePipe } from '@angular/common';
 import { Types } from '@pepperi-addons/papi-sdk/dist/endpoints';
 import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
@@ -23,6 +23,7 @@ export class SettingsTabsComponent implements OnInit {
     activeTab: RemoteModuleOptions;
     activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
+    addonBaseURL;
     @ViewChild('addonProxy', {static: false}) addonProxy: PepRemoteLoaderComponent;
     @Input() title = '';
     @Input() type;
@@ -44,6 +45,7 @@ export class SettingsTabsComponent implements OnInit {
       private dialogService: PepDialogService,
       private translate: TranslateService,
       private cd: ChangeDetectorRef,
+      private loader: PepLoaderService
     ) {
 
     }
@@ -53,13 +55,16 @@ export class SettingsTabsComponent implements OnInit {
       this.type = this.route.snapshot.params.type;
       this.subType = this.route.snapshot.params.sub_type;
       const addonUUID = this.route.snapshot.params.addon_uuid;
+      this.addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
       this.getTabs(addonUUID).then(res =>{
            this.tabs = res;
            let i = 0;
            this.activeTab = this.tabs.find((tab,index) => {
            this.activeTabIndex = index;
+           tab.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
            return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
         });
+
            this.getAtd();
         //    this.cd.detectChanges();
           });
@@ -94,10 +99,10 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     tabClick(e){
-
-
+        // this.loader.show();
         const currentTabKey = this.activeTab?.title;
         const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
+
         if (this.activeTab?.remoteName === 'settings_iframe'){
             const addonInstance = this.addonProxy?.compRef?.instance;
             const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
@@ -121,7 +126,7 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     goBack(){
-    this.router.navigate(['../../'], { relativeTo: this.route  } );
+        this.router.navigate(['../../'], { relativeTo: this.route  } );
     }
 
     getTabs(addonUUID, dataViewName = `SettingsEditor${this.titleCase.transform(this.type)}Tabs`): Promise<any[]> {

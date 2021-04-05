@@ -53,7 +53,7 @@ class MyService {
         return this.papiClient.metaData.dataViews.find({ where: 'Context.Name='+dataViewName });
     }
     isItemVisible(addon: RemoteModuleOptions): Promise<any> {
-        if (addon?.uuid){
+        if (addon?.uuid && addon?.visibleEndpoint){
             return this.papiClient.addons.api.uuid(addon?.uuid).get(addon.visibleEndpoint);
         }
         else {

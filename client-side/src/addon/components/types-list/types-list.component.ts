@@ -41,6 +41,7 @@ export class TypesListComponent implements OnInit {
     @Input() type;
     @Input() subType;
     titlePipe = new TitleCasePipe();
+    addonBaseURL = '';
 
 
 
@@ -68,6 +69,10 @@ export class TypesListComponent implements OnInit {
             const addonUUID = params.addon_uuid;
             this.menuItems = this.getMenu(addonUUID);
             this.loadlist();
+        })
+
+        this.route.queryParams.subscribe( queryParams => {
+            this.addonBaseURL = queryParams?.addon_base_url;
         })
 
 
@@ -171,6 +176,7 @@ export class TypesListComponent implements OnInit {
     }
 
     openAddonInDialog(remoteModule: RemoteModuleOptions): void {
+        remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
         const config = this.dialogService.getDialogConfig({}, 'inline');
         this.dialogAddon = remoteModule;
         this.dialogRef = this.dialogService
@@ -249,8 +255,8 @@ export class TypesListComponent implements OnInit {
         const body = { DataViewName: `SettingsEditor${this.titlePipe.transform(this.type)}Menu`};
         // debug locally
         //  const addons = await this.http.postHttpCall('http://localhost:4500/api/ui_control', body).toPromise().then(tabs => tabs.sort((x,y) => x['Index'] - y['Index']));
-        const addons = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/ui_control`, body).toPromise();
-        addons.forEach(addon => apiNames.push(new PepMenuItem({ key: JSON.stringify(addon), text: addon.title})));
+        const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/ui_control`, body).toPromise();
+        menuEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;
     }
 
