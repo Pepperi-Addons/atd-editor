@@ -98,6 +98,10 @@ export class SettingsTabsComponent implements OnInit {
         return this.http.getPapiApiCall(`/addons/installed_addons/${tab.AddonUUID}`);
     }
 
+    onAddonChange(e){
+        this.getAtd();
+    }
+
     tabClick(e){
         // this.loader.show();
         const currentTabKey = this.activeTab?.title;

@@ -27,7 +27,7 @@
                     </mat-tab>
                 </mat-tab-group>
                 <addon-proxy #addonProxy *ngIf="activeTab" [options]="activeTab"
-                        (change)="getAtd();"></addon-proxy>
+                        (change)="onAddonChange($event);"></addon-proxy>
             </div>
         </div>
 

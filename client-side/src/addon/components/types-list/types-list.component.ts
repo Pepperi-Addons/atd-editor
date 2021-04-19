@@ -220,8 +220,14 @@ export class TypesListComponent implements OnInit {
         this.dialogService.openDefaultDialog(dialogData).afterClosed().subscribe(async confirmed => this.loadlist());
     }
 
-    closeDialog(e){
+    closeDialog(e = null){
         this.dialog.closeAll();
+    }
+
+    onAddonChange(e){
+        if (e.closeDialog){
+            this.closeDialog();
+        }
     }
 
     addObject(){

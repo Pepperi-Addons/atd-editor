@@ -35,7 +35,7 @@
 <ng-template #dialogTemplate>
     <pep-dialog class="dialog-textarea-container" [title]="dialogAddon?.title | translate">
       <ng-container pep-dialog-content>
-          <addon-proxy #addonTemplate [options]="dialogAddon" ></addon-proxy>
+          <addon-proxy #addonTemplate [options]="dialogAddon" (change)="onAddonChange($event);" ></addon-proxy>
       </ng-container>
     </pep-dialog>
 </ng-template>
