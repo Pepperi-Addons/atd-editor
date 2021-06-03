@@ -188,7 +188,7 @@ export class TypesListComponent implements OnInit {
         const dialogData: PepDialogData = {
             content: this.translate.instant('Confirmation_Message',{title: remoteModule.title}),
             title: remoteModule.title,
-            type: "cancel-continue",
+            actionsType: "cancel-continue",
             actionButtons: null,
             showClose: true,
             showFooter: true,

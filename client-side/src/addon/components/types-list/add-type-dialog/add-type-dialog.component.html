@@ -1,9 +1,9 @@
 <pep-dialog class="dialog-new-type-container" [title]="'Add_New_Header' | translate: {objectType: data?.type }">
     <ng-container pep-dialog-content>
 
-        <pep-textbox [required]="true" [value]="atdName" [label]="'Name' | translate" (valueChange)="atdName = $event.value"></pep-textbox>
+        <pep-textbox [mandatory]="true" [value]="atdName" [label]="'Name' | translate" (valueChange)="atdName = $event.value"></pep-textbox>
 
-        <pep-textarea [required]="true" [value]="atdDescription" [label]="'Description' | translate" [rowSpan]="2" (valueChange)="atdDescription = $event.value"></pep-textarea>
+        <pep-textarea [mandatory]="true" [value]="atdDescription" [label]="'Description' | translate" [rowSpan]="2" (valueChange)="atdDescription = $event.value"></pep-textarea>
     </ng-container>
     <div pep-dialog-actions class="pep-spacing-element-negative">
 
