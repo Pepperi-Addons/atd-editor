@@ -1,7 +1,7 @@
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { PepNgxLibModule, PepAddonService,  PepFileService } from '@pepperi-addons/ngx-lib';
 import { PepAttachmentModule } from '@pepperi-addons/ngx-lib/attachment';
@@ -150,6 +150,7 @@ export function createTranslateLoader(http: HttpClient, fileService: PepFileServ
     imports: [
         CommonModule,
         PepNgxLibModule,
+        HttpClientModule,
         pepperiComponentsModules,
         TranslateModule.forRoot({
             loader: {
@@ -161,7 +162,8 @@ export function createTranslateLoader(http: HttpClient, fileService: PepFileServ
     ],
     exports: [
         PepNgxLibModule,
-        pepperiComponentsModules
+        pepperiComponentsModules,
+        TranslateModule
     ]
 })
 export class PepUIModule {

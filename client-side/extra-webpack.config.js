@@ -10,19 +10,9 @@ module.exports = (angularWebpackConfig, options) => {
           uniqueName: "settingsEditor"
         },
         optimization: {
-          // Only needed to bypass a temporary bug
           runtimeChunk: false,
-        //   minimize: true,
-        //   minimizer: [
-        //   new TerserPlugin({
-        //     extractComments: false,
-        //     terserOptions: {keep_fnames: /^.$/}
-        //   })]
-        },
-        externals: {
         },
         plugins: [
-          ...angularWebpackConfig.plugins,
           new ModuleFederationPlugin({
             remotes: {},
             name: "settings_editor",
@@ -34,7 +24,7 @@ module.exports = (angularWebpackConfig, options) => {
               "@angular/core": { eager: true, singleton: true,  strictVersion: false  },
               "@angular/common": { eager: true,singleton: true,strictVersion: false   },
             }
-          }),
+          })
         ],
       };
     const mergedWebpackConfig = merge(angularWebpackConfig, moduleFederationfWebpackConfig);
