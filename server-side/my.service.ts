@@ -40,6 +40,10 @@ class MyService {
         return this.papiClient.metaData.dataViews.find({ where: 'Context.Name='+dataViewName });
     }
 
+    // getAddonRelations(dataViewName: string): Promise<any[]> {
+    //     return this.papiClient.addons.data.relations.find({ where: 'Context.Name='+dataViewName });
+    // }
+
     async getDataViewByProfile(dataViewName: string, webAPIBaseURL: string, accessToken: string): Promise<any[]> {
         const url = `${webAPIBaseURL}/Service1.svc/v1/UIControl/${dataViewName}`;
         return await (await fetch(url, {

@@ -60,7 +60,7 @@ export async function ui_control(client: Client, request: Request): Promise<Remo
             
             noModule: field?.Type === "Component" && !(field?.ModuleName) ? true : false,
             update: false,
-            addonData: { top: 230},
+            addonData: { top: 230, borderTop: 0},
             uuid: field?.AddonUUID,
             UUID: field?.AddonUUID,
             top: 230
