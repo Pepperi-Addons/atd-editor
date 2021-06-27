@@ -1,5 +1,5 @@
 import { RemoteModuleOptions } from '../model';
-import { PapiClient, InstalledAddon, AddonField  } from '@pepperi-addons/papi-sdk';
+import { PapiClient, InstalledAddon  } from '@pepperi-addons/papi-sdk';
 import { Client } from '@pepperi-addons/debug-server';
 import fetch from "node-fetch";
 class MyService {
@@ -40,9 +40,13 @@ class MyService {
         return this.papiClient.metaData.dataViews.find({ where: 'Context.Name='+dataViewName });
     }
 
-    // getAddonRelations(dataViewName: string): Promise<any[]> {
-    //     return this.papiClient.addons.data.relations.find({ where: 'Context.Name='+dataViewName });
-    // }
+    getRelations(relationName: string): Promise<any> {
+        return this.papiClient.get(`/addons/data/relations?where=RelationName=${relationName}`);
+    }
+
+    createRelation(relation): Promise<any> {
+                return this.papiClient.post('/addons/data/relations', relation);
+    }
 
     async getDataViewByProfile(dataViewName: string, webAPIBaseURL: string, accessToken: string): Promise<any[]> {
         const url = `${webAPIBaseURL}/Service1.svc/v1/UIControl/${dataViewName}`;

@@ -34,12 +34,12 @@
             "@pepperi-addons/ngx-remote-loader/*": [
               "../../../ngx-remote-loader/dist/remote-loader/*"
             ],
-             "@pepperi-addons/ngx-lib": [
-              "../../../ngx-lib/dist/ngx-lib"
-            ],
-            "@pepperi-addons/ngx-lib/*": [
-              "../../../ngx-lib/dist/ngx-lib/*"
-            ],
+            //  "@pepperi-addons/ngx-lib": [
+            //   "../../../ngx-lib/dist/ngx-lib"
+            // ],
+            // "@pepperi-addons/ngx-lib/*": [
+            //   "../../../ngx-lib/dist/ngx-lib/*"
+            // ],
             // "@pepperi-addons/papi-sdk": [
             //     "../../../pepperi_addons/papi-sdk/"
             // ],

@@ -3,6 +3,8 @@
     "List_Example_Title": "Transaction Types",
     "Delete_Validate": "Are you sure you want to remove this transaction type?",
     "Delete": "Delete",
+    "DeleteTransactionType": "Delete",
+
     "ATD_Editor_Title": "Transaction Type Editor - {{transactionTypeExtenalID}}",
     "General_Info": "General Info",
     "Views_Forms": "Views & Forms",

@@ -154,19 +154,19 @@ export class TypesListComponent implements OnInit {
         remoteModule.addonData = { atd: atdInfo, selectedRows };
 
         switch (remoteModule.type){
-                    case 'BackgroundJob':
+                    case 'AddonAPI':
                         if (remoteModule.remoteEntry) {
                            this.runAddonApiEntry(remoteModule);
                         }
                         break;
-                    case 'Navigation':
+                    case 'Navigate':
                           const path = remoteModule.remoteEntry
                                 .replace('TYPE', this.route.snapshot.params.type)
                                 .replace('SUB_TYPE', this.route.snapshot.params.sub_type)
                                 .replace('TYPE_ID', atdInfo['InternalID']);
                           this.router.navigate([`settings/${remoteModule.uuid}/${path}`]);
                         break;
-                    case 'Component':
+                    case 'NgComponent':
                         if (remoteModule.uuid){
                             this.openAddonInDialog(remoteModule);
                         }
@@ -213,7 +213,7 @@ export class TypesListComponent implements OnInit {
     async postAddonApi(remoteModule: RemoteModuleOptions, dialogData){
         remoteModule.addonData['objectType'] = this.type;
         remoteModule.addonData['objectId'] = remoteModule.addonData['atd'].InternalID;
-         // const success = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        //  const success = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
         const success = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
         dialogData.content = this.translate.instant(success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title});
         dialogData.type = "close";
@@ -258,10 +258,10 @@ export class TypesListComponent implements OnInit {
 
     async getMenu(addonUUID): Promise<PepMenuItem[]> {
         const apiNames: Array<PepMenuItem> = [];
-        const body = { DataViewName: `SettingsEditor${this.titlePipe.transform(this.type)}Menu`};
+        const body = { RelationName: `${(this.titlePipe.transform(this.type)).slice(0, this.type.length - 1)}TypeListMenu`};
         // debug locally
-        //  const addons = await this.http.postHttpCall('http://localhost:4500/api/ui_control', body).toPromise().then(tabs => tabs.sort((x,y) => x['Index'] - y['Index']));
-        const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/ui_control`, body).toPromise();
+         const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
+        // const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
         menuEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;
     }

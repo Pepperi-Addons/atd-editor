@@ -14,7 +14,8 @@ import { EmptyRouteComponent } from './components/empty-route/empty-route.compon
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-remote-loader';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PepDialogService } from '@pepperi-addons/ngx-lib/dialog';
+import { PepAddonService, PepCustomizationService, PepHttpService } from '@pepperi-addons/ngx-lib';
 
 @NgModule({
     declarations: [
@@ -29,8 +30,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         BrowserModule,
         BrowserAnimationsModule,
         CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
         AddonRoutingModule,
         PepUIModule,
         TranslateModule,
@@ -39,7 +38,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         HttpClientModule
 
     ],
-    providers: [],
+    providers: [PepHttpService, PepAddonService],
     bootstrap: [AddonComponent]
 })
 export class AddonModule {
