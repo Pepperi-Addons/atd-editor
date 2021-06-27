@@ -1,4 +1,4 @@
-import { ListSearch, ObjectType, RemoteModuleOptions } from './../../../../../model';
+import { ListSearch, ObjectType, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
 import { Component, ComponentRef, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
@@ -258,10 +258,10 @@ export class TypesListComponent implements OnInit {
 
     async getMenu(addonUUID): Promise<PepMenuItem[]> {
         const apiNames: Array<PepMenuItem> = [];
-        const body = { RelationName: `${(this.titlePipe.transform(this.type)).slice(0, this.type.length - 1)}TypeListMenu`};
+        const body = { RelationName: `${relationTypesEnum[this.type]}TypeListMenu`};
         // debug locally
-         const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
-        // const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
+        //  const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
+        const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
         menuEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;
     }

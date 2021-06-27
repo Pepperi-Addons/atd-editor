@@ -1,5 +1,5 @@
 
-import { RemoteModuleOptions } from './../../../../../model';
+import { relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { TranslateService } from '@ngx-translate/core';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { ChangeDetectorRef, Component, ComponentFactory, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
@@ -37,7 +37,6 @@ export class SettingsTabsComponent implements OnInit {
         'contacts': 'Contact'
     }
     private titleCase = new TitleCasePipe();
-
 
     constructor(
       private route: ActivatedRoute,
@@ -129,11 +128,11 @@ export class SettingsTabsComponent implements OnInit {
         this.router.navigate(['../../'], { relativeTo: this.route  } );
     }
 
-    getTabs(addonUUID, relationName = `${this.titleCase.transform(this.type).slice(0, this.type.length -1)}TypeListTabs`): Promise<any[]> {
+    getTabs(addonUUID, relationName = `${relationTypesEnum[this.type]}TypeListTabs`): Promise<any[]> {
         const body = { RelationName: relationName };
         // debug locally
-        return this.http.postHttpCall('http://localhost:4500/api/relations', body)
-        // return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
+        // return this.http.postHttpCall('http://localhost:4500/api/relations', body)
+        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
                     .toPromise();
     }
 
