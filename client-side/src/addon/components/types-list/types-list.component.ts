@@ -221,7 +221,7 @@ export class TypesListComponent implements OnInit {
     }
 
     closeDialog(e = null){
-        this.dialog.closeAll();
+        this.dialogService['dialog'].closeAll();
     }
 
     onAddonChange(e){

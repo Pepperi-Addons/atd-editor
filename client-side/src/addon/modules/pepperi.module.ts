@@ -122,7 +122,7 @@ const pepperiComponentsModules = [
     PepSearchModule,
     PepTopBarModule
 ];
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
 
@@ -150,21 +150,21 @@ export function createTranslateLoader(http: HttpClient, fileService: PepFileServ
     imports: [
         CommonModule,
         PepNgxLibModule,
-        HttpClientModule,
         pepperiComponentsModules,
-        TranslateModule.forRoot({
+        TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
                 useFactory: createTranslateLoader,
                 deps: [HttpClient, PepFileService, PepAddonService]
-            }
+            }, isolate: false
         })
     ],
     exports: [
         PepNgxLibModule,
         pepperiComponentsModules,
         TranslateModule
-    ]
+    ],
+    providers: [TranslateStore]
 })
 export class PepUIModule {
 
