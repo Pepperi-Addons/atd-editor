@@ -1,18 +1,11 @@
-// @import '../../../styles/abstracts/variables';
 @import 'ngx-lib/src/core/style/abstracts/variables';
 
-:host{
-    // height: inherit;
-}
+
 
 .total-items-container {
     height: $top-bar-height-with-no-top;
     display: flex;
     align-items: center;
-    
-    .total-items {
-        // margin-top: $top-bar-spacing-top;
-    }
 }
 
 @mixin pepperi-list-total-component-theme($pepperi-theme) {

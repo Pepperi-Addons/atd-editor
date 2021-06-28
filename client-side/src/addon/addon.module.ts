@@ -12,6 +12,10 @@ import { AddTypeDialogComponent } from './components/types-list/add-type-dialog/
 import { PepperiTableComponent } from './components/types-list/pepperi-table/pepperi-table.component';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-remote-loader';
+import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientModule } from '@angular/common/http';
+import { PepDialogService } from '@pepperi-addons/ngx-lib/dialog';
+import { PepAddonService, PepCustomizationService, PepHttpService } from '@pepperi-addons/ngx-lib';
 
 @NgModule({
     declarations: [
@@ -25,14 +29,16 @@ import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-remote-loader';
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        CommonModule,
         AddonRoutingModule,
         PepUIModule,
+        TranslateModule,
         MaterialModule,
         PepRemoteLoaderModule,
-        CommonModule
+        HttpClientModule
 
     ],
-    providers: [],
+    providers: [PepHttpService, PepAddonService],
     bootstrap: [AddonComponent]
 })
 export class AddonModule {

@@ -2,28 +2,17 @@ const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPl
 const singleSpaAngularWebpack = require('single-spa-angular-webpack5/lib/webpack').default;
 const { merge } = require('webpack-merge');
 // const deps = require('./package.json').dependencies;
-const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (angularWebpackConfig, options) => {
-    const mfConfig = {
+    const moduleFederationfWebpackConfig = {
         output: {
           uniqueName: "settingsEditor"
         },
         optimization: {
-          // Only needed to bypass a temporary bug
           runtimeChunk: false,
-        //   minimize: true,
-        //   minimizer: [
-        //   new TerserPlugin({
-        //     extractComments: false,
-        //     terserOptions: {keep_fnames: /^.$/}
-        //   })]
-        },
-        externals: {
         },
         plugins: [
-
           new ModuleFederationPlugin({
             remotes: {},
             name: "settings_editor",
@@ -35,11 +24,11 @@ module.exports = (angularWebpackConfig, options) => {
               "@angular/core": { eager: true, singleton: true,  strictVersion: false  },
               "@angular/common": { eager: true,singleton: true,strictVersion: false   },
             }
-          }),
+          })
         ],
       };
-    const merged = merge(angularWebpackConfig, mfConfig);
-    const singleSpaWebpackConfig = singleSpaAngularWebpack(merged, options);
+    const mergedWebpackConfig = merge(angularWebpackConfig, moduleFederationfWebpackConfig);
+    const singleSpaWebpackConfig = singleSpaAngularWebpack(mergedWebpackConfig, options);
     return singleSpaWebpackConfig;
 };
 

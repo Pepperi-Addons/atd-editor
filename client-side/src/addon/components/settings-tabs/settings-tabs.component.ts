@@ -1,9 +1,10 @@
-import { RemoteModuleOptions } from './../../../../../model';
+
+import { relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { TranslateService } from '@ngx-translate/core';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { ChangeDetectorRef, Component, ComponentFactory, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PepHttpService, PepLoaderService } from '@pepperi-addons/ngx-lib';
+import { PepHttpService } from '@pepperi-addons/ngx-lib';
 import { TitleCasePipe } from '@angular/common';
 import { Types } from '@pepperi-addons/papi-sdk/dist/endpoints';
 import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
@@ -37,7 +38,6 @@ export class SettingsTabsComponent implements OnInit {
     }
     private titleCase = new TitleCasePipe();
 
-
     constructor(
       private route: ActivatedRoute,
       private router: Router,
@@ -45,7 +45,6 @@ export class SettingsTabsComponent implements OnInit {
       private dialogService: PepDialogService,
       private translate: TranslateService,
       private cd: ChangeDetectorRef,
-      private loader: PepLoaderService
     ) {
 
     }
@@ -57,17 +56,14 @@ export class SettingsTabsComponent implements OnInit {
       const addonUUID = this.route.snapshot.params.addon_uuid;
       this.addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
       this.getTabs(addonUUID).then(res =>{
-           this.tabs = res;
-           let i = 0;
+           this.tabs = res.sort((x,y) => x.index - y.index);
            this.activeTab = this.tabs.find((tab,index) => {
-           this.activeTabIndex = index;
-           tab.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
-           return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
-        });
-
-           this.getAtd();
-        //    this.cd.detectChanges();
-          });
+                this.activeTabIndex = index;
+                tab.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
+                return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
+            });
+        this.getAtd();
+      });
 
     }
 
@@ -103,7 +99,6 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     tabClick(e){
-        // this.loader.show();
         const currentTabKey = this.activeTab?.title;
         const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
 
@@ -133,11 +128,11 @@ export class SettingsTabsComponent implements OnInit {
         this.router.navigate(['../../'], { relativeTo: this.route  } );
     }
 
-    getTabs(addonUUID, dataViewName = `SettingsEditor${this.titleCase.transform(this.type)}Tabs`): Promise<any[]> {
-        const body = { DataViewName: dataViewName };
+    getTabs(addonUUID, relationName = `${relationTypesEnum[this.type]}TypeListTabs`): Promise<any[]> {
+        const body = { RelationName: relationName };
         // debug locally
-        // return this.http.postHttpCall('http://localhost:4500/api/ui_control', body)
-        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/ui_control`, body)
+        // return this.http.postHttpCall('http://localhost:4500/api/relations', body)
+        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
                     .toPromise();
     }
 

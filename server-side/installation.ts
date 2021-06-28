@@ -1,14 +1,21 @@
-import { MenuAddonField, menuDataView } from './metadata';
+import { typeListMenuRelations, typeListMenuRelationNames, typeListTabsRelationNames, Relation } from './metadata';
 import { Client, Request } from '@pepperi-addons/debug-server';
 import MyService from './my.service';
-import { MenuDataView, MenuDataViewField} from '@pepperi-addons/papi-sdk';
 import { stringify } from 'querystring';
 
 export async function install(client: Client, request: Request){
-    const activitiesMenu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
-    const transactionsMenu = await addDataView(client, "SettingsEditorActivitiesMenu", menuDataView);
-    const accountsMenu = await addDataView(client, "SettingsEditorAccountsMenu", menuDataView);
-    return {success:true, activitiesMenu, transactionsMenu, accountsMenu};
+    try {
+        const promises: Promise<any>[] = [];
+        typeListMenuRelationNames.forEach( relationName =>  promises.push(addRelations(client, typeListMenuRelations, relationName)));
+        await Promise.all(promises);
+        return {success:true};
+
+    } catch(e){
+        return {success:false};
+
+    }
+   
+   
 }
 
 export async function uninstall(client: Client, request: Request){
@@ -16,60 +23,49 @@ export async function uninstall(client: Client, request: Request){
 }
 
 export async function upgrade(client: Client, request: Request){
-    const activitiesMenu = await addDataView(client, "SettingsEditorTransactionsMenu", menuDataView);
-    const transactionsMenu = await addDataView(client, "SettingsEditorActivitiesMenu", menuDataView);
-    const accountsMenu = await addDataView(client, "SettingsEditorAccountsMenu", menuDataView);
-    return {success:true, activitiesMenu, transactionsMenu, accountsMenu};
+    
+    try {
+        typeListMenuRelationNames.forEach( relationName =>  addRelations(client, typeListMenuRelations, relationName));
+        return {success:true};
+
+    } catch(e){
+        return {success:false};
+
+    }
 }
 
 export async function downgrade(client: Client, request: Request){
     return {success:true}
 }
 
-async function addDataView(client: Client, contextName: string, addons: MenuAddonField[]){
+async function addRelations(client: Client, relations: Relation[], relationName){
     const service = new MyService(client);
-    const existingDataViews: DataView[] = await service.getDataView(contextName);
-    if (existingDataViews?.length > 0){
-        const preparedDataViews: MenuDataView[] = [];
-        existingDataViews.forEach( dataView => preparedDataViews.push(updateDataViewFields(addons, dataView)));    
-        const promises: Promise<any>[] = [];
-        preparedDataViews.forEach(dataView => promises.push(service.upsertDataView(dataView)));
+    const existingRelations: Relation[] = await service.getRelations(relationName);
+    const promises: Promise<any>[] = [];
+    // if (existingRelations?.length > 0){
+    //     const updatedRelations: Relation[] = [];
+    //     existingRelations.forEach( existingRelation =>{
+    //         const updatedRelation = relations.filter((relation, i) => relation.Key === existingRelation.Key)[0];
+    //         updatedRelations.push(updatedRelation ?? existingRelation);
+    //     });    
+    //     const promises: Promise<any>[] = [];
+    //     updatedRelations.forEach(relation => promises.push(service.createRelation(relation)));
+    //     const result = await Promise.all(promises);
+    //     return result;
+    // } else {
+        relations.forEach(relation =>{ 
+            relation.RelationName = relationName;
+            const key = `${relation.Name}_${relation.AddonUUID}_${relation.RelationName}`;
+            relation.Key = key;
+            promises.push(service.createRelation(relation));
+        });
         const result = await Promise.all(promises);
         return result;
-    } else {
-        const dataView: MenuDataView = {
-            Type: "Menu",
-            Context: {
-                Profile: {
-                    Name: "Rep"
-                },
-                Name: contextName,
-                ScreenSize: "Landscape"     
-            },
-            Fields: []
-        };
-        const dataViewAfter = updateDataViewFields(addons, dataView);
-        const result = await service.upsertDataView(dataViewAfter);
-        return result;
-    }
+    // }
 }
 
+    
 
-    function updateDataViewFields(fields: (MenuDataViewField & any)[], dataView: MenuDataView & any): MenuDataView{
-        fields.forEach( (menuField: MenuDataViewField & any) => {
-            const fieldId = `ADO?${stringify(menuField.FieldID)}`
-            const existingFieldIndex = dataView?.Fields?.findIndex( field => field.Title === menuField.Title);
-            if (existingFieldIndex > -1){
-                if (dataView.Fields[existingFieldIndex].FieldID !== fieldId) {
-                    dataView.Fields[existingFieldIndex] = {Title: menuField.Title, FieldID: fieldId};
-                }
-            }
-            else {
-                dataView?.Fields?.push({Title: menuField.Title, FieldID: fieldId});
-            }
-        });
-        // uncomment to empty array of fields
-        // dataView.Fields = [];
-        return dataView;
-    }
+
+
 

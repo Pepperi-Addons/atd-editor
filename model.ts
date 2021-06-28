@@ -32,3 +32,10 @@ export type RemoteModuleOptions = {
     activities = 99,         // GeneralActivity          
     transaction_lines = 10  // OrderPortfolioItem
 }
+
+
+export const relationTypesEnum = {
+  'accounts': 'Account',
+  'transactions': 'Transaction',
+  'activities': 'Activity'
+}

@@ -1,7 +1,7 @@
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { PepNgxLibModule, PepAddonService,  PepFileService } from '@pepperi-addons/ngx-lib';
 import { PepAttachmentModule } from '@pepperi-addons/ngx-lib/attachment';
@@ -122,7 +122,7 @@ const pepperiComponentsModules = [
     PepSearchModule,
     PepTopBarModule
 ];
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
 
@@ -151,18 +151,20 @@ export function createTranslateLoader(http: HttpClient, fileService: PepFileServ
         CommonModule,
         PepNgxLibModule,
         pepperiComponentsModules,
-        TranslateModule.forRoot({
+        TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
                 useFactory: createTranslateLoader,
                 deps: [HttpClient, PepFileService, PepAddonService]
-            }
+            }, isolate: false
         })
     ],
     exports: [
         PepNgxLibModule,
-        pepperiComponentsModules
-    ]
+        pepperiComponentsModules,
+        TranslateModule
+    ],
+    providers: [TranslateStore]
 })
 export class PepUIModule {
 
