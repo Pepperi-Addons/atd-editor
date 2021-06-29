@@ -52,7 +52,7 @@ export async function relations(client: Client, request: Request): Promise<Remot
             uuid: field?.AddonUUID,
             UUID: field?.AddonUUID,
             top: 230,
-            index: field?.Index
+            key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`
         }
         menuEntries.push(menuEntry);
     });

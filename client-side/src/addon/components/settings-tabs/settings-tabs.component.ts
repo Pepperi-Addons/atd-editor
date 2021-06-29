@@ -1,5 +1,6 @@
+import { SortService } from './../../services/sort.service';
 
-import { relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
+import { productObjectTypeTabs, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { TranslateService } from '@ngx-translate/core';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { ChangeDetectorRef, Component, ComponentFactory, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
@@ -45,6 +46,7 @@ export class SettingsTabsComponent implements OnInit {
       private dialogService: PepDialogService,
       private translate: TranslateService,
       private cd: ChangeDetectorRef,
+      private sort: SortService
     ) {
 
     }
@@ -55,8 +57,8 @@ export class SettingsTabsComponent implements OnInit {
       this.subType = this.route.snapshot.params.sub_type;
       const addonUUID = this.route.snapshot.params.addon_uuid;
       this.addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
-      this.getTabs(addonUUID).then(res =>{
-           this.tabs = res.sort((x,y) => x.index - y.index);
+      this.getTabs(addonUUID).then(existingEntries =>{
+           this.tabs = this.sort.divideEntries(existingEntries, productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`]);
            this.activeTab = this.tabs.find((tab,index) => {
                 this.activeTabIndex = index;
                 tab.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
