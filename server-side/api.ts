@@ -3,15 +3,20 @@ import { Relation } from './metadata';
 
 import MyService from './my.service'
 import { Client, Request } from '@pepperi-addons/debug-server'
-import { InstalledAddon} from '@pepperi-addons/papi-sdk';
+import { ATDMetaData, InstalledAddon} from '@pepperi-addons/papi-sdk';
 import url from 'url';
 import { RemoteModuleOptions } from '../model';
 import jwtDecode from "jwt-decode";
 import fetch from "node-fetch";
 
-export async function relations(client: Client, request: Request): Promise<RemoteModuleOptions[]> {
+export async function relations(client: Client, request: Request): Promise<{relations:RemoteModuleOptions[], ATD: any}> {
     const service = new MyService(client);
     const addonsFields: Relation[] = await service.getRelations(request.body['RelationName']);
+    let ATD: ATDMetaData | null = null;
+    if (request.body['Type'] && request.body['TypeID']){
+        ATD = await service.getATD(request.body['Type'], request.body['TypeID']);
+    }
+     
     const addonsUuids = [...new Set(addonsFields.filter( row => row.AddonUUID).map(obj => obj.AddonUUID))];
     const addonsPromises: Promise<any>[] = [];
     addonsUuids.forEach( (uuid: any) => addonsPromises.push(service.getInstalledAddon(uuid))); 
@@ -56,7 +61,7 @@ export async function relations(client: Client, request: Request): Promise<Remot
         }
         menuEntries.push(menuEntry);
     });
-    return menuEntries;
+    return { relations: menuEntries, ATD};
 };
 
 export async function filter_entries(client: Client, request: Request) {

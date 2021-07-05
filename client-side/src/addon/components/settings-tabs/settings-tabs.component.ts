@@ -21,15 +21,13 @@ import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
 export class SettingsTabsComponent implements OnInit {
 
     atd;
+    type;
     tabs: Array<any>;
     activeTab: RemoteModuleOptions;
     activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
-    addonBaseURL;
     @ViewChild('addonProxy', {static: false}) addonProxy: PepRemoteLoaderComponent;
     @Input() title = '';
-    @Input() type;
-    @Input() subType;
     typesEnum = {
         'accounts': 'Account',
         'transactions': 'Orders',
@@ -52,19 +50,19 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     async ngOnInit() {
+      const params = this.route.snapshot.params;
+      const addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
+      this.type =  params.type;
 
-      this.type = this.route.snapshot.params.type;
-      this.subType = this.route.snapshot.params.sub_type;
-      const addonUUID = this.route.snapshot.params.addon_uuid;
-      this.addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
-      this.getTabs(addonUUID).then(existingEntries =>{
-           this.tabs = this.sort.divideEntries(existingEntries, productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`]);
-           this.activeTab = this.tabs.find((tab,index) => {
+      this.initFromServer(params.addon_uuid, this.type, params.type_id).then((res: any) =>{
+        this.tabs = this.sort.divideEntries(res?.relations, productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`]);
+        this.activeTab = this.tabs.find((tab,index) => {
                 this.activeTabIndex = index;
-                tab.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
+                tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
                 return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
-            });
-        this.getAtd();
+        });
+        this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
+        this.atd = res?.ATD;
       });
 
     }
@@ -92,10 +90,6 @@ export class SettingsTabsComponent implements OnInit {
         this.dialogService.openDefaultDialog(data);
     }
 
-    getAddon(tab) {
-        return this.http.getPapiApiCall(`/addons/installed_addons/${tab.AddonUUID}`);
-    }
-
     onAddonChange(e){
         this.getAtd();
     }
@@ -110,14 +104,14 @@ export class SettingsTabsComponent implements OnInit {
             iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
         }
         if (selectedTab && selectedTab?.title !== currentTabKey){
-            this.cd.detectChanges();
+            // this.cd.detectChanges();
             if (selectedTab.uuid === this.activeTab.uuid){
                 selectedTab.update = true;
             }
 
             if (this.activeTab?.remoteName !== selectedTab?.remoteName){
                 this.activeTab = null;
-                this.cd.detectChanges();
+                // this.cd.detectChanges();
                 this.activeTab = selectedTab;
             }
             this.activeTabIndex = e.index;
@@ -130,11 +124,15 @@ export class SettingsTabsComponent implements OnInit {
         this.router.navigate(['../../'], { relativeTo: this.route  } );
     }
 
-    getTabs(addonUUID, relationName = `${relationTypesEnum[this.type]}TypeListTabs`): Promise<any[]> {
-        const body = { RelationName: relationName };
+    initFromServer(addonUUID, type, typeID): Promise<any[]> {
+        const body = {
+                        RelationName: `${relationTypesEnum[type]}TypeListTabs`,
+                        TypeID: typeID,
+                        Type: type
+                    };
         // debug locally
-        // return this.http.postHttpCall('http://localhost:4500/api/relations', body)
-        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
+        return this.http.postHttpCall('http://localhost:4500/api/relations', body)
+        // return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
                     .toPromise();
     }
 

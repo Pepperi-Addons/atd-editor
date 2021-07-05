@@ -1,5 +1,5 @@
 import { RemoteModuleOptions } from '../model';
-import { PapiClient, InstalledAddon  } from '@pepperi-addons/papi-sdk';
+import { PapiClient, InstalledAddon, ATDMetaData  } from '@pepperi-addons/papi-sdk';
 import { Client } from '@pepperi-addons/debug-server';
 import fetch from "node-fetch";
 class MyService {
@@ -46,6 +46,10 @@ class MyService {
 
     createRelation(relation): Promise<any> {
                 return this.papiClient.post('/addons/data/relations', relation);
+    }
+
+    getATD(type: string,typeID: string): Promise<ATDMetaData> {
+        return this.papiClient.metaData.type(type).types.subtype(typeID).get();
     }
 
     async getDataViewByProfile(dataViewName: string, webAPIBaseURL: string, accessToken: string): Promise<any[]> {
