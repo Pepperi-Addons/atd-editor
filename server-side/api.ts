@@ -16,7 +16,6 @@ export async function relations(client: Client, request: Request): Promise<{rela
     if (request.body['Type'] && request.body['TypeID']){
         ATD = await service.getATD(request.body['Type'], request.body['TypeID']);
     }
-     
     const addonsUuids = [...new Set(addonsFields.filter( row => row.AddonUUID).map(obj => obj.AddonUUID))];
     const addonsPromises: Promise<any>[] = [];
     addonsUuids.forEach( (uuid: any) => addonsPromises.push(service.getInstalledAddon(uuid))); 
@@ -24,46 +23,53 @@ export async function relations(client: Client, request: Request): Promise<{rela
     const menuEntries: RemoteModuleOptions[] = [];
     addonsFields.forEach( (field: Relation)=> {
         const entryAddon: InstalledAddon & any = addons.find( (addon: InstalledAddon) => addon?.Addon?.UUID === field?.AddonUUID);
-        const remoteEntryByType = (type, remoteName = 'remoteEntry') => {
-            switch (type){
-                case "NgComponent":
-                    if (field?.AddonRelativeURL){
-                        return entryAddon?.PublicBaseURL +  field?.AddonRelativeURL + '.js';
-                    }
-                    else {
-                        return entryAddon?.PublicBaseURL +  remoteName + '.js';
-                    }
-                    break;
-                default:
-                    return field?.AddonRelativeURL;
-                    break;
-            }
-        } 
-        const remoteName = field?.AddonRelativeURL ? field.AddonRelativeURL : field?.Type === "NgComponent" ? toSnakeCase(field.ModuleName.toString().replace('Module','')) : '';
-        const menuEntry: RemoteModuleOptions & any = {  
-            type: field.Type,
-            subType: field.SubType, 
-            remoteName: remoteName,
-            remoteEntry: remoteEntryByType(field?.Type, remoteName),
-            componentName: field?.Type === "NgComponent" ? field?.ComponentName : "",
-            exposedModule:  field?.Type === "NgComponent" ? "./" + field?.ModuleName : "",
-            confirmation: field?.Confirmation,
-            multiSelection: field?.AllowsMultipleSelection,
-            visibleEndpoint: field?.VisibilityRelativeURL,
-            title: field?.Description.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
-            noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
-            update: false,
-            addonData: { top: 230, borderTop: 0},
-            uuid: field?.AddonUUID,
-            UUID: field?.AddonUUID,
-            top: 230,
-            key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`,
-            activityTypeDefinition: ATD
-        }
+        const menuEntry = createRelationEntry(field, entryAddon, ATD);
         menuEntries.push(menuEntry);
     });
     return { relations: menuEntries, ATD};
 };
+
+
+function createRelationEntry(field: Relation, entryAddon, ATD: ATDMetaData | null){
+    const remoteEntryByType = (type, remoteName = 'remoteEntry') => {
+        switch (type){
+            case "NgComponent":
+                if (field?.AddonRelativeURL){
+                    return entryAddon?.PublicBaseURL +  field?.AddonRelativeURL + '.js';
+                }
+                else {
+                    return entryAddon?.PublicBaseURL +  remoteName + '.js';
+                }
+                break;
+            default:
+                return field?.AddonRelativeURL;
+                break;
+        }
+    } 
+    const remoteName = field?.AddonRelativeURL ? field.AddonRelativeURL : field?.Type === "NgComponent" ? toSnakeCase(field.ModuleName.toString().replace('Module','')) : '';
+    const menuEntry: RemoteModuleOptions & any = {  
+        type: field.Type,
+        subType: field.SubType, 
+        remoteName: remoteName,
+        remoteEntry: remoteEntryByType(field?.Type, remoteName),
+        componentName: field?.Type === "NgComponent" ? field?.ComponentName : "",
+        exposedModule:  field?.Type === "NgComponent" ? "./" + field?.ModuleName : "",
+        confirmation: field?.Confirmation,
+        multiSelection: field?.AllowsMultipleSelection,
+        visibleEndpoint: field?.VisibilityRelativeURL,
+        title: field?.Description.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
+        noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
+        update: false,
+        addon: entryAddon,
+        addonData: { top: 230, borderTop: 0},
+        uuid: field?.AddonUUID,
+        UUID: field?.AddonUUID,
+        top: 230,
+        key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`,
+        activityTypeDefinition: ATD
+    }
+    return menuEntry;
+}
 
 export async function filter_entries(client: Client, request: Request) {
     const service = new MyService(client);

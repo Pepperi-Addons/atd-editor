@@ -1,11 +1,12 @@
-import { typeListMenuRelations, typeListMenuRelationNames, typeListTabsRelationNames, Relation } from './metadata';
+import { typeListMenuRelations, typeListMenuRelationNames, typeListTabsRelationNames, Relation, tabsData } from './metadata';
 import { Client, Request } from '@pepperi-addons/debug-server';
 import MyService from './my.service';
-import { stringify } from 'querystring';
 
 export async function install(client: Client, request: Request){
     try {
         const promises: Promise<any>[] = [];
+        // const atdKeys = ['Account', 'Activity', 'Order'];
+        // await addRelations(client, tabsData(atdKeys), "PreloadLegacySettingsAddon");
         typeListMenuRelationNames.forEach( relationName =>  promises.push(addRelations(client, typeListMenuRelations, relationName)));
         await Promise.all(promises);
         return {success:true};
@@ -40,7 +41,7 @@ export async function downgrade(client: Client, request: Request){
 
 async function addRelations(client: Client, relations: Relation[], relationName){
     const service = new MyService(client);
-    const existingRelations: Relation[] = await service.getRelations(relationName);
+    // const existingRelations: Relation[] = await service.getRelations(relationName);
     const promises: Promise<any>[] = [];
     // if (existingRelations?.length > 0){
     //     const updatedRelations: Relation[] = [];

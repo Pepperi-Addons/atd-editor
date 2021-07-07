@@ -1,6 +1,9 @@
 @import 'ngx-lib/src/core/style/abstracts/variables';
 
-
+.legacy-settings-addon{
+    height: 0;
+    width: 0;
+}
 
 .total-items-container {
     height: $top-bar-height-with-no-top;

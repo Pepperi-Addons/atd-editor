@@ -37,6 +37,7 @@ export class TypesListComponent implements OnInit {
 
     dialogRef;
     dialogAddon;
+    legacySettingsAddon;
     viewContainer: ViewContainerRef;
     compRef: ComponentRef<any>;
     selectedRows = 0;
@@ -66,6 +67,7 @@ export class TypesListComponent implements OnInit {
     }
 
     async ngOnInit() {
+
         this.route.params.subscribe( params => {
             this.type = params.type;
             this.subType = params.sub_type;
@@ -75,6 +77,37 @@ export class TypesListComponent implements OnInit {
         })
 
         this.route.queryParams.subscribe( queryParams => {
+            // this.legacySettingsAddon = queryParams?.legacy_preload == "false" ? null :  {
+            //     "type": "NgComponent",
+            //     "path": "Views/Agents/AccountTypes.aspx",
+            //     "subType": "NG11",
+            //     "remoteName": "settings_iframe",
+            //     "remoteEntry": "https://cdn.pepperi.com/Addon/Public/354c5123-a7d0-4f52-8fce-3cf1ebc95314/9.5.266/settings_iframe.js",
+            //     "componentName": "SettingsIframeComponent",
+            //     "exposedModule": "./SettingsIframeModule",
+            //     "title": "General",
+            //     "noModule": false,
+            //     "update": false,
+            //     "addonData": {
+            //       "top": 230,
+            //       "borderTop": 0
+            //     },
+            //     "uuid": "354c5123-a7d0-4f52-8fce-3cf1ebc95314",
+            //     "UUID": "354c5123-a7d0-4f52-8fce-3cf1ebc95314",
+            //     "top": 230,
+            //     "key": "general_354c5123-a7d0-4f52-8fce-3cf1ebc95314_AccountTypeListTabs",
+            //     "activityTypeDefinition": {
+            //       "TypeID": 297147,
+            //       "InternalID": 297147,
+            //       "ExternalID": "m",
+            //       "Description": "kkk",
+            //       "Icon": "icon2",
+            //       "CreationDateTime": "2021-06-29T11:59:24.307Z",
+            //       "ModificationDateTime": "2021-06-29T11:59:31.187Z",
+            //       "Hidden": false,
+            //       "UUID": "66029086-d4e1-4150-8f67-d8bcc65643a4"
+            //     }
+            //   };
             this.addonBaseURL = queryParams?.addon_base_url;
         })
 

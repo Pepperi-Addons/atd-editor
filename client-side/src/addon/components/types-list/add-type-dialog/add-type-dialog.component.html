@@ -10,7 +10,7 @@
             <button mat-button [mat-dialog-close]="null" class="pep-spacing-element pep-button md weak">
                 {{ 'ACTIONS.CANCEL' | translate }}
             </button>
-            <button mat-button class="pep-spacing-element pep-button md strong" (click)="closeDialog({'name': atdName, 'description': atdDescription})"
+            <button [disabled]="!atdName || !atdDescription" mat-button class="pep-spacing-element pep-button md strong" (click)="closeDialog({'name': atdName, 'description': atdDescription})"
             >
                 {{ 'ACTIONS.SAVE' | translate }}
             </button>

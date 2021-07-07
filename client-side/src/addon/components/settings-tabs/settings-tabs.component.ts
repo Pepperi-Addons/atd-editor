@@ -137,7 +137,11 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     goBack(){
-        this.router.navigate(['../../'], { relativeTo: this.route  } );
+        this.router.navigate(['../../'],
+            {
+                // queryParams: {legacy_preload: false},
+                relativeTo: this.route
+            } );
     }
 
     initFromServer(addonUUID, type, typeID): Promise<any[]> {
