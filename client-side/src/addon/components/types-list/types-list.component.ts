@@ -114,7 +114,7 @@ export class TypesListComponent implements OnInit {
     buildUrlByParams(params){
         let url = '';
         let type = ObjectType[this.type];
-        url = `/types?fields=Name,Description,UUID,InternalID&order_by=${params.sortBy} ${params.isAsc ? 'asc' : 'desc'}&where=Type=${type} AND Hidden=0`;
+        url = `/types?fields=Name,Description,UUID,InternalID&order_by=${params.sortBy} ${params.isAsc ? 'asc' : 'desc'}&where=Type=${type} AND Hidden=0 AND Name!='PrivateUserAccount'`;
         return url;
     }
 
@@ -149,12 +149,13 @@ export class TypesListComponent implements OnInit {
     }
 
     onMenuItemClicked(e: IPepMenuItemClickEvent): void{
-        const remoteModule: RemoteModuleOptions = JSON.parse(e?.source?.key);
+        const remoteModule: RemoteModuleOptions & any = JSON.parse(e?.source?.key);
         const selectedRows = this.table?.getSelectedItemsData()?.rows;
         const rowData = this.table?.getItemDataByID(selectedRows[0]);
         const atdInfo = rowData?.Fields[0]?.AdditionalValue ? rowData.Fields[0].AdditionalValue : null;
         // Generic
-        remoteModule.addonData = { atd: atdInfo, selectedRows };
+        remoteModule.addonData = { selectedRows };
+        remoteModule.activityTypeDefinition = atdInfo;
 
         switch (remoteModule.type){
                     case 'AddonAPI':
@@ -217,13 +218,14 @@ export class TypesListComponent implements OnInit {
 
     }
 
-    async postAddonApi(remoteModule: RemoteModuleOptions, dialogData){
+    async postAddonApi(remoteModule: RemoteModuleOptions & any, dialogData){
         remoteModule.addonData['objectType'] = this.type;
-        remoteModule.addonData['objectId'] = remoteModule.addonData['atd'].InternalID;
-        //  const success = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-        const success = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-        dialogData.content = this.translate.instant(success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title});
-        dialogData.type = "close";
+        remoteModule.addonData['objectId'] = remoteModule?.activityTypeDefinition?.InternalID;
+        // const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        const response = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        const error = response?.fault?.faultstring;
+        dialogData.content = this.translate.instant(response.success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title, error});
+        dialogData.actionsType = "close";
         this.dialogService.openDefaultDialog(dialogData).afterClosed().subscribe(async () => this.loadlist());
     }
 
@@ -232,8 +234,12 @@ export class TypesListComponent implements OnInit {
     }
 
     onAddonChange(e){
-        if (e.closeDialog){
-            this.closeDialog();
+        switch(e?.action){
+            case "close-dialog":
+                this.closeDialog();
+                break;
+            default:
+                break;
         }
     }
 
@@ -266,8 +272,8 @@ export class TypesListComponent implements OnInit {
         const apiNames: Array<PepMenuItem> = [];
         const body = { RelationName: `${relationTypesEnum[this.type]}TypeListMenu`};
         // debug locally
-         const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
-        // const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
+        //  const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
+        const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
         const dividedEntries = this.sort.divideEntries(menuEntries?.relations, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
         dividedEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;

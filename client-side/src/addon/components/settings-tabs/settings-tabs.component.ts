@@ -1,13 +1,11 @@
 import { SortService } from './../../services/sort.service';
-
 import { productObjectTypeTabs, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { TranslateService } from '@ngx-translate/core';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
-import { ChangeDetectorRef, Component, ComponentFactory, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
-import { TitleCasePipe } from '@angular/common';
-import { Types } from '@pepperi-addons/papi-sdk/dist/endpoints';
+
 import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
 
 
@@ -23,6 +21,7 @@ export class SettingsTabsComponent implements OnInit {
     atd;
     type;
     tabs: Array<any>;
+    workflowTab: RemoteModuleOptions & any= null;
     activeTab: RemoteModuleOptions;
     activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
@@ -35,7 +34,6 @@ export class SettingsTabsComponent implements OnInit {
         'transaction_lines': 'Lines',
         'contacts': 'Contact'
     }
-    private titleCase = new TitleCasePipe();
 
     constructor(
       private route: ActivatedRoute,
@@ -55,13 +53,21 @@ export class SettingsTabsComponent implements OnInit {
       this.type =  params.type;
 
       this.initFromServer(params.addon_uuid, this.type, params.type_id).then((res: any) =>{
-        this.tabs = this.sort.divideEntries(res?.relations, productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`]);
+        const relationType = productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`];
+        this.tabs = this.sort.divideEntries(res?.relations, relationType );
         this.activeTab = this.tabs.find((tab,index) => {
                 this.activeTabIndex = index;
                 tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
                 return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
         });
         this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
+
+        this.tabs = this.tabs.filter((tab, i) => {
+            tab.index = i;
+            if (tab?.title == 'Workflows') this.workflowTab = tab;
+            else return tab;
+        });
+
         this.atd = res?.ATD;
       });
 
@@ -91,7 +97,17 @@ export class SettingsTabsComponent implements OnInit {
     }
 
     onAddonChange(e){
-        this.getAtd();
+        switch (e?.msgName){
+            case 'general-save':
+                this.getAtd();
+                break;
+            case 'account-types-config':
+                if (e?.configuration?.workflowV2){
+                    this.tabs.splice(this.workflowTab?.index, 0, this.workflowTab);
+                }
+                break;
+        }
+
     }
 
     tabClick(e){
@@ -131,8 +147,8 @@ export class SettingsTabsComponent implements OnInit {
                         Type: type
                     };
         // debug locally
-        return this.http.postHttpCall('http://localhost:4500/api/relations', body)
-        // return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
+        // return this.http.postHttpCall('http://localhost:4500/api/relations', body)
+        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
                     .toPromise();
     }
 

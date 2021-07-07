@@ -14,6 +14,9 @@
 //     overflow-x: scroll !important;
 // }
 
+#Workflows_Tab{
+    display: none;
+}
 div  {
     .title {
         line-height: var(--pep-top-bar-field-height,2.5rem)

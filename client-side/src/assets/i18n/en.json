@@ -32,7 +32,7 @@
     "ExternalID": "Name",
     "MESSAGES.TITLE_NOTICE": "Error",
     "AddonApi_Dialog_Success": "Task {{taskName}} completed successfully.",
-    "AddonApi_Dialog_Failure": "Task {{taskName}} faild due to an error.",
+    "AddonApi_Dialog_Failure": "Task {{taskName}} failed due to a server error:<br/><br/> {{error}}",
     "accounts": "Account",
     "activities": "Activity",
     "contacts": "Contact",

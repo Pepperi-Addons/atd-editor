@@ -57,7 +57,8 @@ export async function relations(client: Client, request: Request): Promise<{rela
             uuid: field?.AddonUUID,
             UUID: field?.AddonUUID,
             top: 230,
-            key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`
+            key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`,
+            activityTypeDefinition: ATD
         }
         menuEntries.push(menuEntry);
     });
@@ -79,7 +80,15 @@ export async function sync_func(client: Client, request: Request) {
 
 export async function delete_object(client: Client, request: Request) {
     const service = new MyService(client);
-    return service.deleteObject(request.body.objectType, request.body.objectId);
+    let ans;
+    try {
+        ans = await service.deleteObject(request.body.objectType, request.body.objectId);
+        return {success: true, status:ans};
+    }catch(e){
+        const error: any = e;
+        ans = JSON.parse(error?.message?.split(':').splice(3).join(':'));
+        return {success: false, ...ans};
+    }
 }
 
 const toSnakeCase = str => 
