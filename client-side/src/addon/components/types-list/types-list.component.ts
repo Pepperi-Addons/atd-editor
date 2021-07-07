@@ -279,6 +279,7 @@ export class TypesListComponent implements OnInit {
         return apiNames;
     }
 
+
     openErrorDialog(error){
         const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
         const data = new PepDialogData({
