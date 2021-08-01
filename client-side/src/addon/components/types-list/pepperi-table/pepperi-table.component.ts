@@ -5,15 +5,16 @@ import { PepListComponent } from '@pepperi-addons/ngx-lib/list';
 
 @Component({
   selector: 'pep-table',
+  styles: ['.list-container{ height: calc(100vh - 136px) }'],
   template: `<div class="list-container" #listContainer>
   <pep-list
+
       [firstFieldAsLink]="false"
       [isReport]="true"
       [supportSorting]="true"
       [supportResizing]="false"
       [selectionTypeForActions]="'single'"
       [noDataFoundMsg]="'No data'"
-      [parentScroll]="listContainer"
       (listChange)="listChanged.emit($event)"
       (sortingChange)="sortingChanged.emit($event)"
       (fieldClick)="fieldClicked.emit($event)"

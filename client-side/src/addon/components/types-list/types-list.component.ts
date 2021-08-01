@@ -13,7 +13,7 @@ import { PepListActionsComponent } from '@pepperi-addons/ngx-lib/list';
 import { PapiClient } from '@pepperi-addons/papi-sdk';
 
 @Component({
-    selector: 'addon-pepperi-list-exmaple',
+    selector: 'addon-types-list',
     templateUrl: './types-list.component.html',
     styleUrls: ['./types-list.component.scss']
 })

@@ -9,7 +9,7 @@
 <div class="addon-page-container">
  <pep-page-layout>
       <ng-container pep-top-area>
-    <pep-top-bar [title]="(totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows, objectType: type | translate  }">
+        <pep-top-bar [title]="(totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows, objectType: type | translate  }">
         <div header-end-content>
             <pep-search  class="pep-spacing-element pull-left flip"
                     [value]="searchString" (search)="onSearchChanged($event)">
@@ -26,7 +26,7 @@
             (actionClick)="onMenuItemClicked($event)"
             [actions]="menuItems | async">
         </pep-list-actions>
-    </pep-top-bar>
+        </pep-top-bar>
       </ng-container>
         <ng-container pep-main-area>
     <!-- <div class="main-content ">
