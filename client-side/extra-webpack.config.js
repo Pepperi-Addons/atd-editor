@@ -1,5 +1,5 @@
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-const singleSpaAngularWebpack = require('single-spa-angular-webpack5/lib/webpack').default;
+const singleSpaAngularWebpack = require('single-spa-angular/lib/webpack').default;
 const { merge } = require('webpack-merge');
 // const deps = require('./package.json').dependencies;
 // const TerserPlugin = require('terser-webpack-plugin');
@@ -22,7 +22,9 @@ module.exports = (angularWebpackConfig, options) => {
             shared: {
               // ...deps,
               "@angular/core": { eager: true, singleton: true,  strictVersion: false  },
-              "@angular/common": { eager: true,singleton: true,strictVersion: false   },
+                  "@angular/common": { eager: true,singleton: true,strictVersion: false   },
+                  "rxjs": { eager: true,singleton: true,strictVersion: false   },
+                  "@ngx-translate/core": { eager: true, singleton: true, strictVersion: false   }
             }
           })
         ],

@@ -1,5 +1,6 @@
     <div class="addon-page-container">
-
+        <pep-page-layout>
+            <ng-container pep-top-area>
         <pep-top-bar >
             <div header-start-content>
                 <button mat-button class="pep-spacing-element pep-button icon-button md weak pull-left flip"
@@ -13,9 +14,10 @@
                 </div>
             </div>
         </pep-top-bar>
-
-        <div class="main-content ">
-            <div class="content">
+    </ng-container>
+    <ng-container pep-main-area>
+        <!-- <div class="main-content ">
+            <div class="content"> -->
                 <mat-tab-group
                     dynamicHeight #tabGroup
                     [selectedIndex]="activeTabIndex"
@@ -28,7 +30,8 @@
                 </mat-tab-group>
                 <addon-proxy #addonProxy *ngIf="activeTab" [hostObject]="activeTab"
                         (hostEvents)="onAddonChange($event);"></addon-proxy>
-            </div>
-        </div>
-
+            <!-- </div>
+        </div> -->
+    </ng-container>
+</pep-page-layout>
     </div>

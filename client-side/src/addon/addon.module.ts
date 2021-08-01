@@ -11,7 +11,7 @@ import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.
 import { AddTypeDialogComponent } from './components/types-list/add-type-dialog/add-type-dialog.component';
 import { PepperiTableComponent } from './components/types-list/pepperi-table/pepperi-table.component';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
-import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-remote-loader';
+import { PepAddonLoaderModule } from '@pepperi-addons/ngx-remote-loader';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { PepDialogService } from '@pepperi-addons/ngx-lib/dialog';
@@ -34,7 +34,7 @@ import { PepAddonService, PepCustomizationService, PepHttpService } from '@peppe
         PepUIModule,
         TranslateModule,
         MaterialModule,
-        PepRemoteLoaderModule,
+        PepAddonLoaderModule,
         HttpClientModule
 
     ],

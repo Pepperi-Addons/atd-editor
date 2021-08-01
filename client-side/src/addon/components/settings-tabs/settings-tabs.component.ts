@@ -6,7 +6,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular
 import { ActivatedRoute, Router } from '@angular/router';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
 
-import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
+import { PepAddonLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
 
 
 
@@ -25,7 +25,7 @@ export class SettingsTabsComponent implements OnInit {
     activeTab: RemoteModuleOptions;
     activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
-    @ViewChild('addonProxy', {static: false}) addonProxy: PepRemoteLoaderComponent;
+    @ViewChild('addonProxy', {static: false}) addonProxy: PepAddonLoaderComponent;
     @Input() title = '';
     typesEnum = {
         'accounts': 'Account',
@@ -62,11 +62,14 @@ export class SettingsTabsComponent implements OnInit {
         });
         this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
 
-        this.tabs = this.tabs.filter((tab, i) => {
-            tab.index = i;
-            if (tab?.title == 'Workflows') this.workflowTab = tab;
-            else return tab;
-        });
+        if (this.type === 'accounts'){
+            this.tabs = this.tabs.filter((tab, i) => {
+                tab.index = i;
+                if (tab?.title == 'Workflows') this.workflowTab = tab;
+                else return tab;
+            });
+        }
+
 
         this.atd = res?.ATD;
       });

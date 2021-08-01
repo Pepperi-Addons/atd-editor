@@ -13,7 +13,6 @@ export type RemoteModuleOptions = {
     type: string | string[];
     subType: string | string[];
     uuid: string;
-    UUID?: string;
     addon?: object;
   }
 

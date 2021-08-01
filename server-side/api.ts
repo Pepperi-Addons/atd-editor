@@ -9,12 +9,16 @@ import { RemoteModuleOptions } from '../model';
 import jwtDecode from "jwt-decode";
 import fetch from "node-fetch";
 
-export async function relations(client: Client, request: Request): Promise<{relations:RemoteModuleOptions[], ATD: any}> {
+export async function relations(client: Client, request: Request): Promise<any> {
     const service = new MyService(client);
     const addonsFields: Relation[] = await service.getRelations(request.body['RelationName']);
     let ATD: ATDMetaData | null = null;
+    let multiAccount;
     if (request.body['Type'] && request.body['TypeID']){
         ATD = await service.getATD(request.body['Type'], request.body['TypeID']);
+    }
+    if (request.body['Flag']){
+        multiAccount = await service.checkFlag(request.body['Flag']);
     }
     const addonsUuids = [...new Set(addonsFields.filter( row => row.AddonUUID).map(obj => obj.AddonUUID))];
     const addonsPromises: Promise<any>[] = [];
@@ -26,7 +30,7 @@ export async function relations(client: Client, request: Request): Promise<{rela
         const menuEntry = createRelationEntry(field, entryAddon, ATD);
         menuEntries.push(menuEntry);
     });
-    return { relations: menuEntries, ATD};
+    return { relations: menuEntries, ATD, multiAccount};
 };
 
 

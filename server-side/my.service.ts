@@ -52,6 +52,10 @@ class MyService {
         return this.papiClient.metaData.type(type).types.subtype(typeID).get();
     }
 
+    checkFlag(url: string): Promise<boolean> {
+        return this.papiClient.get(url);
+    }
+
     async getDataViewByProfile(dataViewName: string, webAPIBaseURL: string, accessToken: string): Promise<any[]> {
         const url = `${webAPIBaseURL}/Service1.svc/v1/UIControl/${dataViewName}`;
         return await (await fetch(url, {

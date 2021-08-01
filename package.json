@@ -1,6 +1,6 @@
 {
   "name": "typescript",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "build:client-side": "cd ./client-side && npm run build:single-spa && cd ..",
     "init": "npm ci && cd ./server-side && npm ci && cd .. && cd ./client-side && npm ci && cd ..",
     "publish-addon": "npm run build && publish-addon",
-    "pub-addon": "publish-addon"
+    "pub-addon": "publish-addon --no-bump-version"
   },
   "keywords": [],
   "author": "",

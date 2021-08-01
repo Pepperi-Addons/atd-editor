@@ -42,7 +42,6 @@ export class TypesListComponent implements OnInit {
     compRef: ComponentRef<any>;
     selectedRows = 0;
     papi: PapiClient;
-
     @Input() subType;
     titlePipe = new TitleCasePipe();
     addonBaseURL = '';
@@ -216,7 +215,8 @@ export class TypesListComponent implements OnInit {
         remoteModule.exposedModule = this.addonBaseURL ? './AddonModule' : remoteModule.exposedModule;
         remoteModule.componentName = this.addonBaseURL ? 'AddonComponent' : remoteModule.componentName;
         remoteModule.remoteName = this.addonBaseURL ? 'addon' : remoteModule.remoteName;
-        remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
+        // remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
+        remoteModule.remoteEntry = 'http://localhost:65161/import_export_atd.js';
         remoteModule.title = this.addonBaseURL ? 'Sub Addon' : remoteModule.title;
         const config = this.dialogService.getDialogConfig({}, 'inline');
         this.dialogAddon = remoteModule;
@@ -303,10 +303,17 @@ export class TypesListComponent implements OnInit {
 
     async getMenu(addonUUID): Promise<PepMenuItem[]> {
         const apiNames: Array<PepMenuItem> = [];
-        const body = { RelationName: `${relationTypesEnum[this.type]}TypeListMenu`};
+        const body = {
+            RelationName: `${relationTypesEnum[this.type]}TypeListMenu`,
+            Flag: '/company/flags/EnableAccountTypesOption'
+        };
         // debug locally
-        //  const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
-        const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
+         const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
+        // const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
+        // HACK DUE TO MULTI TYPES IN WSIM PLEASE REMOVE WHEN ALL DISTRIBUTORS ARE MIGRATED TO MULTI ACCOUNT TYPES
+        if (this.type == 'accounts' && !menuEntries.multiAccount){
+            this.router.navigateByUrl(`settings/354c5123-a7d0-4f52-8fce-3cf1ebc95314/editor?view=accounts_forms`);
+         };
         const dividedEntries = this.sort.divideEntries(menuEntries?.relations, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
         dividedEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;

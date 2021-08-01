@@ -24,6 +24,7 @@ import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepListModule } from '@pepperi-addons/ngx-lib/list';
 import { PepDialogModule } from '@pepperi-addons/ngx-lib/dialog';
 import { PepSearchModule } from '@pepperi-addons/ngx-lib/search';
+import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
 
 
 import {PepIconModule, PepIconRegistry,
@@ -120,16 +121,11 @@ const pepperiComponentsModules = [
     PepIconModule,
     PepDialogModule,
     PepSearchModule,
-    PepTopBarModule
+    PepTopBarModule,
+    PepPageLayoutModule
 ];
 import { TranslateModule, TranslateLoader, TranslateService, TranslateStore } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
-
-
-// export function createTranslateLoader(http: HttpClient) {
-//    return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
-// }
 
 export function createTranslateLoader(http: HttpClient, fileService: PepFileService, addonService: PepAddonService) {
 
