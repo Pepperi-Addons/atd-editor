@@ -44,9 +44,12 @@
 </div>
 
 <ng-template #dialogTemplate>
-    <pep-dialog class="dialog-textarea-container" [title]="dialogAddon?.title | translate">
-      <ng-container pep-dialog-content>
-          <addon-proxy #addonTemplate [hostObject]="dialogAddon" (hostEvents)="onAddonChange($event);" ></addon-proxy>
-      </ng-container>
-    </pep-dialog>
+    <div class="pep-dialog-container">
+        <pep-dialog [showFooter]="false"  [title]="dialogAddon?.title | translate">
+            <ng-container pep-dialog-content>
+                <addon-proxy #addonTemplate [options]="dialogAddon" [hostObject]="dialogAddon?.hostObject" (hostEvents)="onAddonChange($event);" ></addon-proxy>
+            </ng-container>
+          </pep-dialog>
+    </div>
+
 </ng-template>
