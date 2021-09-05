@@ -31,9 +31,13 @@
         <ng-container pep-main-area>
     <!-- <div class="main-content ">
         <div class="content"> -->
-            <pep-table [dataSource]="transactionTypes" [displayedColumns]="displayedColumns"
-             [customizeTable]="customizeDataRowField" (selectedItemsChanged)="selectedRowsChanged($event)"
-             (sortingChanged)="onSortingChanged($event);"></pep-table>
+            <pep-table [dataSource]="transactionTypes" 
+                       [displayedColumns]="displayedColumns"
+                       [customizeTable]="customizeDataRowField" 
+                       (selectedItemsChanged)="selectedRowsChanged($event)"
+                       (sortingChanged)="onSortingChanged($event);"
+                       (fieldClicked)="onCustomizeFieldClick($event)">
+            </pep-table>
 
         <!-- </div>
     </div> -->
