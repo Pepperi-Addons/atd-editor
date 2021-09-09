@@ -28,7 +28,7 @@
                     id="tab.AddonUUID"  label="{{ tab.title | translate}}">
                     </mat-tab>
                 </mat-tab-group>
-                <addon-proxy #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
+                <addon-proxy #addonProxy *ngIf="activeTab" [hostObject]="activeTab"
                         (hostEvents)="onAddonChange($event);"></addon-proxy>
             <!-- </div>
         </div> -->
