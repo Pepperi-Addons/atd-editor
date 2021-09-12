@@ -11,7 +11,6 @@ import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog'
 import { PepMenuItem, IPepMenuItemClickEvent } from '@pepperi-addons/ngx-lib/menu';
 import { PepListActionsComponent } from '@pepperi-addons/ngx-lib/list';
 import { PapiClient } from '@pepperi-addons/papi-sdk';
-import { IPepFormFieldClickEvent } from '@pepperi-addons/ngx-lib/form';
 
 @Component({
     selector: 'addon-types-list',
@@ -46,7 +45,6 @@ export class TypesListComponent implements OnInit {
     @Input() subType;
     titlePipe = new TitleCasePipe();
     addonBaseURL = '';
-    editEntry: any;
 
 
 
@@ -267,22 +265,6 @@ export class TypesListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(atd => this.createObject(atd));
     }
 
-    onCustomizeFieldClick(customizeFieldClickedData: IPepFormFieldClickEvent) {
-
-        const self = this;
-        const items = this.table.getLisItems();
-
-        const rowData = items.filter( item => item.UID === customizeFieldClickedData.id );
-        let internalID = rowData ? rowData[0].Fields[0].AdditionalValue['InternalID'] : '';
-        
-        let path = self.editEntry[0].remoteEntry;
-            path = path.replace('TYPE', self.route.snapshot.params.type)
-                        .replace('SUB_TYPE', self.route.snapshot.params.sub_type)
-                        .replace('TYPE_ID', internalID);
-       
-        self.router.navigate([`settings/${self.addonUUID}/${path}`]);
-    }
-
     createObject(atd){
         if (atd) {
             const body = {
@@ -308,13 +290,12 @@ export class TypesListComponent implements OnInit {
             Flag: '/company/flags/EnableAccountTypesOption'
         };
         // debug locally
-         //const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
-        const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
+         const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
+        // const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
         // HACK DUE TO MULTI TYPES IN WSIM PLEASE REMOVE WHEN ALL DISTRIBUTORS ARE MIGRATED TO MULTI ACCOUNT TYPES
         if (this.type == 'accounts' && !menuEntries.multiAccount){
             this.router.navigateByUrl(`settings/354c5123-a7d0-4f52-8fce-3cf1ebc95314/editor?view=accounts_forms`);
          };
-        this.editEntry = menuEntries?.relations.filter(entry => entry.type.toLowerCase() === 'navigate') || '' ;
         const dividedEntries = this.sort.divideEntries(menuEntries?.relations, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
         dividedEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;

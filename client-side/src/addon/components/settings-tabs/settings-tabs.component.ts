@@ -160,9 +160,9 @@ export class SettingsTabsComponent implements OnInit {
                         Type: type
                     };
         // debug locally
-        //return this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
-        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
-                    
+        // return this.http.postHttpCall('http://localhost:4500/api/relations', body)
+        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
+                    .toPromise();
     }
 
 
