@@ -46,7 +46,8 @@ export class TypesListComponent implements OnInit {
     @Input() subType;
     titlePipe = new TitleCasePipe();
     addonBaseURL = '';
-    editEntry: any ;
+    editEntry: any;
+
 
 
     constructor(
@@ -76,40 +77,7 @@ export class TypesListComponent implements OnInit {
             this.loadlist();
         })
 
-        this.route.queryParams.subscribe( queryParams => {
-            // this.legacySettingsAddon = queryParams?.legacy_preload == "false" ? null :  {
-            //     "type": "NgComponent",
-            //     "path": "Views/Agents/AccountTypes.aspx",
-            //     "subType": "NG11",
-            //     "remoteName": "settings_iframe",
-            //     "remoteEntry": "https://cdn.pepperi.com/Addon/Public/354c5123-a7d0-4f52-8fce-3cf1ebc95314/9.5.266/settings_iframe.js",
-            //     "componentName": "SettingsIframeComponent",
-            //     "exposedModule": "./SettingsIframeModule",
-            //     "title": "General",
-            //     "noModule": false,
-            //     "update": false,
-            //     "addonData": {
-            //       "top": 230,
-            //       "borderTop": 0
-            //     },
-            //     "uuid": "354c5123-a7d0-4f52-8fce-3cf1ebc95314",
-            //     "UUID": "354c5123-a7d0-4f52-8fce-3cf1ebc95314",
-            //     "top": 230,
-            //     "key": "general_354c5123-a7d0-4f52-8fce-3cf1ebc95314_AccountTypeListTabs",
-            //     "activityTypeDefinition": {
-            //       "TypeID": 297147,
-            //       "InternalID": 297147,
-            //       "ExternalID": "m",
-            //       "Description": "kkk",
-            //       "Icon": "icon2",
-            //       "CreationDateTime": "2021-06-29T11:59:24.307Z",
-            //       "ModificationDateTime": "2021-06-29T11:59:31.187Z",
-            //       "Hidden": false,
-            //       "UUID": "66029086-d4e1-4150-8f67-d8bcc65643a4"
-            //     }
-            //   };
-            this.addonBaseURL = queryParams?.addon_base_url;
-        })
+        this.route.queryParams.subscribe( queryParams => this.addonBaseURL = queryParams?.addon_base_url);
 
 
     }
@@ -182,13 +150,20 @@ export class TypesListComponent implements OnInit {
     }
 
     onMenuItemClicked(e: IPepMenuItemClickEvent): void{
+        // TODO: remove all code unrelated to apiDesign
         const remoteModule: RemoteModuleOptions & any = JSON.parse(e?.source?.key);
-        const selectedRows = this.table?.getSelectedItemsData()?.rows;
-        const rowData = this.table?.getItemDataByID(selectedRows[0]);
+        const SelectedRows = this.table?.getSelectedItemsData()?.rows;
+        const rowData = this.table?.getItemDataByID(SelectedRows[0]);
         const atdInfo = rowData?.Fields[0]?.AdditionalValue ? rowData.Fields[0].AdditionalValue : null;
         // Generic
-        remoteModule.addonData = { selectedRows };
         remoteModule.activityTypeDefinition = atdInfo;
+        remoteModule.addonData = { SelectedRows };
+        // According to apiDesign
+        remoteModule.hostObject = {
+            selectAll: false,
+            dataRelativeURL: null,
+            objectList: [atdInfo['UUID']]
+        };
 
         switch (remoteModule.type){
                     case 'AddonAPI':
@@ -197,11 +172,18 @@ export class TypesListComponent implements OnInit {
                         }
                         break;
                     case 'Navigate':
+                          // According to apiDesign
+                          const queryParams = {
+                            select_all: remoteModule.hostObject.selectAll,
+                            data_relative_url: remoteModule.hostObject.dataRelativeURL,
+                            object_list: remoteModule.hostObject.objectList
+                          }
                           const path = remoteModule.remoteEntry
+                          // TypeID has to be dynamic, TODO: move type and subType to relations
                                 .replace('TYPE', this.type)
                                 .replace('SUB_TYPE', this.subType)
                                 .replace('TYPE_ID', atdInfo['InternalID']);
-                          this.router.navigate([`settings/${remoteModule.uuid}/${path}`]);
+                          this.router.navigate([`settings/${remoteModule.uuid}/${path}`], { queryParams});
                         break;
                     case 'NgComponent':
                         if (remoteModule.uuid){
@@ -213,11 +195,7 @@ export class TypesListComponent implements OnInit {
     }
 
     openAddonInDialog(remoteModule: RemoteModuleOptions): void {
-        remoteModule.exposedModule = this.addonBaseURL ? './AddonModule' : remoteModule.exposedModule;
-        remoteModule.componentName = this.addonBaseURL ? 'AddonComponent' : remoteModule.componentName;
-        remoteModule.remoteName = this.addonBaseURL ? 'addon' : remoteModule.remoteName;
         remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
-        remoteModule.title = this.addonBaseURL ? 'Sub Addon' : remoteModule.title;
         const config = this.dialogService.getDialogConfig({}, 'inline');
         this.dialogAddon = remoteModule;
         this.dialogRef = this.dialogService
@@ -252,10 +230,16 @@ export class TypesListComponent implements OnInit {
     }
 
     async postAddonApi(remoteModule: RemoteModuleOptions & any, dialogData){
-        remoteModule.addonData['objectType'] = this.type;
-        remoteModule.addonData['objectId'] = remoteModule?.activityTypeDefinition?.InternalID;
-        // const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-        const response = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        // Needed to delete Object due to PAPI TYPES resoruce limiitations
+        remoteModule.addonData['ObjectType'] = this.type;
+        remoteModule.addonData['ObjectId'] = remoteModule?.activityTypeDefinition?.InternalID;
+        // Accourding to ApiDesign
+        remoteModule.addonData['SelectAll'] = remoteModule.hostObject.selectAll;
+        remoteModule.addonData['DataRelativeURL'] =  remoteModule.hostObject.dataRelativeURL;
+        remoteModule.addonData['ObjectList'] =  remoteModule.hostObject.objectList;
+
+        const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        // const response = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
         const error = response?.fault?.faultstring;
         dialogData.content = this.translate.instant(response.success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title, error});
         dialogData.actionsType = "close";
@@ -283,6 +267,22 @@ export class TypesListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(atd => this.createObject(atd));
     }
 
+    onCustomizeFieldClick(customizeFieldClickedData: IPepFormFieldClickEvent) {
+
+        const self = this;
+        const items = this.table.getLisItems();
+
+        const rowData = items.filter( item => item.UID === customizeFieldClickedData.id );
+        let internalID = rowData ? rowData[0].Fields[0].AdditionalValue['InternalID'] : '';
+        
+        let path = self.editEntry[0].remoteEntry;
+            path = path.replace('TYPE', self.route.snapshot.params.type)
+                        .replace('SUB_TYPE', self.route.snapshot.params.sub_type)
+                        .replace('TYPE_ID', internalID);
+       
+        self.router.navigate([`settings/${self.addonUUID}/${path}`]);
+    }
+
     createObject(atd){
         if (atd) {
             const body = {
@@ -308,13 +308,12 @@ export class TypesListComponent implements OnInit {
             Flag: '/company/flags/EnableAccountTypesOption'
         };
         // debug locally
-        //  const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
+         //const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
         const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
         // HACK DUE TO MULTI TYPES IN WSIM PLEASE REMOVE WHEN ALL DISTRIBUTORS ARE MIGRATED TO MULTI ACCOUNT TYPES
         if (this.type == 'accounts' && !menuEntries.multiAccount){
             this.router.navigateByUrl(`settings/354c5123-a7d0-4f52-8fce-3cf1ebc95314/editor?view=accounts_forms`);
          };
-
         this.editEntry = menuEntries?.relations.filter(entry => entry.type.toLowerCase() === 'navigate') || '' ;
         const dividedEntries = this.sort.divideEntries(menuEntries?.relations, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
         dividedEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
@@ -329,30 +328,6 @@ export class TypesListComponent implements OnInit {
             content: error?.fault?.faultstring || error
         });
         this.dialogService.openDefaultDialog(data);
-    }
-
-    onCustomizeFieldClick(customizeFieldClickedData: IPepFormFieldClickEvent) {
-        
-        const self = this;
-        const items = this.table.getLisItems();
-
-        const rowData = items.filter( item => item.UID === customizeFieldClickedData.id );
-        let internalID = rowData ? rowData[0].Fields[0].AdditionalValue['InternalID'] : '';
-        
-        // const queryParams = {
-        //     select_all: remoteModule.hostObject.selectAll,
-        //     data_relative_url: remoteModule.hostObject.dataRelativeURL,
-        //     object_list: remoteModule.hostObject.objectList
-        //   }
-
-        let path = self.editEntry[0].remoteEntry;
-            path = path.replace('TYPE', self.route.snapshot.params.type)
-                        .replace('SUB_TYPE', self.route.snapshot.params.sub_type)
-                        .replace('TYPE_ID', internalID);
-       
-        
-        this.router.navigate([`settings/${this.addonUUID}/${path}`]);
-        // self.router.navigate([`settings/${self.addonUUID}/${path}`]);
     }
 
 }

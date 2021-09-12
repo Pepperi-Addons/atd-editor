@@ -27,6 +27,11 @@ export class SettingsTabsComponent implements OnInit {
     data = {atd: null, tab: null, addon: null};
     @ViewChild('addonProxy', {static: false}) addonProxy: PepAddonLoaderComponent;
     @Input() title = '';
+    hostObject = {
+        selectAll: false,
+        dataRelativeURL: null,
+        objectList: []
+    }
     typesEnum = {
         'accounts': 'Account',
         'transactions': 'Orders',
@@ -72,6 +77,7 @@ export class SettingsTabsComponent implements OnInit {
 
 
         this.atd = res?.ATD;
+        this.hostObject.objectList.push(res?.ATD?.UUID);
       });
 
     }
@@ -118,7 +124,7 @@ export class SettingsTabsComponent implements OnInit {
         const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
 
         if (this.activeTab?.remoteName === 'settings_iframe'){
-            const addonInstance = this.addonProxy?.compRef?.instance;
+            const addonInstance = this.addonProxy['compRef']?.instance;
             const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
             iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
         }
