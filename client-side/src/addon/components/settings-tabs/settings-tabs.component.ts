@@ -75,7 +75,7 @@ export class SettingsTabsComponent implements OnInit {
             });
         }
 
-
+        this.hostObject['options'] = this.activeTab;
         this.atd = res?.ATD;
         this.hostObject.objectList.push(res?.ATD?.UUID);
       });

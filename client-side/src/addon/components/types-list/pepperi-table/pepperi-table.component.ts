@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { TranslateService } from '@ngx-translate/core';
 import { PepDataConvertorService, FIELD_TYPE, ObjectSingleData, PepFieldData, PepRowData } from '@pepperi-addons/ngx-lib';
 import { PepListComponent } from '@pepperi-addons/ngx-lib/list';
+import { IPepFormFieldClickEvent } from '@pepperi-addons/ngx-lib/form';
 
 @Component({
   selector: 'pep-table',
@@ -9,7 +10,7 @@ import { PepListComponent } from '@pepperi-addons/ngx-lib/list';
   template: `<div class="list-container" #listContainer>
   <pep-list
 
-      [firstFieldAsLink]="false"
+      [firstFieldAsLink]="true"
       [isReport]="true"
       [supportSorting]="true"
       [supportResizing]="false"
@@ -17,7 +18,7 @@ import { PepListComponent } from '@pepperi-addons/ngx-lib/list';
       [noDataFoundMsg]="'No data'"
       (listChange)="listChanged.emit($event)"
       (sortingChange)="sortingChanged.emit($event)"
-      (fieldClick)="fieldClicked.emit($event)"
+      (fieldClick)="onCustomizeFieldClick($event)"
       (selectedItemsChange)="selectedItemsChanged.emit($event)">
   </pep-list>
 </div>`
@@ -47,6 +48,14 @@ export class PepperiTableComponent implements OnInit, OnChanges {
         // if (this.dataSource){
         //     this.initPepList(this.dataSource, this.displayedColumns, this.customizeTable);
         // }
+    }
+
+    onCustomizeFieldClick(customizeFieldClickedData: IPepFormFieldClickEvent){
+        this.fieldClicked.emit(customizeFieldClickedData);
+    }
+
+    getLisItems(){
+        return this.customList.items;
     }
 
     ngOnChanges(changes: SimpleChanges) {

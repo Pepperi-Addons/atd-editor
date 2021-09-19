@@ -61,3 +61,6 @@ div  {
 //     min-height: calc(100vh - 230px);
 // }
 
+:host ::ng-deep #myFrame{
+    min-height: calc(100vh - 230px) !important;
+}
