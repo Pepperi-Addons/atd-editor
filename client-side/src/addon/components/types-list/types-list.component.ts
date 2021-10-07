@@ -238,8 +238,8 @@ export class TypesListComponent implements OnInit {
         remoteModule.addonData['DataRelativeURL'] =  remoteModule.hostObject.dataRelativeURL;
         remoteModule.addonData['ObjectList'] =  remoteModule.hostObject.objectList;
 
-        const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-        // const response = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        //const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+         const response = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
         const error = response?.fault?.faultstring;
         dialogData.content = this.translate.instant(response.success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title, error});
         dialogData.actionsType = "close";
