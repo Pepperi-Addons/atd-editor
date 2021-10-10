@@ -14,7 +14,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-architects/module-federation": "^12.2.1",
+    "@angular-architects/module-federation": "^12.4.0",
     "@angular-architects/module-federation-tools": "^12.2.1",
     "@angular/animations": "~12.1.1",
     "@angular/cdk": "~12.1.1",
@@ -36,7 +36,7 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@pepperi-addons/ngx-lib": "^0.1.260",
-    "@pepperi-addons/ngx-remote-loader": "0.0.31",
+    "@pepperi-addons/ngx-remote-loader": "0.0.37",
     "@pepperi-addons/papi-sdk": "^1.24.0",
     "@tweenjs/tween.js": "^17.1.1",
     "@types/systemjs": "^6.1.0",

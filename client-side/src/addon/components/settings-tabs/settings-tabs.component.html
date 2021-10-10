@@ -28,8 +28,10 @@
                     id="tab.AddonUUID"  label="{{ tab.title | translate}}">
                     </mat-tab>
                 </mat-tab-group>
-                <addon-proxy #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
-                        (hostEvents)="onAddonChange($event);"></addon-proxy>
+                <!--addon-proxy #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
+                        (hostEvents)="onAddonChange($event);"></addon-proxy-->
+                        <pep-remote-loader #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
+                        (hostEvents)="onAddonChange($event);"></pep-remote-loader>
             <!-- </div>
         </div> -->
     </ng-container>

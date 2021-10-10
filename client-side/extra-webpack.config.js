@@ -19,13 +19,29 @@ module.exports = (angularWebpackConfig, options) => {
             filename: "settings_editor.js",
             exposes: {
             },
+            /*
             shared: {
               // ...deps,
               "@angular/core": { eager: true, singleton: true,  strictVersion: false  },
                   "@angular/common": { eager: true,singleton: true,strictVersion: false   },
                   "rxjs": { eager: true,singleton: true,strictVersion: false   },
                   "@ngx-translate/core": { eager: true, singleton: true, strictVersion: false   }
-            }
+            }*/
+            shared: {
+
+              // ...deps,
+
+              "@angular/core": { eager: true, singleton: true,  strictVersion: false },
+
+              "@angular/common": { eager: true,singleton: true,strictVersion: false   },
+
+              "rxjs": { eager: true,singleton: true,strictVersion: false   },
+
+              "@ngx-translate/core": { eager: true, singleton: true, strictVersion: false   },
+
+              "@angular/router": { eager: true, singleton: true,  strictVersion: false }
+
+          }
           })
         ],
       };

@@ -51,7 +51,8 @@
     <div class="pep-dialog-container">
         <pep-dialog [showFooter]="false"  [title]="dialogAddon?.title | translate">
             <ng-container pep-dialog-content>
-                <addon-proxy #addonTemplate [options]="dialogAddon" [hostObject]="dialogAddon?.hostObject" (hostEvents)="onAddonChange($event);" ></addon-proxy>
+                <!--addon-proxy #addonTemplate [options]="dialogAddon" [hostObject]="dialogAddon?.hostObject" (hostEvents)="onAddonChange($event);" ></addon-proxy-->
+                <pep-remote-loader #addonTemplate [options]="dialogAddon" [hostObject]="dialogAddon?.hostObject" (hostEvents)="onAddonChange($event);" ></pep-remote-loader>
             </ng-container>
           </pep-dialog>
     </div>
