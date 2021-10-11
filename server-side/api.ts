@@ -63,6 +63,7 @@ function createRelationEntry(field: Relation, entryAddon, ATD: ATDMetaData | nul
         noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
         update: false,
         addon: entryAddon,
+        addonId: entryAddon?.Addon?.UUID,
         addonData: { },
         uuid: field?.AddonUUID,
         key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`,
@@ -70,7 +71,6 @@ function createRelationEntry(field: Relation, entryAddon, ATD: ATDMetaData | nul
         multiSelection: field?.AllowsMultipleSelection,
         visibleEndpoint: field?.VisibilityRelativeURL,
         runsInBackground: field?.RunsInBackground
-       
     }
     return menuEntry;
 }

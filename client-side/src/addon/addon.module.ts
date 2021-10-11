@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, NgZone } from '@angular/core';
 import { AddonRoutingModule } from './addon-routing.module';
 import { AddonComponent } from './addon.component';
 import { TypesListComponent } from './components/types-list/types-list.component';
@@ -42,6 +42,9 @@ import { PepAddonService, PepCustomizationService, PepHttpService } from '@peppe
     bootstrap: [AddonComponent]
 })
 export class AddonModule {
+    constructor(private ngZone: NgZone) {
+        (window as any).ngZone = this.ngZone;
+    }
 }
 
 
