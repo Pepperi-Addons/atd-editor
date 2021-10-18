@@ -5,7 +5,7 @@ export enum SettingsEditorTabs {
     'workflows',
     'programs',
     'accounts',
-    'epayment',
+    // 'epayment',
     'settings',
     'behaviour',
     'conditions',

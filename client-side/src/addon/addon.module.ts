@@ -14,8 +14,8 @@ import { EmptyRouteComponent } from './components/empty-route/empty-route.compon
 import { PepAddonLoaderModule } from '@pepperi-addons/ngx-remote-loader';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
-import { PepDialogService } from '@pepperi-addons/ngx-lib/dialog';
-import { PepAddonService, PepCustomizationService, PepHttpService } from '@pepperi-addons/ngx-lib';
+import { PepAddonService, PepHttpService } from '@pepperi-addons/ngx-lib';
+import { shareNgZone } from '@angular-architects/module-federation-tools';
 
 @NgModule({
     declarations: [
@@ -43,7 +43,8 @@ import { PepAddonService, PepCustomizationService, PepHttpService } from '@peppe
 })
 export class AddonModule {
     constructor(private ngZone: NgZone) {
-        (window as any).ngZone = this.ngZone;
+        // (window as any).ngZone = this.ngZone;
+        shareNgZone(ngZone);
     }
 }
 

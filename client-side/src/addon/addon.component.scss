@@ -1,4 +1,9 @@
-::ng-deep .addon-page-container
- .pep-page-layout .pep-main-area{
-    padding: 0 1rem;
+// ::ng-deep .addon-page-container
+//  .pep-page-layout .pep-main-area{
+//     padding: 0 1rem;
+// }
+
+:host {
+    display: block;
+    height: inherit;
 }

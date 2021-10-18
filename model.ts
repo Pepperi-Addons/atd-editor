@@ -131,12 +131,12 @@ export const productObjectTypeTabs = {
       RelationName: "TransactionTypeListTabs",
       Description: "Accounts"
     },
-    {
-      Name: "epayment",
-      AddonUUID: "354c5123-a7d0-4f52-8fce-3cf1ebc95314",
-      RelationName: "TransactionTypeListTabs",
-      Description: "Epayment"
-    },
+    // {
+    //   Name: "epayment",
+    //   AddonUUID: "354c5123-a7d0-4f52-8fce-3cf1ebc95314",
+    //   RelationName: "TransactionTypeListTabs",
+    //   Description: "Epayment"
+    // },
     { 
       Name: "settings",
       AddonUUID: "354c5123-a7d0-4f52-8fce-3cf1ebc95314",
