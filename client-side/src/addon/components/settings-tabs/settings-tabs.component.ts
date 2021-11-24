@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
 
 import { PepAddonLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
+import { MatTabGroup } from '@angular/material/tabs';
 
 
 
@@ -26,6 +27,7 @@ export class SettingsTabsComponent implements OnInit {
     activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
     @ViewChild('addonProxy', {static: false}) addonProxy: PepAddonLoaderComponent;
+    @ViewChild("tabGroup", { static: false }) _Tabs: MatTabGroup;
     @Input() title = '';
     hostObject = {
         selectAll: false,
@@ -115,15 +117,27 @@ export class SettingsTabsComponent implements OnInit {
                     this.tabs.splice(this.workflowTab?.index, 0, this.workflowTab);
                 }
                 break;
+            case 'content-loaded' :  
+                this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)                 
+                break;
+            //case 'done-loading' :  
+            //    this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)                 
+            //    break;
+            default: break; 
         }
 
     }
 
     tabClick(e){
         const currentTabKey = this.activeTab?.title;
-        const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
+        //const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
 
-        if (this.activeTab?.remoteName === 'settings_iframe'){
+        let selectedTab: RemoteModuleOptions = this.tabs[e.index];
+        
+        
+        this.hostObject['options'] = selectedTab;
+
+        if (selectedTab?.remoteName === 'settings_iframe'){
             const addonInstance = this.addonProxy['compRef']?.instance;
             const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
             iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
@@ -131,18 +145,30 @@ export class SettingsTabsComponent implements OnInit {
         if (selectedTab && selectedTab?.title !== currentTabKey){
             // this.cd.detectChanges();
             if (selectedTab.uuid === this.activeTab.uuid){
-                selectedTab.update = true;
+                //selectedTab.update = true;
             }
 
             if (this.activeTab?.remoteName !== selectedTab?.remoteName){
+
+                if(selectedTab?.remoteName !== 'settings_iframe'){
+                    //do not lock tabs
+                    this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)
+                }else{
+                    this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = true)
+                }
+
                 this.activeTab = null;
                 // this.cd.detectChanges();
                 this.activeTab = selectedTab;
             }
             this.activeTabIndex = e.index;
+
+            this.hostObject['options'] = selectedTab;
+
             this.router.navigate([`../${selectedTab.title.toLowerCase()}`],
             { relativeTo: this.route});
-        }
+        }            
+        
     }
 
     goBack(){
@@ -165,5 +191,5 @@ export class SettingsTabsComponent implements OnInit {
                     .toPromise();
     }
 
-
+  
 }
