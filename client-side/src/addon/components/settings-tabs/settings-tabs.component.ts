@@ -117,7 +117,7 @@ export class SettingsTabsComponent implements OnInit {
                     this.tabs.splice(this.workflowTab?.index, 0, this.workflowTab);
                 }
                 break;
-            case 'content-loaded' :  
+            case 'content-loaded' :  //HOSTEVENTS, OUTPUT FROM REMOTE LOADER
                 this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)                 
                 break;
             //case 'done-loading' :  
