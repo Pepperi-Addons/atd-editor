@@ -24,7 +24,7 @@ export class SettingsTabsComponent implements OnInit {
     tabs: Array<any>;
     workflowTab: RemoteModuleOptions & any= null;
     activeTab: RemoteModuleOptions;
-    activeTabIndex = 0;
+    //activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
     @ViewChild('addonProxy', {static: false}) addonProxy: PepAddonLoaderComponent;
     @ViewChild("tabGroup", { static: false }) _Tabs: MatTabGroup;
@@ -62,13 +62,17 @@ export class SettingsTabsComponent implements OnInit {
       this.initFromServer(params.addon_uuid, this.type, params.type_id).then((res: any) =>{
         const relationType = productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`];
         this.tabs = this.sort.divideEntries(res?.relations, relationType );
+
+       
+
+        /*
         this.activeTab = this.tabs.find((tab,index) => {
                 this.activeTabIndex = index;
                 tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
                 return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
         });
         this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
-
+        */
         if (this.type === 'accounts'){
             this.tabs = this.tabs.filter((tab, i) => {
                 tab.index = i;
@@ -135,21 +139,24 @@ export class SettingsTabsComponent implements OnInit {
         let selectedTab: RemoteModuleOptions = this.tabs[e.index];
         
         
-        this.hostObject['options'] = selectedTab;
+        this.hostObject['options'] = this.tabs[e.index];
 
-        if (selectedTab?.remoteName === 'settings_iframe'){
-            const addonInstance = this.addonProxy['compRef']?.instance;
+        if (this.tabs[e.index]?.remoteName === 'settings_iframe'){
+            this.tabs[e.index].path = this.getIframePath(this.tabs[e.index].title.toLowerCase(), this.atd  )
+            const addonInstance = this.addonProxy != null ? this.addonProxy['compRef']?.instance : null;
             const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
-            iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
+            iframeWindow?.postMessage({msgName: 'tabClick', tabName: this.tabs[e.index].title.toLowerCase()}, '*');
         }
-        if (selectedTab && selectedTab?.title !== currentTabKey){
-            // this.cd.detectChanges();
+        if (this.tabs[e.index] && this.tabs[e.index]?.title !== currentTabKey){
+            /*
             if (selectedTab.uuid === this.activeTab.uuid){
                 //selectedTab.update = true;
             }
-
-            if (this.activeTab?.remoteName !== selectedTab?.remoteName){
-
+            */
+            if (this.activeTab?.remoteName !== this.tabs[e.index]?.remoteName){
+                const addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
+                this.tabs[e.index].remoteEntry = addonBaseURL ? `${addonBaseURL+this.tabs[e.index].remoteName}.js` : this.tabs[e.index].remoteEntry;
+                
                 if(selectedTab?.remoteName !== 'settings_iframe'){
                     //do not lock tabs
                     this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)
@@ -157,20 +164,25 @@ export class SettingsTabsComponent implements OnInit {
                     this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = true)
                 }
 
-                this.activeTab = null;
+                //this.activeTab = null;
                 // this.cd.detectChanges();
-                this.activeTab = selectedTab;
+                this.activeTab = this.tabs[e.index];
+                this.hostObject['options'] = this.tabs[e.index];
             }
-            this.activeTabIndex = e.index;
+            //this.activeTabIndex = e.index;
 
-            this.hostObject['options'] = selectedTab;
+            //this.hostObject['options'] = selectedTab;            
+            
+           // this.router.navigate([`../${this.tabs[e.index].title.toLowerCase()}`],
+           //                     { relativeTo: this.route});
 
-            this.router.navigate([`../${selectedTab.title.toLowerCase()}`],
-            { relativeTo: this.route});
-        }            
-        
+
+
+                  
+            }
     }
 
+    
     goBack(){
         this.router.navigate(['../../'],
             {

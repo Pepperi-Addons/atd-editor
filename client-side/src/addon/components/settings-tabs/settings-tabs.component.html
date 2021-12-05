@@ -17,14 +17,13 @@
     <ng-container pep-main-area>
         <mat-tab-group
             class="settings-tabs"
-            dynamicHeight #tabGroup
-            [selectedIndex]="activeTabIndex"
+            dynamicHeight #tabGroup            
             (selectedTabChange)="tabClick($event)"
             animationDuration="0ms">
-            <mat-tab [disabled]='true'  *ngFor="let tab of tabs; let i = index; " id="tab.AddonUUID"  label="{{ tab.title | translate}}">
+            <mat-tab [disabled]='false'  *ngFor="let tab of tabs; let i = index; " id="tab.AddonUUID"  label="{{ tab.title | translate}}">
             </mat-tab>
         </mat-tab-group>
-                <pep-remote-loader #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
-                (hostEvents)="onAddonChange($event);"></pep-remote-loader>
+        <pep-remote-loader #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
+        (hostEvents)="onAddonChange($event);"></pep-remote-loader>
     </ng-container>
 </pep-page-layout>
