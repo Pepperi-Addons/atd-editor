@@ -122,7 +122,7 @@ export class SettingsTabsComponent implements OnInit {
                 }
                 break;
             case 'content-loaded' :  //HOSTEVENTS, OUTPUT FROM REMOTE LOADER
-                this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)                 
+                //this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)                 
                 break;
             //case 'done-loading' :  
             //    this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)                 
@@ -157,13 +157,14 @@ export class SettingsTabsComponent implements OnInit {
                 const addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
                 this.tabs[e.index].remoteEntry = addonBaseURL ? `${addonBaseURL+this.tabs[e.index].remoteName}.js` : this.tabs[e.index].remoteEntry;
                 
+                /*
                 if(selectedTab?.remoteName !== 'settings_iframe'){
                     //do not lock tabs
                     this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = false)
                 }else{
                     this._Tabs._tabs.toArray().forEach(tab =>  tab.disabled = true)
                 }
-
+                */
                 //this.activeTab = null;
                 // this.cd.detectChanges();
                 this.activeTab = this.tabs[e.index];
