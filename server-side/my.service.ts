@@ -1,5 +1,5 @@
 import { RemoteModuleOptions } from '../model';
-import { PapiClient, InstalledAddon, ATDMetaData  } from '@pepperi-addons/papi-sdk';
+import { PapiClient, InstalledAddon, ATDMetaData, ATDSettings  } from '@pepperi-addons/papi-sdk';
 import { Client } from '@pepperi-addons/debug-server';
 import fetch from "node-fetch";
 class MyService {
@@ -48,8 +48,20 @@ class MyService {
                 return this.papiClient.post('/addons/data/relations', relation);
     }
 
-    getATD(type: string,typeID: string): Promise<ATDMetaData> {
-        return this.papiClient.metaData.type(type).types.subtype(typeID).get();
+    async getATD(type: string,typeID: string) {
+
+         let ATD: ATDMetaData | null = null, atd_data: ATDSettings;                 
+         await Promise.all([
+            this.papiClient.metaData.type(type).types.subtype(typeID).get(),
+            this.papiClient.metaData.type(type).types.subtype(typeID).settings.get()
+        ]).then((values) => {                
+            ATD = values[0];                   
+            atd_data = values[1];
+            ATD["Share"] = atd_data?.ShareOrder || false;
+        });                
+        
+        return ATD;
+         
     }
 
     checkFlag(url: string): Promise<boolean> {

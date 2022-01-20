@@ -98,7 +98,7 @@ export class SettingsTabsComponent implements OnInit {
 
     getIframePath(tabName, atd) {
         let URI = `Views/Agents/${this.typesEnum[this.type]}Types.aspx?objectUUID=${atd.InternalID}&tabName=${tabName.toUpperCase()}`;
-        URI += `&name=${atd.ExternalID}&description=${atd.Description}&icon_name=${atd.Icon}`;
+        URI += `&name=${atd.ExternalID}&description=${atd.Description}&icon_name=${atd.Icon}&share=${atd.Share}`;
         return URI;
     }
 
@@ -199,7 +199,7 @@ export class SettingsTabsComponent implements OnInit {
                         Type: type
                     };
         // debug locally
-        // return this.http.postHttpCall('http://localhost:4500/api/relations', body)
+         //return this.http.postHttpCall('http://localhost:4500/api/relations', body)
         return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
                     .toPromise();
     }
