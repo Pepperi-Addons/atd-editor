@@ -14,6 +14,7 @@ import { PepListComponent } from '@pepperi-addons/ngx-lib/list';
       [selectionTypeForActions]="'single'"
       [noDataFoundMsg]="'No data'"
       [parentScroll]="listContainer"
+      [viewType]="'table'"
       (listChange)="listChanged.emit($event)"
       (sortingChange)="sortingChanged.emit($event)"
       (fieldClick)="fieldClicked.emit($event)"
@@ -61,7 +62,7 @@ export class PepperiTableComponent implements OnInit, OnChanges {
             dataSource.forEach((row: any) => tableData.push(this.convertObjectToPepRowData(row, displayedColumns, customizeFn)));
             const uiControl = this.dataConvertorService.getUiControl(tableData[0]);
             const rows = this.dataConvertorService.convertListData(tableData);
-            this.customList.initListData(uiControl, rows.length, rows, 'table', '', true);
+            this.customList.initListData(uiControl, rows.length, rows);
         }
     }
 

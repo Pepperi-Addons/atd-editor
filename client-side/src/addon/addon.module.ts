@@ -14,8 +14,8 @@ import { AddTypeDialogComponent } from './components/types-list/add-type-dialog/
 import { PepperiTableComponent } from './components/types-list/pepperi-table/pepperi-table.component';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { PepAddonService, PepCustomizationService, PepHttpService } from '@pepperi-addons/ngx-lib';
+import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
+import { PepAddonService } from '@pepperi-addons/ngx-lib';
 
 const addonUUID = '04de9428-8658-4bf7-8171-b59f6327bbf1';
 @NgModule({
@@ -33,11 +33,20 @@ const addonUUID = '04de9428-8658-4bf7-8171-b59f6327bbf1';
         CommonModule,
         AddonRoutingModule,
         PepUIModule,
-        TranslateModule,
         MaterialModule,
         PepRemoteLoaderModule,
+        TranslateModule.forChild({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (addonService: PepAddonService) => 
+                    PepAddonService.createMultiTranslateLoader(addonUUID, addonService, ['ngx-lib']),
+                deps: [PepAddonService]
+            }, isolate: false
+        }),
     ],
-    providers: [PepHttpService, PepAddonService],
+    providers: [
+        TranslateStore
+    ],
     bootstrap: [
         // AddonComponent
     ]

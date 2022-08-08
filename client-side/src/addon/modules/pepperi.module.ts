@@ -122,26 +122,26 @@ const pepperiComponentsModules = [
     PepSearchModule,
     PepTopBarModule
 ];
-import { TranslateModule, TranslateLoader, TranslateService, TranslateStore } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
+// import { TranslateModule, TranslateLoader, TranslateService, TranslateStore } from '@ngx-translate/core';
+// import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+// import { MultiTranslateHttpLoader } from 'ngx-translate-multi-http-loader';
 
 
 // export function createTranslateLoader(http: HttpClient) {
 //    return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 // }
 
-export function createTranslateLoader(http: HttpClient, fileService: PepFileService, addonService: PepAddonService) {
+// export function createTranslateLoader(http: HttpClient, fileService: PepFileService, addonService: PepAddonService) {
 
-    const translationsPrefix: string = fileService.getAssetsTranslationsPath();
-    const translationsSuffix: string = fileService.getAssetsTranslationsSuffix();
-    const addonPublicURL = addonService.getAddonStaticFolder();
+//     const translationsPrefix: string = fileService.getAssetsTranslationsPath();
+//     const translationsSuffix: string = fileService.getAssetsTranslationsSuffix();
+//     const addonPublicURL = addonService.getAddonStaticFolder();
 
-    return new MultiTranslateHttpLoader(http, [
-        {prefix: addonPublicURL, suffix: translationsSuffix},
-        {prefix: addonPublicURL, suffix: '.json'},
-    ]);
-}
+//     return new MultiTranslateHttpLoader(http, [
+//         {prefix: addonPublicURL, suffix: translationsSuffix},
+//         {prefix: addonPublicURL, suffix: '.json'},
+//     ]);
+// }
 
 @NgModule({
     declarations: [
@@ -151,41 +151,28 @@ export function createTranslateLoader(http: HttpClient, fileService: PepFileServ
         CommonModule,
         PepNgxLibModule,
         pepperiComponentsModules,
-        TranslateModule.forChild({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [HttpClient, PepFileService, PepAddonService]
-            }, isolate: false
-        })
+        // TranslateModule.forChild({
+        //     loader: {
+        //         provide: TranslateLoader,
+        //         useFactory: createTranslateLoader,
+        //         deps: [HttpClient, PepFileService, PepAddonService]
+        //     }, isolate: false
+        // })
     ],
     exports: [
         PepNgxLibModule,
         pepperiComponentsModules,
-        TranslateModule
+        // TranslateModule
     ],
-    providers: [TranslateStore]
+    // providers: [TranslateStore]
 })
 export class PepUIModule {
 
     constructor(
-          translate: TranslateService,
+        //   translate: TranslateService,
           private pepperiIconRegistry: PepIconRegistry
       ) {
 
         this.pepperiIconRegistry.registerIcons(pepIcons);
-
-        let userLang = 'en';
-        translate.setDefaultLang(userLang);
-        userLang = translate.getBrowserLang().split('-')[0]; // use navigator lang if available
-
-        if (location.href.indexOf('userLang=en') > -1) {
-            userLang = 'en';
-        }
-
-        // the lang to use, if the lang isn't available, it will use the current loader to get them
-        translate.use(userLang).subscribe((res: any) => {
-            // In here you can put the code you want. At this point the lang will be loaded
-        });
     }
 }
