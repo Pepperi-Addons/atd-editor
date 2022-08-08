@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
 import { TitleCasePipe } from '@angular/common';
 import { Types } from '@pepperi-addons/papi-sdk/dist/endpoints';
-import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-remote-loader';
+import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-lib/remote-loader';
 
 
 
@@ -25,10 +25,10 @@ export class SettingsTabsComponent implements OnInit {
     activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
     addonBaseURL;
-    @ViewChild('addonProxy', {static: false}) addonProxy: PepRemoteLoaderComponent;
+    // @ViewChild('addonProxy', {static: false}) addonProxy: PepRemoteLoaderComponent;
     @Input() title = '';
     @Input() type;
-    @Input() subType;
+    // @Input() subType;
     typesEnum = {
         'accounts': 'Account',
         'transactions': 'Orders',
@@ -52,9 +52,11 @@ export class SettingsTabsComponent implements OnInit {
     async ngOnInit() {
 
       this.type = this.route.snapshot.params.type;
-      this.subType = this.route.snapshot.params.sub_type;
+    //   this.subType = this.route.snapshot.params.sub_type;
       const addonUUID = this.route.snapshot.params.addon_uuid;
       this.addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
+      
+      debugger;
       this.getTabs(addonUUID).then(res =>{
            this.tabs = res.sort((x,y) => x.index - y.index);
            this.activeTab = this.tabs.find((tab,index) => {
@@ -102,10 +104,11 @@ export class SettingsTabsComponent implements OnInit {
         const currentTabKey = this.activeTab?.title;
         const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
 
+        debugger;
         if (this.activeTab?.remoteName === 'settings_iframe'){
-            const addonInstance = this.addonProxy?.compRef?.instance;
-            const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
-            iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
+            // const addonInstance = this.addonProxy?.compRef?.instance;
+            // const iframeWindow =  addonInstance?.settingsIframe?.nativeElement?.contentWindow;
+            // iframeWindow?.postMessage({msgName: 'tabClick', tabName: selectedTab.title.toLowerCase()}, '*');
         }
         if (selectedTab && selectedTab?.title !== currentTabKey){
             this.cd.detectChanges();

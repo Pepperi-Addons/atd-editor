@@ -1,4 +1,4 @@
-import { typeListMenuRelations, typeListMenuRelationNames, typeListTabsRelationNames, Relation } from './metadata';
+import { typeListMenuRelations, typeListMenuRelationNames, Relation } from './metadata';
 import { Client, Request } from '@pepperi-addons/debug-server';
 import MyService from './my.service';
 import { stringify } from 'querystring';
@@ -6,7 +6,10 @@ import { stringify } from 'querystring';
 export async function install(client: Client, request: Request){
     try {
         const promises: Promise<any>[] = [];
-        typeListMenuRelationNames.forEach( relationName =>  promises.push(addRelations(client, typeListMenuRelations, relationName)));
+
+        const service = new MyService(client);
+        service.upsertSettingsRelation();
+        typeListMenuRelationNames.forEach( relationName =>  promises.push(addRelations(service, typeListMenuRelations, relationName)));
         await Promise.all(promises);
         return {success:true};
 
@@ -25,7 +28,9 @@ export async function uninstall(client: Client, request: Request){
 export async function upgrade(client: Client, request: Request){
     
     try {
-        typeListMenuRelationNames.forEach( relationName =>  addRelations(client, typeListMenuRelations, relationName));
+        const service = new MyService(client);
+        service.upsertSettingsRelation();
+        typeListMenuRelationNames.forEach( relationName =>  addRelations(service, typeListMenuRelations, relationName));
         return {success:true};
 
     } catch(e){
@@ -38,8 +43,7 @@ export async function downgrade(client: Client, request: Request){
     return {success:true}
 }
 
-async function addRelations(client: Client, relations: Relation[], relationName){
-    const service = new MyService(client);
+async function addRelations(service: MyService, relations: Relation[], relationName){
     const existingRelations: Relation[] = await service.getRelations(relationName);
     const promises: Promise<any>[] = [];
     // if (existingRelations?.length > 0){

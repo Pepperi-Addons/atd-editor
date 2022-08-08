@@ -45,8 +45,8 @@ export const typeListMenuRelationNames = [
     "AccountTypeListMenu"
 ];
 
-export const typeListTabsRelationNames = [
-    "TransactionTypeListTabs",
-    "ActivityTypeListTabs",
-    "AccountTypeListTabs"
-];
+// export const typeListTabsRelationNames = [
+//     "TransactionTypeListTabs",
+//     "ActivityTypeListTabs",
+//     "AccountTypeListTabs"
+// ];

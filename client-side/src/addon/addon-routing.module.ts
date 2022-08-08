@@ -5,19 +5,18 @@ import { EmptyRouteComponent } from './components/empty-route/empty-route.compon
 import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
 
 const routes: Routes = [{
-    path: 'settings/:addon_uuid',
-
+    path: ':settingsSectionName/:addon_uuid/:type',
     children: [
         // {
         //     path: ':type/:type_id',
         //     component: SettingsTabsComponent
         // },
         {
-            path: ':type/:sub_type/:type_id/:tab_id',
+            path: ':type_id/:tab_id',
             component: SettingsTabsComponent
         },
         {
-            path: ':type/:sub_type',
+            path: '',
             component: TypesListComponent
         }
     ]
@@ -30,7 +29,7 @@ const routes: Routes = [{
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+    imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
 })
 export class AddonRoutingModule { }

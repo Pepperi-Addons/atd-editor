@@ -39,7 +39,7 @@ export class TypesListComponent implements OnInit {
     selectedRows = 0;
     papi: PapiClient;
     @Input() type;
-    @Input() subType;
+    // @Input() subType;
     titlePipe = new TitleCasePipe();
     addonBaseURL = '';
 
@@ -65,7 +65,7 @@ export class TypesListComponent implements OnInit {
     async ngOnInit() {
         this.route.params.subscribe( params => {
             this.type = params.type;
-            this.subType = params.sub_type;
+            // this.subType = params.sub_type;
             const addonUUID = params.addon_uuid;
             this.menuItems = this.getMenu(addonUUID);
             this.loadlist();
@@ -115,7 +115,7 @@ export class TypesListComponent implements OnInit {
         return url;
     }
 
-    loadlist(change: ListSearch = { sortBy: 'Name', isAsc: true, searchString: '', type: this.type, subType: this.subType}) {
+    loadlist(change: ListSearch = { sortBy: 'Name', isAsc: true, searchString: '', type: this.type}) {
         let url = this.buildUrlByParams(change);
         const search = change?.searchString;
         if (search){
@@ -160,11 +160,21 @@ export class TypesListComponent implements OnInit {
                         }
                         break;
                     case 'Navigate':
-                          const path = remoteModule.remoteEntry
-                                .replace('TYPE', this.route.snapshot.params.type)
-                                .replace('SUB_TYPE', this.route.snapshot.params.sub_type)
-                                .replace('TYPE_ID', atdInfo['InternalID']);
-                          this.router.navigate([`settings/${remoteModule.uuid}/${path}`]);
+                        // TODO: Implement with navigation event (to webapp). !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // const path = remoteModule.remoteEntry
+                        //     .replace('TYPE', this.route.snapshot.params.type)
+                        //     .replace('SUB_TYPE', this.route.snapshot.params.sub_type)
+                        //     .replace('TYPE_ID', atdInfo['InternalID']);
+                        // this.router.navigate([`settings/${remoteModule.uuid}/${path}`]); 
+                        
+                        const settingsSectionName = this.route.snapshot.params.settingsSectionName;
+                        const uuid = this.route.snapshot.params.addon_uuid;
+
+                        const path = remoteModule.remoteEntry
+                            .replace('TYPE', this.route.snapshot.params.type)
+                            .replace('SUB_TYPE/', '') // Old code not needed.
+                            .replace('TYPE_ID', atdInfo['InternalID']);
+                        this.router.navigate([`${settingsSectionName}/${uuid}/${path}`]); 
                         break;
                     case 'NgComponent':
                         if (remoteModule.uuid){
@@ -176,6 +186,7 @@ export class TypesListComponent implements OnInit {
     }
 
     openAddonInDialog(remoteModule: RemoteModuleOptions): void {
+        debugger;
         remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
         const config = this.dialogService.getDialogConfig({}, 'inline');
         this.dialogAddon = remoteModule;
@@ -253,10 +264,11 @@ export class TypesListComponent implements OnInit {
 
     onSearchChanged(e){
         const value = e?.target?.value || e?.value;
-        this.loadlist({sortBy: 'Name', isAsc: true, searchString: value, type: this.type, subType: this.subType });
+        this.loadlist({sortBy: 'Name', isAsc: true, searchString: value, type: this.type });
     }
 
     async getMenu(addonUUID): Promise<PepMenuItem[]> {
+        debugger;
         const apiNames: Array<PepMenuItem> = [];
         const body = { RelationName: `${relationTypesEnum[this.type]}TypeListMenu`};
         // debug locally

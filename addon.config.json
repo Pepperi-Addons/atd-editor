@@ -1,6 +1,6 @@
 {
   "AddonUUID": "04de9428-8658-4bf7-8171-b59f6327bbf1",
-  "AddonVersion": "0.0.77",
+  "AddonVersion": "0.0.113",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -13,13 +13,8 @@
     "scripts",
     "39"
   ],
-  "Assets": [
-    "en.json",
-    "en.ngx-lib.json",
-    "he.json"
-  ],
   "PublishConfig": {
-    "ClientStack": "ng10",
+    "ClientStack": "ng14",
     "Editors": [
       {
         "ParentPackageName": "Sales Activites",
@@ -36,15 +31,6 @@
         "PackageName": "accounts/types",
         "Description": "Views & Forms"
       }
-    ],
-    "Dependencies": {
-      "papi": "9.5.354",
-      "webapp": "16.55.84",
-      "adal": "1.0.12",
-      "wsim": "9.5.177"
-    }
-  },
-  "Client": {
-    "Mode": "SingleSpa"
+    ]
   }
 }

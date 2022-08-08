@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd ./server-side && npm run build && cd .. && cd ./client-side && npm run build:single-spa && cd ..",
-    "serve:client-side": "cd ./client-side && npm run serve:single-spa && cd ..",
-    "serve:client-side:standalone": "cd ./client-side && npm start && cd ..",
-    "build:client-side": "cd ./client-side && npm run build:single-spa && cd ..",
+    "build": "cd ./client-side && npm run build && cd .. && cd ./server-side && npm run build && cd ..",
     "init": "npm ci && cd ./server-side && npm ci && cd .. && cd ./client-side && npm ci && cd ..",
     "publish-addon": "npm run build && publish-addon",
     "pub-addon": "publish-addon"
@@ -17,6 +14,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pepperi-addons/scripts": "^1.0.29"
+    "@pepperi-addons/scripts": "^2.0.4"
   }
 }
