@@ -1,4 +1,5 @@
-import { ListSearch, ObjectType, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
+import { SortService } from './../../services/sort.service';
+import { ListSearch, ObjectType, productTypeListMenu, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
 import { Component, ComponentRef, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
@@ -6,14 +7,14 @@ import { TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PepHttpService, PepSessionService } from '@pepperi-addons/ngx-lib';
-import { PepDialogService, PepDialogActionButton, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
+import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { PepMenuItem, IPepMenuItemClickEvent } from '@pepperi-addons/ngx-lib/menu';
-import { MatDialog } from '@angular/material/dialog';
 import { PepListActionsComponent } from '@pepperi-addons/ngx-lib/list';
 import { PapiClient } from '@pepperi-addons/papi-sdk';
+import { IPepFormFieldClickEvent } from '@pepperi-addons/ngx-lib/form';
 
 @Component({
-    selector: 'addon-pepperi-list-exmaple',
+    selector: 'addon-types-list',
     templateUrl: './types-list.component.html',
     styleUrls: ['./types-list.component.scss']
 })
@@ -23,25 +24,31 @@ export class TypesListComponent implements OnInit {
     @ViewChild('listActions') listActions: PepListActionsComponent;
     @ViewChild(PepperiTableComponent) table: PepperiTableComponent;
 
-    // List variables
-    menuItems: Promise<PepMenuItem[]>;
     totalRows = 0;
+    type;
+    searchString = '';
+    showListActions = false;
+    menuItems: Promise<PepMenuItem[]>;
+
+
     displayedColumns;
     transactionTypes;
-    searchString = '';
     searchAutoCompleteValues;
     addonUUID;
-    showListActions = false;
+
     dialogRef;
     dialogAddon;
+    legacySettingsAddon;
     viewContainer: ViewContainerRef;
     compRef: ComponentRef<any>;
     selectedRows = 0;
     papi: PapiClient;
-    @Input() type;
+
     // @Input() subType;
+
     titlePipe = new TitleCasePipe();
     addonBaseURL = '';
+    editEntry: any;
 
 
 
@@ -50,9 +57,9 @@ export class TypesListComponent implements OnInit {
         private http: PepHttpService,
         private dialogService: PepDialogService,
         private session: PepSessionService,
-        private dialog: MatDialog,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private sort: SortService
 
     ) {
         this.addonUUID = route.snapshot.params.addon_uuid;
@@ -63,6 +70,7 @@ export class TypesListComponent implements OnInit {
     }
 
     async ngOnInit() {
+
         this.route.params.subscribe( params => {
             this.type = params.type;
             // this.subType = params.sub_type;
@@ -71,9 +79,7 @@ export class TypesListComponent implements OnInit {
             this.loadlist();
         })
 
-        this.route.queryParams.subscribe( queryParams => {
-            this.addonBaseURL = queryParams?.addon_base_url;
-        })
+        this.route.queryParams.subscribe( queryParams => this.addonBaseURL = queryParams?.addon_base_url);
 
 
     }
@@ -111,7 +117,7 @@ export class TypesListComponent implements OnInit {
     buildUrlByParams(params){
         let url = '';
         let type = ObjectType[this.type];
-        url = `/types?fields=Name,Description,UUID,InternalID&order_by=${params.sortBy} ${params.isAsc ? 'asc' : 'desc'}&where=Type=${type} AND Hidden=0`;
+        url = `/types?fields=Name,Description,UUID,InternalID&order_by=${params.sortBy} ${params.isAsc ? 'asc' : 'desc'}&where=Type=${type} AND Hidden=0 AND Name!='PrivateUserAccount'`;
         return url;
     }
 
@@ -146,12 +152,20 @@ export class TypesListComponent implements OnInit {
     }
 
     onMenuItemClicked(e: IPepMenuItemClickEvent): void{
-        const remoteModule: RemoteModuleOptions = JSON.parse(e?.source?.key);
-        const selectedRows = this.table?.getSelectedItemsData()?.rows;
-        const rowData = this.table?.getItemDataByID(selectedRows[0]);
+        // TODO: remove all code unrelated to apiDesign
+        const remoteModule: RemoteModuleOptions & any = JSON.parse(e?.source?.key);
+        const SelectedRows = this.table?.getSelectedItemsData()?.rows;
+        const rowData = this.table?.getItemDataByID(SelectedRows[0]);
         const atdInfo = rowData?.Fields[0]?.AdditionalValue ? rowData.Fields[0].AdditionalValue : null;
         // Generic
-        remoteModule.addonData = { atd: atdInfo, selectedRows };
+        remoteModule.activityTypeDefinition = atdInfo;
+        remoteModule.addonData = { SelectedRows };
+        // According to apiDesign
+        remoteModule.hostObject = {
+            selectAll: false,
+            dataRelativeURL: null,
+            objectList: [atdInfo['UUID']]
+        };
 
         switch (remoteModule.type){
                     case 'AddonAPI':
@@ -169,12 +183,18 @@ export class TypesListComponent implements OnInit {
                         
                         const settingsSectionName = this.route.snapshot.params.settingsSectionName;
                         const uuid = this.route.snapshot.params.addon_uuid;
+                        const queryParams = {
+                            select_all: remoteModule.hostObject.selectAll,
+                            data_relative_url: remoteModule.hostObject.dataRelativeURL,
+                            object_list: remoteModule.hostObject.objectList
+                        }
 
                         const path = remoteModule.remoteEntry
                             .replace('TYPE', this.route.snapshot.params.type)
                             .replace('SUB_TYPE/', '') // Old code not needed.
                             .replace('TYPE_ID', atdInfo['InternalID']);
-                        this.router.navigate([`${settingsSectionName}/${uuid}/${path}`]); 
+                        this.router.navigate([`${settingsSectionName}/${uuid}/${path}`], { queryParams}); 
+
                         break;
                     case 'NgComponent':
                         if (remoteModule.uuid){
@@ -221,14 +241,21 @@ export class TypesListComponent implements OnInit {
 
     }
 
-    async postAddonApi(remoteModule: RemoteModuleOptions, dialogData){
-        remoteModule.addonData['objectType'] = this.type;
-        remoteModule.addonData['objectId'] = remoteModule.addonData['atd'].InternalID;
-        //  const success = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-        const success = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-        dialogData.content = this.translate.instant(success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title});
-        dialogData.type = "close";
-        this.dialogService.openDefaultDialog(dialogData).afterClosed().subscribe(async confirmed => this.loadlist());
+    async postAddonApi(remoteModule: RemoteModuleOptions & any, dialogData){
+        // Needed to delete Object due to PAPI TYPES resoruce limiitations
+        remoteModule.addonData['ObjectType'] = this.type;
+        remoteModule.addonData['ObjectId'] = remoteModule?.activityTypeDefinition?.InternalID;
+        // Accourding to ApiDesign
+        remoteModule.addonData['SelectAll'] = remoteModule.hostObject.selectAll;
+        remoteModule.addonData['DataRelativeURL'] =  remoteModule.hostObject.dataRelativeURL;
+        remoteModule.addonData['ObjectList'] =  remoteModule.hostObject.objectList;
+
+        //const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+         const response = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        const error = response?.fault?.faultstring;
+        dialogData.content = this.translate.instant(response.success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title, error});
+        dialogData.actionsType = "close";
+        this.dialogService.openDefaultDialog(dialogData).afterClosed().subscribe(async () => this.loadlist());
     }
 
     closeDialog(e = null){
@@ -236,8 +263,12 @@ export class TypesListComponent implements OnInit {
     }
 
     onAddonChange(e){
-        if (e.closeDialog){
-            this.closeDialog();
+        switch(e?.action){
+            case "close-dialog":
+                this.closeDialog();
+                break;
+            default:
+                break;
         }
     }
 
@@ -248,6 +279,22 @@ export class TypesListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(atd => this.createObject(atd));
     }
 
+    onCustomizeFieldClick(customizeFieldClickedData: IPepFormFieldClickEvent) {
+
+        const self = this;
+        const items = this.table.getLisItems();
+
+        const rowData = items.filter( item => item.UID === customizeFieldClickedData.id );
+        let internalID = rowData ? rowData[0].Fields[0].AdditionalValue['InternalID'] : '';
+        
+        let path = self.editEntry[0].remoteEntry;
+            path = path.replace('TYPE', self.route.snapshot.params.type)
+                        .replace('SUB_TYPE', self.route.snapshot.params.sub_type)
+                        .replace('TYPE_ID', internalID);
+       
+        self.router.navigate([`settings/${self.addonUUID}/${path}`]);
+    }
+
     createObject(atd){
         if (atd) {
             const body = {
@@ -256,8 +303,7 @@ export class TypesListComponent implements OnInit {
             };
             this.http.postPapiApiCall(`/meta_data/${this.type}/types`, body)
                         .subscribe(res => {
-                            this.router.navigate([`/settings/${this.route.snapshot.params.addon_uuid}/${this.route.snapshot.params.type}/types/${res.InternalID}/general`]);
-                            // this.loadlist();
+                            this.router.navigate([`/settings/${this.addonUUID}/${this.type}/types/${res.InternalID}/general`]);
                         }, err => this.openErrorDialog(err));
         }
     }
@@ -270,13 +316,23 @@ export class TypesListComponent implements OnInit {
     async getMenu(addonUUID): Promise<PepMenuItem[]> {
         debugger;
         const apiNames: Array<PepMenuItem> = [];
-        const body = { RelationName: `${relationTypesEnum[this.type]}TypeListMenu`};
+        const body = {
+            RelationName: `${relationTypesEnum[this.type]}TypeListMenu`,
+            Flag: '/company/flags/EnableAccountTypesOption'
+        };
         // debug locally
-        //  const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
-        const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise().then(tabs => tabs.sort((x,y) => x.index - y.index));
-        menuEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
+         //const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
+         const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
+        // HACK DUE TO MULTI TYPES IN WSIM PLEASE REMOVE WHEN ALL DISTRIBUTORS ARE MIGRATED TO MULTI ACCOUNT TYPES
+        if (this.type == 'accounts' && !menuEntries.multiAccount){
+            this.router.navigateByUrl(`settings/354c5123-a7d0-4f52-8fce-3cf1ebc95314/editor?view=accounts_forms`);
+         };
+        this.editEntry = menuEntries?.relations.filter(entry => entry.type.toLowerCase() === 'navigate') || '' ;
+        const dividedEntries = this.sort.divideEntries(menuEntries?.relations, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
+        dividedEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;
     }
+
 
     openErrorDialog(error){
         const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
@@ -286,38 +342,5 @@ export class TypesListComponent implements OnInit {
         });
         this.dialogService.openDefaultDialog(data);
     }
-
-    // deleteATD(atdInfo){
-    //     const msg = this.translate.instant('Delete_Validate');
-    //     const title = this.translate.instant('Delete');
-    //     const actionButtons = [
-    //         new PepDialogActionButton(this.translate.instant('Yes'),'main strong', () => this.setHidden(atdInfo.InternalID) ),
-    //         new PepDialogActionButton(this.translate.instant('No'),'main weak')
-    //     ];
-    //     const dialogData = new PepDialogData({ title, content: msg, type: 'custom', actionButtons });
-    //     this.dialogService.openDefaultDialog(dialogData)
-    //         .afterClosed().subscribe(res => {
-    //            if (typeof res === 'function') {
-    //             res();
-    //            }
-    //         });
-    // }
-
-    // setHidden(atdID){
-    //     const body = {
-    //         InternalID: atdID,
-    //         Hidden: true
-    //     }
-    //     return this.http.postPapiApiCall(`/meta_data/${this.type}/types`, body)
-    //                 .subscribe(res => this.loadlist(),
-    //                 error => {
-    //                     const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
-    //                     const data = new PepDialogData({
-    //                         title,
-    //                         content: error
-    //                     });
-    //                     this.dialogService.openDefaultDialog(data);
-    //                 });
-    // }
 
 }

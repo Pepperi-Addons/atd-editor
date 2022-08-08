@@ -1,5 +1,5 @@
-    <div class="addon-page-container">
-
+<pep-page-layout [addPadding]="false">
+    <ng-container pep-top-area>
         <pep-top-bar >
             <div header-start-content>
                 <button mat-button class="pep-spacing-element pep-button icon-button md weak pull-left flip"
@@ -13,28 +13,22 @@
                 </div>
             </div>
         </pep-top-bar>
-
-        <div class="main-content ">
-            <div class="content">
-                <mat-tab-group
-                    dynamicHeight #tabGroup
-                    [selectedIndex]="activeTabIndex"
-                    (selectedTabChange)="tabClick($event)"
-                    animationDuration="0ms" class="fixed-header"
-                >
-                    <mat-tab  *ngFor="let tab of tabs; let i = index; "
-                    id="tab.AddonUUID"  label="{{ tab.title | translate}}">
-                    </mat-tab>
-                </mat-tab-group>
-                <!-- <addon-proxy #addonProxy *ngIf="activeTab" [hostObject]="activeTab"
-                        (hostEvents)="onAddonChange($event);"></addon-proxy> -->
-
-                <!-- <pep-remote-loader-element *ngIf="remoteLoaderOptions && loadElement" class="remote-loader"
+    </ng-container>
+    <ng-container pep-main-area>
+        <mat-tab-group
+            class="settings-tabs"
+            dynamicHeight #tabGroup            
+            (selectedTabChange)="tabClick($event)"
+            animationDuration="0ms">
+            <mat-tab [disabled]='false'  *ngFor="let tab of tabs; let i = index; " id="tab.AddonUUID"  label="{{ tab.title | translate}}">
+            </mat-tab>
+        </mat-tab-group>
+        <!-- <pep-remote-loader #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
+        (hostEvents)="onAddonChange($event);"></pep-remote-loader> -->
+        <!-- <pep-remote-loader-element *ngIf="remoteLoaderOptions && loadElement" class="remote-loader"
                     [options]="remoteLoaderOptions"
                     [props]="{ hostObject: hostObject }"
                     [events]="{ hostEvents: onBlockHostEventsCallback }">
                 </pep-remote-loader-element> -->
-            </div>
-        </div>
-
-    </div>
+    </ng-container>
+</pep-page-layout>

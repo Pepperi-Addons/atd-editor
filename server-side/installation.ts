@@ -1,7 +1,6 @@
 import { typeListMenuRelations, typeListMenuRelationNames, Relation } from './metadata';
 import { Client, Request } from '@pepperi-addons/debug-server';
 import MyService from './my.service';
-import { stringify } from 'querystring';
 
 export async function install(client: Client, request: Request){
     try {
@@ -44,7 +43,7 @@ export async function downgrade(client: Client, request: Request){
 }
 
 async function addRelations(service: MyService, relations: Relation[], relationName){
-    const existingRelations: Relation[] = await service.getRelations(relationName);
+    // const existingRelations: Relation[] = await service.getRelations(relationName);
     const promises: Promise<any>[] = [];
     // if (existingRelations?.length > 0){
     //     const updatedRelations: Relation[] = [];

@@ -1,41 +1,60 @@
-<!-- <main> -->
+<!-- <div class="legacy-settings-addon">
+    <addon-proxy #legacySettingsAddonTemplate
+    [hostObject]="legacySettingsAddon"
+    (hostEvents)="onAddonChange($event);" ></addon-proxy>
+
+</div> -->
+
+
 <div class="addon-page-container">
-
-    <pep-top-bar [title]="(totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows, objectType: type | translate  }">
-        <div header-start-content>
-
-        </div>
+ <pep-page-layout>
+      <ng-container pep-top-area>
+        <pep-top-bar [title]="(totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows, objectType: type | translate  }">
         <div header-end-content>
-            <pep-search  class="pep-spacing-element pull-left flip" [autoCompleteValues]="searchAutoCompleteValues"
-                [value]="searchString" (search)="onSearchChanged($event)">
-        </pep-search>
+            <pep-search  class="pep-spacing-element pull-left flip"
+                    [value]="searchString" (search)="onSearchChanged($event)">
+            </pep-search>
             <button mat-button (click)="addObject();"
-            class="pep-spacing-element pep-button icon-button md weak pull-right flip">
-            <mat-icon>
-                <pep-icon name="number_plus"></pep-icon>
-            </mat-icon>
-        </button>
-
+                class="pep-spacing-element pep-button icon-button md weak pull-right flip">
+                <mat-icon>
+                    <pep-icon name="number_plus"></pep-icon>
+                </mat-icon>
+            </button>
         </div>
+        <pep-list-actions #listActions *ngIf="showListActions"
+            (menuClick)="onMenuClicked();"
+            (actionClick)="onMenuItemClicked($event)"
+            [actions]="menuItems | async">
+        </pep-list-actions>
+        </pep-top-bar>
+      </ng-container>
+        <ng-container pep-main-area>
+    <!-- <div class="main-content ">
+        <div class="content"> -->
+            <pep-table [dataSource]="transactionTypes" 
+            [displayedColumns]="displayedColumns"
+            [customizeTable]="customizeDataRowField" 
+            (selectedItemsChanged)="selectedRowsChanged($event)"
+            (sortingChanged)="onSortingChanged($event);"
+            (fieldClicked)="onCustomizeFieldClick($event)">
+            </pep-table>
 
-        <pep-list-actions #listActions *ngIf="showListActions" (menuClick)="onMenuClicked();" (actionClick)="onMenuItemClicked($event)" [actions]="menuItems | async"></pep-list-actions>
+        <!-- </div>
+    </div> -->
 
-    </pep-top-bar>
-    <div class="main-content ">
-        <div class="content">
-            <pep-table [dataSource]="transactionTypes" [displayedColumns]="displayedColumns"
-             [customizeTable]="customizeDataRowField" (selectedItemsChanged)="selectedRowsChanged($event)"
-             (sortingChanged)="onSortingChanged($event);"></pep-table>
-
-        </div>
-    </div>
+       </ng-container>
+    </pep-page-layout>
 
 </div>
 
 <ng-template #dialogTemplate>
-    <pep-dialog class="dialog-textarea-container" [title]="dialogAddon?.title | translate">
-      <ng-container pep-dialog-content>
-          <!-- <addon-proxy #addonTemplate [hostObject]="dialogAddon" (hostEvents)="onAddonChange($event);" ></addon-proxy> -->
-      </ng-container>
-    </pep-dialog>
+    <div class="pep-dialog-container">
+        <pep-dialog [showFooter]="false"  [title]="dialogAddon?.title | translate">
+            <ng-container pep-dialog-content>
+
+                <!-- <pep-remote-loader #addonTemplate [options]="dialogAddon" [hostObject]="dialogAddon?.hostObject" (hostEvents)="onAddonChange($event);" ></pep-remote-loader> -->
+            </ng-container>
+          </pep-dialog>
+    </div>
+
 </ng-template>

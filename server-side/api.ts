@@ -3,15 +3,23 @@ import { Relation } from './metadata';
 
 import MyService from './my.service'
 import { Client, Request } from '@pepperi-addons/debug-server'
-import { InstalledAddon} from '@pepperi-addons/papi-sdk';
+import { ATDMetaData, InstalledAddon} from '@pepperi-addons/papi-sdk';
 import url from 'url';
 import { RemoteModuleOptions } from '../model';
 import jwtDecode from "jwt-decode";
 import fetch from "node-fetch";
 
-export async function relations(client: Client, request: Request): Promise<RemoteModuleOptions[]> {
+export async function relations(client: Client, request: Request): Promise<any> {
     const service = new MyService(client);
     const addonsFields: Relation[] = await service.getRelations(request.body['RelationName']);
+    let ATD: ATDMetaData | null = null;
+    let multiAccount;
+    if (request.body['Type'] && request.body['TypeID']){
+        ATD = await service.getATD(request.body['Type'], request.body['TypeID']);
+    }
+    if (request.body['Flag']){
+        multiAccount = await service.checkFlag(request.body['Flag']);
+    }
     const addonsUuids = [...new Set(addonsFields.filter( row => row.AddonUUID).map(obj => obj.AddonUUID))];
     const addonsPromises: Promise<any>[] = [];
     addonsUuids.forEach( (uuid: any) => addonsPromises.push(service.getInstalledAddon(uuid))); 
@@ -19,45 +27,53 @@ export async function relations(client: Client, request: Request): Promise<Remot
     const menuEntries: RemoteModuleOptions[] = [];
     addonsFields.forEach( (field: Relation)=> {
         const entryAddon: InstalledAddon & any = addons.find( (addon: InstalledAddon) => addon?.Addon?.UUID === field?.AddonUUID);
-        const remoteEntryByType = (type, remoteName = 'remoteEntry') => {
-            switch (type){
-                case "NgComponent":
-                    if (field?.AddonRelativeURL){
-                        return entryAddon?.PublicBaseURL +  field?.AddonRelativeURL + '.js';
-                    }
-                    else {
-                        return entryAddon?.PublicBaseURL +  remoteName + '.js';
-                    }
-                    break;
-                default:
-                    return field?.AddonRelativeURL;
-                    break;
-            }
-        } 
-        const remoteName = field?.AddonRelativeURL ? field.AddonRelativeURL : field?.Type === "NgComponent" ? toSnakeCase(field.ModuleName.toString().replace('Module','')) : '';
-        const menuEntry: RemoteModuleOptions & any = {  
-            type: field.Type,
-            subType: field.SubType, 
-            remoteName: remoteName,
-            remoteEntry: remoteEntryByType(field?.Type, remoteName),
-            componentName: field?.Type === "NgComponent" ? field?.ComponentName : "",
-            exposedModule:  field?.Type === "NgComponent" ? "./" + field?.ModuleName : "",
-            confirmation: field?.Confirmation,
-            multiSelection: field?.AllowsMultipleSelection,
-            visibleEndpoint: field?.VisibilityRelativeURL,
-            title: field?.Description.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
-            noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
-            update: false,
-            addonData: { top: 230, borderTop: 0},
-            uuid: field?.AddonUUID,
-            UUID: field?.AddonUUID,
-            top: 230,
-            index: field?.Index
-        }
+        const menuEntry = createRelationEntry(field, entryAddon, ATD);
         menuEntries.push(menuEntry);
     });
-    return menuEntries;
+    return { relations: menuEntries, ATD, multiAccount};
 };
+
+
+function createRelationEntry(field: Relation, entryAddon, ATD: ATDMetaData | null){
+    const remoteEntryByType = (type, remoteName = 'remoteEntry') => {
+        switch (type){
+            case "NgComponent":
+                if (field?.AddonRelativeURL){
+                    return entryAddon?.PublicBaseURL +  field?.AddonRelativeURL + '.js';
+                }
+                else {
+                    return entryAddon?.PublicBaseURL +  remoteName + '.js';
+                }
+                break;
+            default:
+                return field?.AddonRelativeURL;
+                break;
+        }
+    } 
+    const remoteName = field?.AddonRelativeURL ? field.AddonRelativeURL : field?.Type === "NgComponent" ? toSnakeCase(field.ModuleName.toString().replace('Module','')) : '';
+    const menuEntry: RemoteModuleOptions & any = {  
+        type: field.Type,
+        subType: field.SubType, 
+        remoteName: remoteName,
+        remoteEntry: remoteEntryByType(field?.Type, remoteName),
+        componentName: field?.Type === "NgComponent" ? field?.ComponentName : "",
+        exposedModule:  field?.Type === "NgComponent" ? "./" + field?.ModuleName : "",
+        confirmation: field?.Confirmation,
+        title: field?.Description.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
+        noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
+        update: false,
+        addon: entryAddon,
+        addonId: entryAddon?.Addon?.UUID,
+        addonData: { },
+        uuid: field?.AddonUUID,
+        key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`,
+        // Additional parameters for Type List relation
+        multiSelection: field?.AllowsMultipleSelection,
+        visibleEndpoint: field?.VisibilityRelativeURL,
+        runsInBackground: field?.RunsInBackground
+    }
+    return menuEntry;
+}
 
 export async function filter_entries(client: Client, request: Request) {
     const service = new MyService(client);
@@ -74,7 +90,15 @@ export async function sync_func(client: Client, request: Request) {
 
 export async function delete_object(client: Client, request: Request) {
     const service = new MyService(client);
-    return service.deleteObject(request.body.objectType, request.body.objectId);
+    let ans;
+    try {
+        ans = await service.deleteObject(request.body.ObjectType, request.body.ObjectId);
+        return {success: true, status:ans};
+    }catch(e){
+        const error: any = e;
+        ans = JSON.parse(error?.message?.split(':').splice(3).join(':'));
+        return {success: false, ...ans};
+    }
 }
 
 const toSnakeCase = str => 
