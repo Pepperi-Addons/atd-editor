@@ -2,7 +2,7 @@ import { RemoteModuleOptions } from '../model';
 import { PapiClient, InstalledAddon, ATDMetaData, ATDSettings, Relation  } from '@pepperi-addons/papi-sdk';
 import { Client } from '@pepperi-addons/debug-server';
 import fetch from "node-fetch";
-import { typeListMenuRelationNames, typeListMenuRelations } from 'metadata';
+import { typeListMenuRelationNames, typeListMenuRelations } from './metadata';
 
 class MyService {
 
