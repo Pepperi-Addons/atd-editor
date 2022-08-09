@@ -32,16 +32,6 @@ export type RemoteModuleOptions = {
     transaction_lines = 10  // OrderPortfolioItem
 }
 
-export interface Relation {
-  RelationName: string;
-  AddonUUID: string;
-  Name: string;
-  Description: string;
-  Type: "AddonAPI" | "NgComponent" | "Navigate";
-  [key:string]:string | boolean | number;
-}
-
-
 export const relationTypesEnum = {
   "accounts": "Account",
   "transactions": "Transaction",

@@ -173,7 +173,8 @@ export class TypesListComponent implements OnInit {
                            this.runAddonApiEntry(remoteModule);
                         }
                         break;
-                    case 'Navigate':
+                    case 'Navigation':
+                    case 'Navigate': // TODO: Remove Navigate keep Navigation
                         // TODO: Implement with navigation event (to webapp). !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         // const path = remoteModule.remoteEntry
                         //     .replace('TYPE', this.route.snapshot.params.type)

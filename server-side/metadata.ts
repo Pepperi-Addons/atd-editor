@@ -1,11 +1,4 @@
-export interface Relation {
-    RelationName: string;
-    AddonUUID: string;
-    Name: string;
-    Description: string;
-    Type: "AddonAPI" | "NgComponent" | "Navigate";
-    [key:string]:string | boolean | number;
-}
+import { Relation } from "@pepperi-addons/papi-sdk";
 
 export type PepDataObjectType = | 'transactions' | 'activities' | 'accounts';
 export type PepDataObjectSubType = | 'types' | 'meta_data' | 'data';
@@ -18,7 +11,7 @@ export const typeListMenuRelations: Relation[]  =[
         RelationName: "",
         Name:"EditTransactionType",
         Description:"Edit",
-        Type: "Navigate",
+        Type: "Navigation",
         SubType: "Settings",
         AddonUUID: "04de9428-8658-4bf7-8171-b59f6327bbf1",
         AddonRelativeURL: "TYPE/SUB_TYPE/TYPE_ID/general",

@@ -2,6 +2,8 @@ import { RemoteModuleOptions } from '../model';
 import { PapiClient, InstalledAddon, ATDMetaData, ATDSettings, Relation  } from '@pepperi-addons/papi-sdk';
 import { Client } from '@pepperi-addons/debug-server';
 import fetch from "node-fetch";
+import { typeListMenuRelationNames, typeListMenuRelations } from 'metadata';
+
 class MyService {
 
     papiClient: PapiClient
@@ -47,7 +49,7 @@ class MyService {
         return this.papiClient.get(`/addons/data/relations?where=RelationName=${relationName}`);
     }
 
-    createRelation(relation): Promise<any> {
+    upsertRelation(relation): Promise<any> {
         return this.papiClient.post('/addons/data/relations', relation);
     }
 
@@ -101,12 +103,9 @@ class MyService {
         return this.papiClient.post(`/meta_data/${objectType}/types`, body);
     }
 
-    private upsertRelation(relation): Promise<any> {
-        return this.papiClient.post('/addons/data/relations', relation);
-    }
-
-    upsertSettingsRelation() {
-        let addonBlockRelation: Relation = {
+    getSettingsRelations(): Relation[] {
+        let res: Relation[] = [];
+        res.push({
             RelationName: "SettingsBlock",
             GroupName: 'Sales Activites',
             SlugName: 'transactions',
@@ -120,11 +119,8 @@ class MyService {
             ModuleName: `TTModule`,
             ElementsModule: 'WebComponents',
             ElementName: `transactions-element-${this.client.AddonUUID}`,
-        }; 
-        
-        this.upsertRelation(addonBlockRelation);
-
-        addonBlockRelation = {
+        }); 
+        res.push({
             RelationName: "SettingsBlock",
             GroupName: 'Sales Activites',
             SlugName: 'activities',
@@ -138,11 +134,9 @@ class MyService {
             ModuleName: `TTModule`,
             ElementsModule: 'WebComponents',
             ElementName: `activities-element-${this.client.AddonUUID}`,
-        }; 
+        }); 
         
-        this.upsertRelation(addonBlockRelation);
-
-        addonBlockRelation = {
+        res.push({
             RelationName: "SettingsBlock",
             GroupName: 'Accounts',
             SlugName: 'accounts',
@@ -156,12 +150,30 @@ class MyService {
             ModuleName: `TTModule`,
             ElementsModule: 'WebComponents',
             ElementName: `accounts-element-${this.client.AddonUUID}`,
-        }; 
+        }); 
         
-        this.upsertRelation(addonBlockRelation);
+        return res;
     }
 
+    async upsertRelations() {
+        // Get settings relations
+        let relationsToAdd: Relation[] = this.getSettingsRelations();
 
+        // Add menu relations
+        typeListMenuRelationNames.forEach(relationName => {
+            typeListMenuRelations.forEach(relation => { 
+                relation.RelationName = relationName;
+                relationsToAdd.push(relation);
+            });
+        });;
+
+        // Upsert all relations
+        const promises: Promise<any>[] = [];
+        relationsToAdd.forEach(relation => { 
+            promises.push(this.upsertRelation(relation));
+        });     
+
+        await Promise.all(promises);
+    }
 }
-
 export default MyService;

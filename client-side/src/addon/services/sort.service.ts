@@ -1,5 +1,5 @@
-import { Relation } from './../../../../server-side/metadata';
 import { Injectable } from '@angular/core';
+import { Relation } from '@pepperi-addons/papi-sdk';
 @Injectable({
   providedIn: 'root'
 })

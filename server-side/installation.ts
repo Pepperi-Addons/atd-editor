@@ -1,23 +1,15 @@
-import { typeListMenuRelations, typeListMenuRelationNames, Relation } from './metadata';
 import { Client, Request } from '@pepperi-addons/debug-server';
 import MyService from './my.service';
 
 export async function install(client: Client, request: Request){
     try {
-        const promises: Promise<any>[] = [];
-
         const service = new MyService(client);
-        service.upsertSettingsRelation();
-        typeListMenuRelationNames.forEach( relationName =>  promises.push(addRelations(service, typeListMenuRelations, relationName)));
-        await Promise.all(promises);
+        service.upsertRelations();
         return {success:true};
 
     } catch(e){
         return {success:false};
-
     }
-   
-   
 }
 
 export async function uninstall(client: Client, request: Request){
@@ -25,50 +17,16 @@ export async function uninstall(client: Client, request: Request){
 }
 
 export async function upgrade(client: Client, request: Request){
-    
     try {
         const service = new MyService(client);
-        service.upsertSettingsRelation();
-        typeListMenuRelationNames.forEach( relationName =>  addRelations(service, typeListMenuRelations, relationName));
+        service.upsertRelations();
         return {success:true};
 
     } catch(e){
         return {success:false};
-
     }
 }
 
 export async function downgrade(client: Client, request: Request){
     return {success:true}
 }
-
-async function addRelations(service: MyService, relations: Relation[], relationName){
-    // const existingRelations: Relation[] = await service.getRelations(relationName);
-    const promises: Promise<any>[] = [];
-    // if (existingRelations?.length > 0){
-    //     const updatedRelations: Relation[] = [];
-    //     existingRelations.forEach( existingRelation =>{
-    //         const updatedRelation = relations.filter((relation, i) => relation.Key === existingRelation.Key)[0];
-    //         updatedRelations.push(updatedRelation ?? existingRelation);
-    //     });    
-    //     const promises: Promise<any>[] = [];
-    //     updatedRelations.forEach(relation => promises.push(service.createRelation(relation)));
-    //     const result = await Promise.all(promises);
-    //     return result;
-    // } else {
-        relations.forEach(relation =>{ 
-            relation.RelationName = relationName;
-            const key = `${relation.Name}_${relation.AddonUUID}_${relation.RelationName}`;
-            relation.Key = key;
-            promises.push(service.createRelation(relation));
-        });
-        const result = await Promise.all(promises);
-        return result;
-    // }
-}
-
-    
-
-
-
-
