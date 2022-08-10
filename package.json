@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd ./client-side && npm run build && cd .. && cd ./server-side && npm run build && cd ..",
-    "init": "npm ci && cd ./server-side && npm ci && cd .. && cd ./client-side && npm ci && cd ..",
+    "init": "npm i && cd ./server-side && npm i && cd .. && cd ./client-side && npm i --force && cd ..",
     "publish-addon": "npm run build && publish-addon",
     "pub-addon": "publish-addon --no-bump-version"
   },
