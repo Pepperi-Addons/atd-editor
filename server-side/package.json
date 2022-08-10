@@ -29,7 +29,7 @@
     },
     "dependencies": {
         "@pepperi-addons/debug-server": "0.0.32",
-        "@pepperi-addons/papi-sdk": "^1.31.1",
+        "@pepperi-addons/papi-sdk": "file:../../papi-sdk/pepperi-addons-papi-sdk-1.39.8.tgz",
         "@types/node-fetch": "^2.5.7",
         "node-fetch": "^2.6.1",
         "url": "^0.11.0"

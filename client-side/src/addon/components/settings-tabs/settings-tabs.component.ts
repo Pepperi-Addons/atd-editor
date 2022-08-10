@@ -3,11 +3,12 @@ import { productObjectTypeTabs, relationTypesEnum, RemoteModuleOptions } from '.
 import { TranslateService } from '@ngx-translate/core';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
 import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MatTabGroup } from '@angular/material/tabs';
 import { NavigationService } from 'src/addon/services/navigation.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'addon-settings-tabs',
@@ -21,6 +22,9 @@ export class SettingsTabsComponent implements OnInit {
     tabs: Array<any>;
     workflowTab: RemoteModuleOptions & any= null;
     activeTab: RemoteModuleOptions;
+    addonUUID: string = '';
+    addonBaseURL: string = '';
+
     //activeTabIndex = 0;
     data = {atd: null, tab: null, addon: null};
     @ViewChild('addonProxy', {static: false}) addonProxy: PepRemoteLoaderComponent;
@@ -49,39 +53,77 @@ export class SettingsTabsComponent implements OnInit {
       private sort: SortService,
       private navigationService: NavigationService
     ) {
-
+        this.addonUUID = this.navigationService.addonUUID;
+        
+        this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+            const route: ActivatedRoute = this.navigationService.getCurrentRoute(this.route);
+            
+            route.queryParams.subscribe(queryParams => {
+                this.addonBaseURL = queryParams?.addon_base_url
+            });
+            
+            route.params.subscribe( params => {
+                this.type = params.type;
+                this.initFromServer(this.type, params.type_id).then((res: any) =>{
+                    const relationType = productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`];
+                    this.tabs = this.sort.divideEntries(res?.relations, relationType );
+            
+            
+                    /*
+                    this.activeTab = this.tabs.find((tab,index) => {
+                            this.activeTabIndex = index;
+                            tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
+                            return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
+                    });
+                    this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
+                    */
+                    if (this.type === 'accounts'){
+                        this.tabs = this.tabs.filter((tab, i) => {
+                            tab.index = i;
+                            if (tab?.title == 'Workflows') this.workflowTab = tab;
+                            else return tab;
+                        });
+                    }
+            
+                    this.hostObject['options'] = this.activeTab;
+                    this.atd = res?.ATD;
+                    this.hostObject.objectList.push(res?.ATD?.UUID);
+                  });
+            })
+    
+        });
     }
 
-    async ngOnInit() {
-      const params = this.route.snapshot.params;
-      const addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
-      this.type =  params.type;
+    ngOnInit() {
+    //   const params = this.route.snapshot.params;
+    //   const addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
+    //   this.type =  params.type;
 
-      this.initFromServer(params.addon_uuid, this.type, params.type_id).then((res: any) =>{
-        const relationType = productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`];
-        this.tabs = this.sort.divideEntries(res?.relations, relationType );
+    //   this.initFromServer(params.addon_uuid, this.type, params.type_id).then((res: any) =>{
+    //     const relationType = productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`];
+    //     this.tabs = this.sort.divideEntries(res?.relations, relationType );
 
 
-        /*
-        this.activeTab = this.tabs.find((tab,index) => {
-                this.activeTabIndex = index;
-                tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
-                return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
-        });
-        this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
-        */
-        if (this.type === 'accounts'){
-            this.tabs = this.tabs.filter((tab, i) => {
-                tab.index = i;
-                if (tab?.title == 'Workflows') this.workflowTab = tab;
-                else return tab;
-            });
-        }
+    //     /*
+    //     this.activeTab = this.tabs.find((tab,index) => {
+    //             this.activeTabIndex = index;
+    //             tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
+    //             return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
+    //     });
+    //     this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
+    //     */
+    //     if (this.type === 'accounts'){
+    //         this.tabs = this.tabs.filter((tab, i) => {
+    //             tab.index = i;
+    //             if (tab?.title == 'Workflows') this.workflowTab = tab;
+    //             else return tab;
+    //         });
+    //     }
 
-        this.hostObject['options'] = this.activeTab;
-        this.atd = res?.ATD;
-        this.hostObject.objectList.push(res?.ATD?.UUID);
-      });
+    //     this.hostObject['options'] = this.activeTab;
+    //     this.atd = res?.ATD;
+    //     this.hostObject.objectList.push(res?.ATD?.UUID);
+    //   });
 
     }
 
@@ -190,12 +232,13 @@ export class SettingsTabsComponent implements OnInit {
             } );
     }
 
-    initFromServer(addonUUID, type, typeID): Promise<any[]> {
+    initFromServer(type, typeID): Promise<any[]> {
+        debugger;
         const body = {
-                        RelationName: `${relationTypesEnum[type]}TypeListTabs`,
-                        TypeID: typeID,
-                        Type: type
-                    };
+            RelationName: `${relationTypesEnum[type]}TypeListTabs`,
+            TypeID: typeID,
+            Type: type
+        };
         // debug locally
          //return this.http.postHttpCall('http://localhost:4500/api/relations', body);
         const baseUrl = this.navigationService.getBaseUrl();

@@ -11,7 +11,7 @@ export const typeListMenuRelations: Relation[]  =[
         RelationName: "",
         Name:"EditTransactionType",
         Description:"Edit",
-        Type: "Navigation",
+        Type: "Navigate",
         SubType: "Settings",
         AddonUUID: config.AddonUUID,
         AddonRelativeURL: "TYPE/SUB_TYPE/TYPE_ID/general",

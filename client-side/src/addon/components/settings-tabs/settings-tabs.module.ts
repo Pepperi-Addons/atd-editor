@@ -1,16 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
-import { PepAddonService, PepNgxLibModule } from '@pepperi-addons/ngx-lib';
+import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 
-import { SettingsTabsComponent } from '../settings-tabs/settings-tabs.component';
-import { AddTypeDialogComponent } from '../types-list/add-type-dialog/add-type-dialog.component';
-import { PepperiTableComponent } from '../types-list/pepperi-table/pepperi-table.component';
-
-import { SettingsComponent } from './settings.component';
-import { SettingsRoutingModule } from './settings.routes';
-import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
+import { PepNgxLibModule } from '@pepperi-addons/ngx-lib';
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
 import { PepDialogModule } from '@pepperi-addons/ngx-lib/dialog';
@@ -25,16 +18,17 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { TypesListModule } from '../types-list/types-list.module';
-import { NavigationService } from 'src/addon/services/navigation.service';
+
+import { NavigationService } from '../../services/navigation.service';
+import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
+import { SettingsTabsComponent } from './settings-tabs.component';
 
 @NgModule({
     declarations: [
-        SettingsComponent,
+        SettingsTabsComponent,
     ],
     imports: [
         CommonModule,
-        PepNgxLibModule,
         PepNgxLibModule,
         PepTopBarModule,
         //// When not using module as sub-addon please remark this for not loading twice resources
@@ -51,21 +45,10 @@ import { NavigationService } from 'src/addon/services/navigation.service';
         MatDialogModule,
         MatTabsModule,
         PepRemoteLoaderModule,
-        SettingsRoutingModule,
-        TypesListModule,
         TranslateModule.forChild(),
     ],
-    providers: [
-        TranslateStore,
-        NavigationService,
+    exports: [
+        SettingsTabsComponent
     ]
 })
-export class SettingsModule {
-    constructor(
-        translate: TranslateService,
-        private pepAddonService: PepAddonService
-
-    ) {
-        this.pepAddonService.setDefaultTranslateLang(translate);
-    }
-}
+export class SettingsTabsModule { }

@@ -51,9 +51,9 @@ export class AppModule implements DoBootstrap {
     }
 
     ngDoBootstrap() {
-        customElements.define(`transactions-element-${config.AddonUUID}`, createCustomElement(TypesListComponent, {injector: this.injector}));
-        customElements.define(`activities-element-${config.AddonUUID}`, createCustomElement(TypesListComponent, {injector: this.injector}));
-        customElements.define(`accounts-element-${config.AddonUUID}`, createCustomElement(TypesListComponent, {injector: this.injector}));
+        this.pepAddonService.defineCustomElement(`transactions-element-${config.AddonUUID}`, TypesListComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`activities-element-${config.AddonUUID}`, TypesListComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`accounts-element-${config.AddonUUID}`, TypesListComponent, this.injector);
     }
 }
 

@@ -209,7 +209,7 @@ export class TypesListComponent implements OnInit {
                             .replace('SUB_TYPE/', '') // Old code not needed.
                             .replace('TYPE_ID', atdInfo['InternalID']);
 
-                        this.router.navigate([`${this.settingsSectionName}/${this.addonUUID}/${path}`], { queryParams}); 
+                        this.router.navigate([`${this.settingsSectionName}/${this.addonUUID}/${path}`], { queryParamsHandling:'merge'}); 
 
                         break;
                     case 'NgComponent':

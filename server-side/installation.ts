@@ -4,7 +4,7 @@ import MyService from './my.service';
 export async function install(client: Client, request: Request){
     try {
         const service = new MyService(client);
-        service.upsertRelations();
+        await service.upsertRelations();
         return {success:true};
 
     } catch(e){
@@ -19,7 +19,7 @@ export async function uninstall(client: Client, request: Request){
 export async function upgrade(client: Client, request: Request){
     try {
         const service = new MyService(client);
-        service.upsertRelations();
+        await service.upsertRelations();
         return {success:true};
 
     } catch(e){

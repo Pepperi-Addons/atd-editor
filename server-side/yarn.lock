@@ -12,10 +12,10 @@
     "express" "^4.17.1"
     "jwt-decode" "^2.2.0"
 
-"@pepperi-addons/papi-sdk@^1.31.1":
-  "integrity" "sha512-6QwrUwat61pPcIG+R/BnDwLeZ659c9C9h2r7P6Bf1TwBybh36hYLiD/usJIho5tPZhvHGNndswOOa9N+erLQDw=="
-  "resolved" "https://registry.npmjs.org/@pepperi-addons/papi-sdk/-/papi-sdk-1.39.6.tgz"
-  "version" "1.39.6"
+"@pepperi-addons/papi-sdk@file:../../papi-sdk/pepperi-addons-papi-sdk-1.39.8.tgz":
+  "integrity" "sha512-biPSTZTm8Tm7bYdjBF2VWLUcastKW89ijcef6xHLur5R5dIBvd7DCzmMUBTUJC/MEkFm4jq+TH9YaAGAAItThw=="
+  "resolved" "file:../../papi-sdk/pepperi-addons-papi-sdk-1.39.8.tgz"
+  "version" "1.39.8"
   dependencies:
     "node-fetch" "^2.6.0"
 
@@ -599,6 +599,11 @@
   "integrity" "sha1-FQStJSMVjKpA20onh8sBQRmU6k8="
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
+
+"fsevents@~2.1.2":
+  "integrity" "sha512-Auw9a4AxqWpa9GUfj370BMPzzyncfBABW8Mab7BGWBYDj4Isgq+cDKtx0i6u9jcX9pQDnswsaaOTgTmA5pEjuQ=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.1.3.tgz"
+  "version" "2.1.3"
 
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="

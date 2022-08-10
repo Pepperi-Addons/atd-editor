@@ -13,18 +13,18 @@ import { SettingsComponent } from './settings.component';
 export class EmptyRouteComponent {}
 
 const routes: Routes = [{
-    path: ':settingsSectionName/:addon_uuid/:type',
+    path: ':settingsSectionName/:addon_uuid',
     component: SettingsComponent,
     children: [
         {
-            path: '',
+            path: ':type',
             loadChildren: () => import('../types-list/types-list.module').then(m => m.TypesListModule),
             // component: TypesListComponent
         },
         {
-            path: ':type_id/:tab_id',
-            // loadChildren: () => import('../settings-tabs/settings-tabs.module').then(m => m.SettingsTabsModule),
-            component: SettingsTabsComponent
+            path: ':type/:type_id/:tab_id',
+            loadChildren: () => import('../settings-tabs/settings-tabs.module').then(m => m.SettingsTabsModule),
+            // component: SettingsTabsComponent
         },
         { path: '**', component: EmptyRouteComponent }
     ]
