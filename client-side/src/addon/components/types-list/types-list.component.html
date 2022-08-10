@@ -6,46 +6,43 @@
 </div> -->
 
 
-<div class="addon-page-container">
- <pep-page-layout>
-      <ng-container pep-top-area>
-        <pep-top-bar [title]="(totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows, objectType: type | translate  }">
-        <div header-end-content>
-            <pep-search  class="pep-spacing-element pull-left flip"
-                    [value]="searchString" (search)="onSearchChanged($event)">
-            </pep-search>
-            <button mat-button (click)="addObject();"
-                class="pep-spacing-element pep-button icon-button md weak pull-right flip">
-                <mat-icon>
-                    <pep-icon name="number_plus"></pep-icon>
-                </mat-icon>
-            </button>
-        </div>
-        <pep-list-actions #listActions *ngIf="showListActions"
-            (menuClick)="onMenuClicked();"
-            (actionClick)="onMenuItemClicked($event)"
-            [actions]="menuItems | async">
-        </pep-list-actions>
-        </pep-top-bar>
-      </ng-container>
-        <ng-container pep-main-area>
-    <!-- <div class="main-content ">
-        <div class="content"> -->
-            <pep-table [dataSource]="transactionTypes" 
-            [displayedColumns]="displayedColumns"
-            [customizeTable]="customizeDataRowField" 
-            (selectedItemsChanged)="selectedRowsChanged($event)"
-            (sortingChanged)="onSortingChanged($event);"
-            (fieldClicked)="onCustomizeFieldClick($event)">
-            </pep-table>
+<pep-page-layout class="add-padding">
+    <ng-container pep-top-area>
+    <pep-top-bar [title]="(totalRows === 1 ? 'ListTotal_ShowingResult' : 'ListTotal_ShowingResults') | translate: { totalRows: totalRows, objectType: type | translate  }">
+    <div header-end-content>
+        <pep-search  class="pep-spacing-element pull-left flip"
+                [value]="searchString" (search)="onSearchChanged($event)">
+        </pep-search>
+        <button mat-button (click)="addObject();"
+            class="pep-spacing-element pep-button icon-button md weak pull-right flip">
+            <mat-icon>
+                <pep-icon name="number_plus"></pep-icon>
+            </mat-icon>
+        </button>
+    </div>
+    <pep-list-actions #listActions *ngIf="showListActions"
+        (menuClick)="onMenuClicked();"
+        (actionClick)="onMenuItemClicked($event)"
+        [actions]="menuItems | async">
+    </pep-list-actions>
+    </pep-top-bar>
+    </ng-container>
+    <ng-container pep-main-area>
+<!-- <div class="main-content ">
+    <div class="content"> -->
+        <pep-table [dataSource]="transactionTypes" 
+        [displayedColumns]="displayedColumns"
+        [customizeTable]="customizeDataRowField" 
+        (selectedItemsChanged)="selectedRowsChanged($event)"
+        (sortingChanged)="onSortingChanged($event);"
+        (fieldClicked)="onCustomizeFieldClick($event)">
+        </pep-table>
 
-        <!-- </div>
-    </div> -->
+    <!-- </div>
+</div> -->
 
-       </ng-container>
-    </pep-page-layout>
-
-</div>
+    </ng-container>
+</pep-page-layout>
 
 <ng-template #dialogTemplate>
     <div class="pep-dialog-container">

@@ -21,7 +21,7 @@
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "tsconfig.json",
-						"stylePreprocessorOptions": {
+						            "stylePreprocessorOptions": {
                             "includePaths": [
                                 "node_modules/@pepperi-addons",
                                 "node_modules"
@@ -77,9 +77,9 @@
                 "serve": {
                     "builder": "ngx-build-plus:dev-server",
                     "options": {
-						"port": 4400,
+						        "port": 4400,
                         "publicHost": "http://localhost:4400",
-						"extraWebpackConfig": "webpack.config.js"
+						            "extraWebpackConfig": "webpack.config.js"
                     },
                     "configurations": {
                         "development": {

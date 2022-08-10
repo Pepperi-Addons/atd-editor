@@ -1,8 +1,8 @@
-import { AddonModule } from './addon/addon.module';
+import { AppModule } from './addon/app.module';
 import { environment } from './environments/environment';
 import { bootstrap } from '@angular-architects/module-federation-tools';
 
-bootstrap(AddonModule, {
+bootstrap(AppModule, {
     production: environment.production,
     appType: 'microfrontend' // Only if we have routes use this!!!
 });

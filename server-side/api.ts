@@ -1,13 +1,7 @@
-import { Relation } from './metadata';
-
-
 import MyService from './my.service'
 import { Client, Request } from '@pepperi-addons/debug-server'
-import { ATDMetaData, InstalledAddon} from '@pepperi-addons/papi-sdk';
-import url from 'url';
+import { ATDMetaData, InstalledAddon, Relation} from '@pepperi-addons/papi-sdk';
 import { RemoteModuleOptions } from '../model';
-import jwtDecode from "jwt-decode";
-import fetch from "node-fetch";
 
 export async function relations(client: Client, request: Request): Promise<any> {
     const service = new MyService(client);
@@ -59,7 +53,7 @@ function createRelationEntry(field: Relation, entryAddon, ATD: ATDMetaData | nul
         componentName: field?.Type === "NgComponent" ? field?.ComponentName : "",
         exposedModule:  field?.Type === "NgComponent" ? "./" + field?.ModuleName : "",
         confirmation: field?.Confirmation,
-        title: field?.Description.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
+        title: field?.Description?.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
         noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
         update: false,
         addon: entryAddon,

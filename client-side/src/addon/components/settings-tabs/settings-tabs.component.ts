@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PepHttpService } from '@pepperi-addons/ngx-lib';
 import { PepRemoteLoaderComponent } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MatTabGroup } from '@angular/material/tabs';
+import { NavigationService } from 'src/addon/services/navigation.service';
 
 @Component({
   selector: 'addon-settings-tabs',
@@ -45,7 +46,8 @@ export class SettingsTabsComponent implements OnInit {
       private dialogService: PepDialogService,
       private translate: TranslateService,
       private cd: ChangeDetectorRef,
-      private sort: SortService
+      private sort: SortService,
+      private navigationService: NavigationService
     ) {
 
     }
@@ -195,10 +197,8 @@ export class SettingsTabsComponent implements OnInit {
                         Type: type
                     };
         // debug locally
-         //return this.http.postHttpCall('http://localhost:4500/api/relations', body)
-        return this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body)
-                    .toPromise();
+         //return this.http.postHttpCall('http://localhost:4500/api/relations', body);
+        const baseUrl = this.navigationService.getBaseUrl();
+        return this.http.postHttpCall(`${baseUrl}/relations`, body).toPromise();
     }
-
-  
 }

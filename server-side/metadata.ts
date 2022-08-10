@@ -3,7 +3,7 @@ import { Relation } from "@pepperi-addons/papi-sdk";
 export type PepDataObjectType = | 'transactions' | 'activities' | 'accounts';
 export type PepDataObjectSubType = | 'types' | 'meta_data' | 'data';
 
-
+import config from '../addon.config.json';
 
 export const typeListMenuRelations: Relation[]  =[
 
@@ -13,7 +13,7 @@ export const typeListMenuRelations: Relation[]  =[
         Description:"Edit",
         Type: "Navigation",
         SubType: "Settings",
-        AddonUUID: "04de9428-8658-4bf7-8171-b59f6327bbf1",
+        AddonUUID: config.AddonUUID,
         AddonRelativeURL: "TYPE/SUB_TYPE/TYPE_ID/general",
         VisibilityRelativeURL: "api/sync_func",	
         AllowsMultipleSelection: false,
@@ -24,7 +24,7 @@ export const typeListMenuRelations: Relation[]  =[
         Name:"DeleteTransactionType",
         Description:"Delete",
         Type: "AddonAPI",
-        AddonUUID: "04de9428-8658-4bf7-8171-b59f6327bbf1",
+        AddonUUID: config.AddonUUID,
         AddonRelativeURL: "api/delete_object",
         VisibilityRelativeURL: "api/sync_func",	
         AllowsMultipleSelection: false,

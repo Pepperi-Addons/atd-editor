@@ -1,58 +1,10 @@
-@import 'ngx-lib/src/core/style/abstracts/mixins';
-@import 'ngx-lib/src/core/style/abstracts/variables';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins';
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
 
-// .legacy-settings-addon{
-//     height: 0;
-//     width: 0;
-// }
+.add-padding {
+    padding-inline: variables.$content-padding;
 
-// .total-items-container {
-//     height: $top-bar-height-with-no-top;
-//     display: flex;
-//     align-items: center;
-// }
-
-// @mixin pepperi-list-total-component-theme($pepperi-theme) {
-//     .total-items {
-//         color: get-pep-color($pepperi-theme, color-text, color-dimmed);
-
-//         .number {
-//             color: get-pep-color($pepperi-theme, color-text, color-main);
-//         }
-
-//     }
-// }
-
-
-
-// .left-container{
-//     display: flex;
-//     align-items: center;
-// }
-
-// :host ::ng-deep pep-list {
-//     .table-header {
-//         // top: 136px !important;
-//     }
-// }
-
-
-// // .plugin-page-container{
-// //     .main-content {
-// //         .content{
-// //             margin-top: 0 !important;
-// //         }
-// //     }
-// // }
-
-// .pep-dialog-container{
-//     ::ng-deep pep-dialog {
-//         .mat-dialog-actions{
-//             display: none;
-//         }
-//         .mat-dialog-content{
-//             padding-bottom: 0;
-//         }
-//     }
-
-// }
+    @media (max-width: variables.$screen-max-size-xs) {
+        padding-inline: 0;
+    }
+}

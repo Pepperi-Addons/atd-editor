@@ -4,7 +4,7 @@ import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
 import { Component, ComponentRef, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PepHttpService, PepSessionService } from '@pepperi-addons/ngx-lib';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
@@ -12,6 +12,8 @@ import { PepMenuItem, IPepMenuItemClickEvent } from '@pepperi-addons/ngx-lib/men
 import { PepListActionsComponent } from '@pepperi-addons/ngx-lib/list';
 import { PapiClient } from '@pepperi-addons/papi-sdk';
 import { IPepFormFieldClickEvent } from '@pepperi-addons/ngx-lib/form';
+import { NavigationService } from '../../services/navigation.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'addon-types-list',
@@ -25,15 +27,16 @@ export class TypesListComponent implements OnInit {
     @ViewChild(PepperiTableComponent) table: PepperiTableComponent;
 
     totalRows = 0;
-    type;
     searchString = '';
     showListActions = false;
     menuItems: Promise<PepMenuItem[]>;
 
-
     displayedColumns;
     transactionTypes;
     searchAutoCompleteValues;
+    
+    type;
+    settingsSectionName;
     addonUUID;
 
     dialogRef;
@@ -56,32 +59,45 @@ export class TypesListComponent implements OnInit {
         public translate: TranslateService,
         private http: PepHttpService,
         private dialogService: PepDialogService,
-        private session: PepSessionService,
+        // private session: PepSessionService,
         private router: Router,
         private route: ActivatedRoute,
-        private sort: SortService
+        private sort: SortService,
+        private navigationService: NavigationService
 
     ) {
-        this.addonUUID = route.snapshot.params.addon_uuid;
-        this.papi = new PapiClient({
-            baseURL: this.session.getPapiBaseUrl(),
-            token: this.session.getIdpToken()
+        this.addonUUID = this.navigationService.addonUUID;
+        
+        this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+            const route: ActivatedRoute = this.navigationService.getCurrentRoute(this.route);
+
+            route.params.subscribe( params => {
+                this.type = params.type;
+                // this.subType = params.sub_type;
+                // const addonUUID = params.addon_uuid;
+                this.settingsSectionName = params.settingsSectionName;
+
+                this.menuItems = this.getMenu();
+                this.loadlist();
+            })
+    
+            route.queryParams.subscribe(queryParams => {
+                this.addonBaseURL = queryParams?.addon_base_url
+            });
         });
     }
 
-    async ngOnInit() {
+    ngOnInit() {
+// debugger;
+//         this.route.params.subscribe( params => {
+//             this.type = params.type;
+//             // this.subType = params.sub_type;
+//             // const addonUUID = params.addon_uuid;
+//             this.menuItems = this.getMenu();
+//             this.loadlist();
+//         })
 
-        this.route.params.subscribe( params => {
-            this.type = params.type;
-            // this.subType = params.sub_type;
-            const addonUUID = params.addon_uuid;
-            this.menuItems = this.getMenu(addonUUID);
-            this.loadlist();
-        })
-
-        this.route.queryParams.subscribe( queryParams => this.addonBaseURL = queryParams?.addon_base_url);
-
-
+//         this.route.queryParams.subscribe( queryParams => this.addonBaseURL = queryParams?.addon_base_url);
     }
 
     // List functions
@@ -146,8 +162,8 @@ export class TypesListComponent implements OnInit {
             return this.selectedRows > 1 ? addon.multiSelection === 'true' : true;
         });
 
-        // const filteredActionsByApi = await this.http.postHttpCall(`http://localhost:4500/api/filter_entries`, { addons:filteredActionsBySelectionMode}).toPromise();
-        const filteredActionsByApi = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/api/filter_entries`, { addons:filteredActionsBySelectionMode}).toPromise();
+        const baseUrl = this.navigationService.getBaseUrl();
+        const filteredActionsByApi = await this.http.postHttpCall(`${baseUrl}/filter_entries`, { addons:filteredActionsBySelectionMode}).toPromise();
         this.listActions.actions = filteredActionsByApi;
     }
 
@@ -182,8 +198,6 @@ export class TypesListComponent implements OnInit {
                         //     .replace('TYPE_ID', atdInfo['InternalID']);
                         // this.router.navigate([`settings/${remoteModule.uuid}/${path}`]); 
                         
-                        const settingsSectionName = this.route.snapshot.params.settingsSectionName;
-                        const uuid = this.route.snapshot.params.addon_uuid;
                         const queryParams = {
                             select_all: remoteModule.hostObject.selectAll,
                             data_relative_url: remoteModule.hostObject.dataRelativeURL,
@@ -191,10 +205,11 @@ export class TypesListComponent implements OnInit {
                         }
 
                         const path = remoteModule.remoteEntry
-                            .replace('TYPE', this.route.snapshot.params.type)
+                            .replace('TYPE', this.type)
                             .replace('SUB_TYPE/', '') // Old code not needed.
                             .replace('TYPE_ID', atdInfo['InternalID']);
-                        this.router.navigate([`${settingsSectionName}/${uuid}/${path}`], { queryParams}); 
+
+                        this.router.navigate([`${this.settingsSectionName}/${this.addonUUID}/${path}`], { queryParams}); 
 
                         break;
                     case 'NgComponent':
@@ -252,7 +267,8 @@ export class TypesListComponent implements OnInit {
         remoteModule.addonData['ObjectList'] =  remoteModule.hostObject.objectList;
 
         //const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
-         const response = await this.http.postPapiApiCall(`/addons/api/${this.addonUUID}/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
+        const baseUrl = this.navigationService.getBaseUrl(remoteModule.remoteEntry);
+        const response = await this.http.postHttpCall(`${baseUrl}`, remoteModule.addonData).toPromise();
         const error = response?.fault?.faultstring;
         dialogData.content = this.translate.instant(response.success ?  "AddonApi_Dialog_Success" : "AddonApi_Dialog_Failure",{ taskName: remoteModule.title, error});
         dialogData.actionsType = "close";
@@ -293,7 +309,7 @@ export class TypesListComponent implements OnInit {
                         .replace('SUB_TYPE', self.route.snapshot.params.sub_type)
                         .replace('TYPE_ID', internalID);
        
-        self.router.navigate([`settings/${self.addonUUID}/${path}`]);
+        self.router.navigate([`${this.settingsSectionName}/${self.addonUUID}/${path}`]);
     }
 
     createObject(atd){
@@ -304,7 +320,7 @@ export class TypesListComponent implements OnInit {
             };
             this.http.postPapiApiCall(`/meta_data/${this.type}/types`, body)
                         .subscribe(res => {
-                            this.router.navigate([`/settings/${this.addonUUID}/${this.type}/types/${res.InternalID}/general`]);
+                            this.router.navigate([`/${this.settingsSectionName}/${this.addonUUID}/${this.type}/${res.InternalID}/general`]);
                         }, err => this.openErrorDialog(err));
         }
     }
@@ -314,19 +330,20 @@ export class TypesListComponent implements OnInit {
         this.loadlist({sortBy: 'Name', isAsc: true, searchString: value, type: this.type });
     }
 
-    async getMenu(addonUUID): Promise<PepMenuItem[]> {
-        debugger;
+    async getMenu(): Promise<PepMenuItem[]> {
         const apiNames: Array<PepMenuItem> = [];
         const body = {
             RelationName: `${relationTypesEnum[this.type]}TypeListMenu`,
             Flag: '/company/flags/EnableAccountTypesOption'
         };
         // debug locally
-         //const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
-         const menuEntries = await this.http.postPapiApiCall(`/addons/api/${addonUUID}/api/relations`, body).toPromise();
-        // HACK DUE TO MULTI TYPES IN WSIM PLEASE REMOVE WHEN ALL DISTRIBUTORS ARE MIGRATED TO MULTI ACCOUNT TYPES
+        //const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
+        const baseUrl = this.navigationService.getBaseUrl();
+        const menuEntries = await this.http.postHttpCall(`${baseUrl}/relations`, body).toPromise();
+        
+         // HACK DUE TO MULTI TYPES IN WSIM PLEASE REMOVE WHEN ALL DISTRIBUTORS ARE MIGRATED TO MULTI ACCOUNT TYPES
         if (this.type == 'accounts' && !menuEntries.multiAccount){
-            this.router.navigateByUrl(`settings/354c5123-a7d0-4f52-8fce-3cf1ebc95314/editor?view=accounts_forms`);
+            this.router.navigateByUrl(`${this.settingsSectionName}/354c5123-a7d0-4f52-8fce-3cf1ebc95314/editor?view=accounts_forms`);
          };
         this.editEntry = menuEntries?.relations.filter(entry => entry.type.toLowerCase() === 'navigate') || '' ;
         const dividedEntries = this.sort.divideEntries(menuEntries?.relations, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
