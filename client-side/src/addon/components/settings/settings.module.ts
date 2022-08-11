@@ -27,6 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TypesListModule } from '../types-list/types-list.module';
 import { NavigationService } from 'src/addon/services/navigation.service';
+import { SettingsTabsModule } from '../settings-tabs/settings-tabs.module';
 
 @NgModule({
     declarations: [
@@ -53,6 +54,7 @@ import { NavigationService } from 'src/addon/services/navigation.service';
         PepRemoteLoaderModule,
         SettingsRoutingModule,
         TypesListModule,
+        SettingsTabsModule,
         TranslateModule.forChild(),
     ],
     providers: [

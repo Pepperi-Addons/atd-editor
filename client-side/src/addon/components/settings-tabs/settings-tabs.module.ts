@@ -22,6 +22,15 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { NavigationService } from '../../services/navigation.service';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { SettingsTabsComponent } from './settings-tabs.component';
+import { RouterModule, Routes } from '@angular/router';
+import { UtillityService } from 'src/addon/services/utillity.service';
+
+const routes: Routes = [
+    {
+        path: '',
+        component: SettingsTabsComponent
+    }
+];
 
 @NgModule({
     declarations: [
@@ -46,9 +55,13 @@ import { SettingsTabsComponent } from './settings-tabs.component';
         MatTabsModule,
         PepRemoteLoaderModule,
         TranslateModule.forChild(),
+        RouterModule.forChild(routes),
     ],
     exports: [
         SettingsTabsComponent
+    ],
+    providers: [
+        UtillityService
     ]
 })
 export class SettingsTabsModule { }

@@ -1,4 +1,4 @@
-<pep-page-layout [addPadding]="false">
+<pep-page-layout [addPadding]="true">
     <ng-container pep-top-area>
         <pep-top-bar >
             <div header-start-content>
@@ -25,10 +25,10 @@
         </mat-tab-group>
         <!-- <pep-remote-loader #addonProxy *ngIf="activeTab" [options]="activeTab" [hostObject]="hostObject"
         (hostEvents)="onAddonChange($event);"></pep-remote-loader> -->
-        <!-- <pep-remote-loader-element *ngIf="remoteLoaderOptions && loadElement" class="remote-loader"
+        <pep-remote-loader-element #remoteLoaderElement *ngIf="remoteLoaderOptions" class="remote-loader"
                     [options]="remoteLoaderOptions"
                     [props]="{ hostObject: hostObject }"
-                    [events]="{ hostEvents: onBlockHostEventsCallback }">
-                </pep-remote-loader-element> -->
+                    [events]="{ hostEvents: onHostEventsCallback }">
+                </pep-remote-loader-element>
     </ng-container>
 </pep-page-layout>

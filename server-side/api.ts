@@ -18,56 +18,69 @@ export async function relations(client: Client, request: Request): Promise<any> 
     const addonsPromises: Promise<any>[] = [];
     addonsUuids.forEach( (uuid: any) => addonsPromises.push(service.getInstalledAddon(uuid))); 
     const addons: InstalledAddon[] = await Promise.all(addonsPromises).then(res => res);
-    const menuEntries: RemoteModuleOptions[] = [];
+    // Old code
+    // const menuEntries: RemoteModuleOptions[] = [];
+    // addonsFields.forEach( (field: Relation)=> {
+    //     const entryAddon: InstalledAddon & any = addons.find( (addon: InstalledAddon) => addon?.Addon?.UUID === field?.AddonUUID);
+    //     const menuEntry = createRelationEntry(field, entryAddon, ATD);
+    //     menuEntries.push(menuEntry);
+    // });
+
+    const menuEntries: any[] = [];
     addonsFields.forEach( (field: Relation)=> {
         const entryAddon: InstalledAddon & any = addons.find( (addon: InstalledAddon) => addon?.Addon?.UUID === field?.AddonUUID);
-        const menuEntry = createRelationEntry(field, entryAddon, ATD);
-        menuEntries.push(menuEntry);
+        // const menuEntry = createRelationEntry(field, entryAddon, ATD);
+        // menuEntries.push(menuEntry);
+        menuEntries.push({
+            entryAddon: entryAddon,
+            relation: field
+        });
     });
-    return { relations: menuEntries, ATD, multiAccount};
+
+    return { relationsEntries: menuEntries, atd: ATD, multiAccount};
 };
 
 
-function createRelationEntry(field: Relation, entryAddon, ATD: ATDMetaData | null){
-    const remoteEntryByType = (type, remoteName = 'remoteEntry') => {
-        switch (type){
-            case "NgComponent":
-                if (field?.AddonRelativeURL){
-                    return entryAddon?.PublicBaseURL +  field?.AddonRelativeURL + '.js';
-                }
-                else {
-                    return entryAddon?.PublicBaseURL +  remoteName + '.js';
-                }
-                break;
-            default:
-                return field?.AddonRelativeURL;
-                break;
-        }
-    } 
-    const remoteName = field?.AddonRelativeURL ? field.AddonRelativeURL : field?.Type === "NgComponent" ? toSnakeCase(field.ModuleName.toString().replace('Module','')) : '';
-    const menuEntry: RemoteModuleOptions & any = {  
-        type: field.Type,
-        subType: field.SubType, 
-        remoteName: remoteName,
-        remoteEntry: remoteEntryByType(field?.Type, remoteName),
-        componentName: field?.Type === "NgComponent" ? field?.ComponentName : "",
-        exposedModule:  field?.Type === "NgComponent" ? "./" + field?.ModuleName : "",
-        confirmation: field?.Confirmation,
-        title: field?.Description?.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
-        noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
-        update: false,
-        addon: entryAddon,
-        addonId: entryAddon?.Addon?.UUID,
-        addonData: { },
-        uuid: field?.AddonUUID,
-        key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`,
-        // Additional parameters for Type List relation
-        multiSelection: field?.AllowsMultipleSelection,
-        visibleEndpoint: field?.VisibilityRelativeURL,
-        runsInBackground: field?.RunsInBackground
-    }
-    return menuEntry;
-}
+// function createRelationEntry(field: Relation, entryAddon, ATD: ATDMetaData | null){
+//     const remoteEntryByType = (type, remoteName = 'remoteEntry') => {
+//         switch (type){
+//             case "NgComponent":
+//                 if (field?.AddonRelativeURL){
+//                     return entryAddon?.PublicBaseURL +  field?.AddonRelativeURL + '.js';
+//                 }
+//                 else {
+//                     return entryAddon?.PublicBaseURL +  remoteName + '.js';
+//                 }
+//                 break;
+//             default:
+//                 return field?.AddonRelativeURL;
+//                 break;
+//         }
+//     } 
+//     const remoteName = field?.AddonRelativeURL ? field.AddonRelativeURL : field?.Type === "NgComponent" ? toSnakeCase(field.ModuleName.toString().replace('Module','')) : '';
+//     const menuEntry: RemoteModuleOptions & any = {  
+//         type: field.Type,
+//         subType: field.SubType, 
+//         remoteName: remoteName,
+//         remoteEntry: remoteEntryByType(field?.Type, remoteName),
+//         componentName: field?.Type === "NgComponent" ? field?.ComponentName : "",
+//         exposedModule:  field?.Type === "NgComponent" ? "./" + field?.ModuleName : "",
+//         confirmation: field?.Confirmation,
+//         title: field?.Description?.split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' '),
+//         noModule: field?.Type === "NgComponent" && !(field?.ModuleName) ? true : false,
+//         update: false,
+//         addon: entryAddon,
+//         addonId: entryAddon?.Addon?.UUID,
+//         addonData: { },
+//         uuid: field?.AddonUUID,
+//         key: `${field.Name}_${field.AddonUUID}_${field.RelationName}`,
+//         // Additional parameters for Type List relation
+//         multiSelection: field?.AllowsMultipleSelection,
+//         visibleEndpoint: field?.VisibilityRelativeURL,
+//         runsInBackground: field?.RunsInBackground
+//     }
+//     return menuEntry;
+// }
 
 export async function filter_entries(client: Client, request: Request) {
     const service = new MyService(client);
@@ -95,11 +108,11 @@ export async function delete_object(client: Client, request: Request) {
     }
 }
 
-const toSnakeCase = str => 
-    str &&
-    str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-    .map(x => x.toLowerCase())
-    .join('_');
+// const toSnakeCase = str => 
+//     str &&
+//     str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+//     .map(x => x.toLowerCase())
+//     .join('_');
 
 
     // async function getWebAPIBaseURL(client) {

@@ -24,6 +24,15 @@ import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { TypesListComponent } from './types-list.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
+import { RouterModule, Routes } from '@angular/router';
+import { UtillityService } from 'src/addon/services/utillity.service';
+
+const routes: Routes = [
+    {
+        path: '',
+        component: TypesListComponent
+    }
+];
 
 @NgModule({
     declarations: [
@@ -50,9 +59,13 @@ import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
         MatTabsModule,
         PepRemoteLoaderModule,
         TranslateModule.forChild(),
+        RouterModule.forChild(routes),
     ],
     exports: [
         TypesListComponent
+    ],
+    providers: [
+        UtillityService
     ]
 })
 export class TypesListModule { }

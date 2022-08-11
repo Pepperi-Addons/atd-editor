@@ -1,4 +1,4 @@
-import { SortService } from './../../services/sort.service';
+import { UtillityService } from '../../services/utillity.service';
 import { ListSearch, ObjectType, productTypeListMenu, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
@@ -13,7 +13,6 @@ import { PepListActionsComponent } from '@pepperi-addons/ngx-lib/list';
 import { PapiClient } from '@pepperi-addons/papi-sdk';
 import { IPepFormFieldClickEvent } from '@pepperi-addons/ngx-lib/form';
 import { NavigationService } from '../../services/navigation.service';
-import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'addon-types-list',
@@ -53,8 +52,6 @@ export class TypesListComponent implements OnInit {
     addonBaseURL = '';
     editEntry: any;
 
-
-
     constructor(
         public translate: TranslateService,
         private http: PepHttpService,
@@ -62,42 +59,26 @@ export class TypesListComponent implements OnInit {
         // private session: PepSessionService,
         private router: Router,
         private route: ActivatedRoute,
-        private sort: SortService,
+        private utillity: UtillityService,
         private navigationService: NavigationService
 
     ) {
         this.addonUUID = this.navigationService.addonUUID;
-        
-        this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-            const route: ActivatedRoute = this.navigationService.getCurrentRoute(this.route);
-
-            route.params.subscribe( params => {
-                this.type = params.type;
-                // this.subType = params.sub_type;
-                // const addonUUID = params.addon_uuid;
-                this.settingsSectionName = params.settingsSectionName;
-
-                this.menuItems = this.getMenu();
-                this.loadlist();
-            })
-    
-            route.queryParams.subscribe(queryParams => {
-                this.addonBaseURL = queryParams?.addon_base_url
-            });
-        });
     }
 
     ngOnInit() {
-// debugger;
-//         this.route.params.subscribe( params => {
-//             this.type = params.type;
-//             // this.subType = params.sub_type;
-//             // const addonUUID = params.addon_uuid;
-//             this.menuItems = this.getMenu();
-//             this.loadlist();
-//         })
+        const parentRoute = this.route.parent.snapshot;
+        const parentParentRoute = parentRoute.parent;
 
-//         this.route.queryParams.subscribe( queryParams => this.addonBaseURL = queryParams?.addon_base_url);
+        if (parentRoute?.params && parentParentRoute?.params) {
+            this.type = parentRoute.params.type;
+            this.settingsSectionName = parentParentRoute.params.settingsSectionName;
+
+            this.menuItems = this.getMenu();
+            this.loadlist();
+        }
+            
+        this.route.queryParams?.subscribe(queryParams => this.addonBaseURL = queryParams?.addon_base_url);
     }
 
     // List functions
@@ -198,17 +179,17 @@ export class TypesListComponent implements OnInit {
                         //     .replace('TYPE_ID', atdInfo['InternalID']);
                         // this.router.navigate([`settings/${remoteModule.uuid}/${path}`]); 
                         
-                        const queryParams = {
-                            select_all: remoteModule.hostObject.selectAll,
-                            data_relative_url: remoteModule.hostObject.dataRelativeURL,
-                            object_list: remoteModule.hostObject.objectList
-                        }
+                        // const queryParams = {
+                        //     select_all: remoteModule.hostObject.selectAll,
+                        //     data_relative_url: remoteModule.hostObject.dataRelativeURL,
+                        //     object_list: remoteModule.hostObject.objectList
+                        // }
 
                         const path = remoteModule.remoteEntry
                             .replace('TYPE', this.type)
                             .replace('SUB_TYPE/', '') // Old code not needed.
                             .replace('TYPE_ID', atdInfo['InternalID']);
-
+                            
                         this.router.navigate([`${this.settingsSectionName}/${this.addonUUID}/${path}`], { queryParamsHandling:'merge'}); 
 
                         break;
@@ -222,7 +203,7 @@ export class TypesListComponent implements OnInit {
     }
 
     openAddonInDialog(remoteModule: RemoteModuleOptions): void {
-        debugger;
+        // debugger;
         remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
         const config = this.dialogService.getDialogConfig({}, 'inline');
         this.dialogAddon = remoteModule;
@@ -306,7 +287,8 @@ export class TypesListComponent implements OnInit {
         
         let path = self.editEntry[0].remoteEntry;
             path = path.replace('TYPE', self.route.snapshot.params.type)
-                        .replace('SUB_TYPE', self.route.snapshot.params.sub_type)
+                        // .replace('SUB_TYPE', self.route.snapshot.params.sub_type)
+                        .replace('SUB_TYPE/', '') // Old code not needed.
                         .replace('TYPE_ID', internalID);
        
         self.router.navigate([`${this.settingsSectionName}/${self.addonUUID}/${path}`]);
@@ -339,14 +321,16 @@ export class TypesListComponent implements OnInit {
         // debug locally
         //const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
         const baseUrl = this.navigationService.getBaseUrl();
-        const menuEntries = await this.http.postHttpCall(`${baseUrl}/relations`, body).toPromise();
+        const res = await this.http.postHttpCall(`${baseUrl}/relations`, body).toPromise();
         
+        const relationsData = this.utillity.getRelationsData(res);
+
          // HACK DUE TO MULTI TYPES IN WSIM PLEASE REMOVE WHEN ALL DISTRIBUTORS ARE MIGRATED TO MULTI ACCOUNT TYPES
-        if (this.type == 'accounts' && !menuEntries.multiAccount){
+        if (this.type == 'accounts' && !relationsData.multiAccount){
             this.router.navigateByUrl(`${this.settingsSectionName}/354c5123-a7d0-4f52-8fce-3cf1ebc95314/editor?view=accounts_forms`);
          };
-        this.editEntry = menuEntries?.relations.filter(entry => entry.type.toLowerCase() === 'navigate') || '' ;
-        const dividedEntries = this.sort.divideEntries(menuEntries?.relations, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
+        this.editEntry = relationsData.relationsEntries.filter(entry => entry.type.toLowerCase() === 'navigate') || '' ;
+        const dividedEntries = this.utillity.divideEntries(relationsData.relationsEntries, productTypeListMenu[`${relationTypesEnum[this.type]}TypeListMenu`]);
         dividedEntries.forEach(menuEntry => apiNames.push(new PepMenuItem({ key: JSON.stringify(menuEntry), text: menuEntry.title})));
         return apiNames;
     }

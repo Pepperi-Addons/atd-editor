@@ -1,7 +1,6 @@
 import { DoBootstrap, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { createCustomElement } from '@angular/elements';
 
 import { AppRoutingModule } from './app.routes';
 import { AppComponent } from './app.component';
@@ -9,7 +8,7 @@ import { TypesListComponent, TypesListModule } from './components/types-list';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { PepAddonService } from '@pepperi-addons/ngx-lib';
-import { SettingsModule } from './components/settings';
+import { SettingsComponent, SettingsModule } from './components/settings';
 import { HttpClientModule } from '@angular/common/http';
 
 import { config } from './addon.config';
@@ -51,9 +50,9 @@ export class AppModule implements DoBootstrap {
     }
 
     ngDoBootstrap() {
-        this.pepAddonService.defineCustomElement(`transactions-element-${config.AddonUUID}`, TypesListComponent, this.injector);
-        this.pepAddonService.defineCustomElement(`activities-element-${config.AddonUUID}`, TypesListComponent, this.injector);
-        this.pepAddonService.defineCustomElement(`accounts-element-${config.AddonUUID}`, TypesListComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`transactions-element-${config.AddonUUID}`, SettingsComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`activities-element-${config.AddonUUID}`, SettingsComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`accounts-element-${config.AddonUUID}`, SettingsComponent, this.injector);
     }
 }
 
