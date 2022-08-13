@@ -65,7 +65,8 @@ const routes: Routes = [
         TypesListComponent
     ],
     providers: [
-        UtillityService
+        UtillityService,
+        NavigationService
     ]
 })
 export class TypesListModule { }

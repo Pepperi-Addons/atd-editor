@@ -30,7 +30,7 @@
     "@ngstack/code-editor": "^3.0.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
-    "@pepperi-addons/ngx-lib": "^0.4.0-angular14.65",
+    "@pepperi-addons/ngx-lib": "^0.4.0-angular14.67",
     "@pepperi-addons/papi-sdk": "*",
     "@tweenjs/tween.js": "^17.1.1",
     "hammerjs": "^2.0.8",

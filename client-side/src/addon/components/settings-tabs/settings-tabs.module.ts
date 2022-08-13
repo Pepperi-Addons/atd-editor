@@ -61,7 +61,8 @@ const routes: Routes = [
         SettingsTabsComponent
     ],
     providers: [
-        UtillityService
+        UtillityService,
+        NavigationService
     ]
 })
 export class SettingsTabsModule { }

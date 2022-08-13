@@ -2,17 +2,16 @@ import { UtillityService } from '../../services/utillity.service';
 import { ListSearch, ObjectType, productTypeListMenu, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
-import { Component, ComponentRef, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { TitleCasePipe } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PepHttpService, PepSessionService } from '@pepperi-addons/ngx-lib';
 import { PepDialogService, PepDialogData } from '@pepperi-addons/ngx-lib/dialog';
 import { PepMenuItem, IPepMenuItemClickEvent } from '@pepperi-addons/ngx-lib/menu';
 import { PepListActionsComponent } from '@pepperi-addons/ngx-lib/list';
-import { PapiClient } from '@pepperi-addons/papi-sdk';
 import { IPepFormFieldClickEvent } from '@pepperi-addons/ngx-lib/form';
 import { NavigationService } from '../../services/navigation.service';
+import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 
 @Component({
     selector: 'addon-types-list',
@@ -21,7 +20,7 @@ import { NavigationService } from '../../services/navigation.service';
 })
 export class TypesListComponent implements OnInit {
 
-    @ViewChild('dialogTemplate', { read: TemplateRef }) dialogTemplate: TemplateRef<any>;
+    // @ViewChild('dialogTemplate', { read: TemplateRef }) dialogTemplate: TemplateRef<any>;
     @ViewChild('listActions') listActions: PepListActionsComponent;
     @ViewChild(PepperiTableComponent) table: PepperiTableComponent;
 
@@ -39,17 +38,13 @@ export class TypesListComponent implements OnInit {
     addonUUID;
 
     dialogRef;
-    dialogAddon;
+    // dialogAddon;
     legacySettingsAddon;
-    viewContainer: ViewContainerRef;
-    compRef: ComponentRef<any>;
+    
     selectedRows = 0;
-    papi: PapiClient;
-
+    
     // @Input() subType;
 
-    titlePipe = new TitleCasePipe();
-    addonBaseURL = '';
     editEntry: any;
 
     constructor(
@@ -60,7 +55,9 @@ export class TypesListComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private utillity: UtillityService,
-        private navigationService: NavigationService
+        private navigationService: NavigationService,
+        private viewContainerRef: ViewContainerRef,
+        private addonBlockLoaderService: PepAddonBlockLoaderService
 
     ) {
         this.addonUUID = this.navigationService.addonUUID;
@@ -77,8 +74,6 @@ export class TypesListComponent implements OnInit {
             this.menuItems = this.getMenu();
             this.loadlist();
         }
-            
-        this.route.queryParams?.subscribe(queryParams => this.addonBaseURL = queryParams?.addon_base_url);
     }
 
     // List functions
@@ -107,8 +102,8 @@ export class TypesListComponent implements OnInit {
     }
 
     selectedRowsChanged(selectedRowsCount) {
-            this.showListActions = selectedRowsCount > 0;
-            this.selectedRows = selectedRowsCount;
+        this.showListActions = selectedRowsCount > 0;
+        this.selectedRows = selectedRowsCount;
     }
 
     buildUrlByParams(params){
@@ -164,52 +159,67 @@ export class TypesListComponent implements OnInit {
             objectList: [atdInfo['UUID']]
         };
 
-        switch (remoteModule.type){
-                    case 'AddonAPI':
-                        if (remoteModule.remoteEntry) {
-                           this.runAddonApiEntry(remoteModule);
-                        }
-                        break;
-                    case 'Navigation':
-                    case 'Navigate': // TODO: Remove Navigate keep Navigation
-                        // TODO: Implement with navigation event (to webapp). !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // const path = remoteModule.remoteEntry
-                        //     .replace('TYPE', this.route.snapshot.params.type)
-                        //     .replace('SUB_TYPE', this.route.snapshot.params.sub_type)
-                        //     .replace('TYPE_ID', atdInfo['InternalID']);
-                        // this.router.navigate([`settings/${remoteModule.uuid}/${path}`]); 
-                        
-                        // const queryParams = {
-                        //     select_all: remoteModule.hostObject.selectAll,
-                        //     data_relative_url: remoteModule.hostObject.dataRelativeURL,
-                        //     object_list: remoteModule.hostObject.objectList
-                        // }
+        switch (remoteModule.type) {
+            case 'AddonAPI':
+                if (remoteModule.remoteEntry) {
+                    this.runAddonApiEntry(remoteModule);
+                }
+                break;
+            case 'Navigation':
+            case 'Navigate': // TODO: Remove Navigate keep Navigation
+                // TODO: Implement with navigation event (to webapp). !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // const path = remoteModule.remoteEntry
+                //     .replace('TYPE', this.route.snapshot.params.type)
+                //     .replace('SUB_TYPE', this.route.snapshot.params.sub_type)
+                //     .replace('TYPE_ID', atdInfo['InternalID']);
+                // this.router.navigate([`settings/${remoteModule.uuid}/${path}`]); 
+                
+                // const queryParams = {
+                //     select_all: remoteModule.hostObject.selectAll,
+                //     data_relative_url: remoteModule.hostObject.dataRelativeURL,
+                //     object_list: remoteModule.hostObject.objectList
+                // }
 
-                        const path = remoteModule.remoteEntry
-                            .replace('TYPE', this.type)
-                            .replace('SUB_TYPE/', '') // Old code not needed.
-                            .replace('TYPE_ID', atdInfo['InternalID']);
-                            
-                        this.router.navigate([`${this.settingsSectionName}/${this.addonUUID}/${path}`], { queryParamsHandling:'merge'}); 
+                const path = remoteModule.remoteEntry
+                    .replace('TYPE', this.type)
+                    .replace('SUB_TYPE/', '') // Old code not needed.
+                    .replace('TYPE_ID', atdInfo['InternalID']);
+                    
+                this.router.navigate([`${this.settingsSectionName}/${this.addonUUID}/${path}`], { queryParamsHandling:'merge'}); 
 
-                        break;
-                    case 'NgComponent':
-                        if (remoteModule.uuid){
-                            this.openAddonInDialog(remoteModule);
-                        }
-                        break;
-
+                break;
+            case 'NgComponent':
+                if (remoteModule.uuid){
+                    this.openAddonInDialog(remoteModule);
+                }
+                break;
         }
     }
 
-    openAddonInDialog(remoteModule: RemoteModuleOptions): void {
+    openAddonInDialog(remoteModule: any): void {
+        // TODO:
         // debugger;
-        remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
-        const config = this.dialogService.getDialogConfig({}, 'inline');
-        this.dialogAddon = remoteModule;
-        this.dialogRef = this.dialogService
-          .openDialog(this.dialogTemplate, {addon: remoteModule}, config)
-            .afterOpened().subscribe((res) => {});
+        // remoteModule.remoteEntry = this.addonBaseURL ? `${this.addonBaseURL+remoteModule.remoteName}.js` : remoteModule.remoteEntry;
+        // const config = this.dialogService.getDialogConfig({}, 'inline');
+        // this.dialogAddon = remoteModule;
+        // this.dialogRef = this.dialogService
+        //   .openDialog(this.dialogTemplate, {addon: remoteModule}, config)
+        //     .afterOpened().subscribe((res) => {});
+        const blockRemoteEntry = this.utillity.getRemoteEntry(remoteModule);
+        
+        this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
+            container: this.viewContainerRef,
+            name: remoteModule.relation.Name,
+            blockType: remoteModule.relation.RelationName,
+            addonUUID: remoteModule.relation.AddonUUID,
+            blockRemoteEntry: blockRemoteEntry,
+            data: { title: remoteModule?.title, showFooter: false },
+            size: 'large',
+            hostObject: remoteModule?.hostObject,
+            hostEventsCallback: (event) => { 
+                this.onAddonChange(event);
+            }
+        });
     }
 
     runAddonApiEntry(remoteModule: RemoteModuleOptions){
@@ -222,20 +232,18 @@ export class TypesListComponent implements OnInit {
             showFooter: true,
             showHeader: true
         }
-        if (remoteModule?.confirmation){
 
+        if (remoteModule?.confirmation) {
             const dialogRef = this.dialogService.openDefaultDialog(dialogData);
-             dialogRef.afterClosed().subscribe(async confirmed =>{
-                 if (confirmed){
+            dialogRef.afterClosed().subscribe(async confirmed =>{
+                if (confirmed) {
 
-                     this.postAddonApi(remoteModule, dialogData);
-                 }
+                    this.postAddonApi(remoteModule, dialogData);
+                }
             });
-        }
-        else {
+        } else {
             this.postAddonApi(remoteModule, dialogData);
         }
-
     }
 
     async postAddonApi(remoteModule: RemoteModuleOptions & any, dialogData){
@@ -247,7 +255,6 @@ export class TypesListComponent implements OnInit {
         remoteModule.addonData['DataRelativeURL'] =  remoteModule.hostObject.dataRelativeURL;
         remoteModule.addonData['ObjectList'] =  remoteModule.hostObject.objectList;
 
-        //const response = await this.http.postHttpCall(`http://localhost:4500/${remoteModule.remoteEntry}`, remoteModule.addonData).toPromise();
         const baseUrl = this.navigationService.getBaseUrl(remoteModule.remoteEntry);
         const response = await this.http.postHttpCall(`${baseUrl}`, remoteModule.addonData).toPromise();
         const error = response?.fault?.faultstring;
@@ -262,6 +269,7 @@ export class TypesListComponent implements OnInit {
 
     onAddonChange(e){
         switch(e?.action){
+            case "close":
             case "close-dialog":
                 this.closeDialog();
                 break;
@@ -318,8 +326,7 @@ export class TypesListComponent implements OnInit {
             RelationName: `${relationTypesEnum[this.type]}TypeListMenu`,
             Flag: '/company/flags/EnableAccountTypesOption'
         };
-        // debug locally
-        //const menuEntries = await this.http.postHttpCall('http://localhost:4500/api/relations', body).toPromise();
+
         const baseUrl = this.navigationService.getBaseUrl();
         const res = await this.http.postHttpCall(`${baseUrl}/relations`, body).toPromise();
         

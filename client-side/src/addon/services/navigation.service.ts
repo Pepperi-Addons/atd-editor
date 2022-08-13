@@ -31,12 +31,24 @@ export class NavigationService {
     ) {
         // Get the addonUUID from the root config.
         this._addonUUID = config.AddonUUID;
+        this._devServer = this.route.snapshot.queryParamMap.get('devServer') === 'true';
         
         this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-            const route: ActivatedRoute = this.getCurrentRoute(this.route);
-            this._devServer = route.snapshot.queryParamMap.get('devServer') === 'true';
+            // const route: ActivatedRoute = this.getCurrentRoute(this.route);
+            // this._devServer = route.snapshot.queryParamMap.get('devServer') === 'true';
             this.history.push(event.urlAfterRedirects);
         });
+        
+        this.loadDevBlocks();
+    }
+
+    private loadDevBlocks() {
+        try {
+            const devBlocksAsJSON = JSON.parse(this.route.snapshot.queryParamMap.get('devBlocks'));
+            this._devBlocks = new Map(devBlocksAsJSON);
+        } catch(err) {
+            this._devBlocks = new Map<string, string>();
+        }
     }
 
     getCurrentRoute(route: ActivatedRoute) {
@@ -47,27 +59,19 @@ export class NavigationService {
         };
     }
 
-    back(): Promise<boolean> {
-        this.history.pop();
+    // back(): Promise<boolean> {
+    //     this.history.pop();
         
-        if (this.history.length > 0) {
-            this.history.pop();
-        }
+    //     if (this.history.length > 0) {
+    //         this.history.pop();
+    //     }
         
-        const route: ActivatedRoute = this.getCurrentRoute(this.route);
-        return this.router.navigate(['../'], {
-            relativeTo: route,
-            queryParamsHandling: 'merge'
-        });
-    }
-
-    navigateToPage(pageKey: string): Promise<boolean> {
-        const route: ActivatedRoute = this.getCurrentRoute(this.route);
-        return this.router.navigate([`${pageKey}`], {
-            relativeTo: route,
-            queryParamsHandling: 'merge'
-        });
-    }
+    //     const route: ActivatedRoute = this.getCurrentRoute(this.route);
+    //     return this.router.navigate(['../'], {
+    //         relativeTo: route,
+    //         queryParamsHandling: 'merge'
+    //     });
+    // }
 
     getBaseUrl(fileName = 'api'): string {
         // For devServer run server on localhost.

@@ -26,7 +26,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TypesListModule } from '../types-list/types-list.module';
-import { NavigationService } from 'src/addon/services/navigation.service';
+// import { NavigationService } from 'src/addon/services/navigation.service';
 import { SettingsTabsModule } from '../settings-tabs/settings-tabs.module';
 
 @NgModule({
@@ -59,7 +59,7 @@ import { SettingsTabsModule } from '../settings-tabs/settings-tabs.module';
     ],
     providers: [
         TranslateStore,
-        NavigationService,
+        // NavigationService,
     ]
 })
 export class SettingsModule {
