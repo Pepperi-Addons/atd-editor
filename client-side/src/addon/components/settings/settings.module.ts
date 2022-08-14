@@ -28,6 +28,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { TypesListModule } from '../types-list/types-list.module';
 // import { NavigationService } from 'src/addon/services/navigation.service';
 import { SettingsTabsModule } from '../settings-tabs/settings-tabs.module';
+import { config } from 'src/addon/addon.config';
 
 @NgModule({
     declarations: [
@@ -55,7 +56,14 @@ import { SettingsTabsModule } from '../settings-tabs/settings-tabs.module';
         SettingsRoutingModule,
         TypesListModule,
         SettingsTabsModule,
-        TranslateModule.forChild(),
+        TranslateModule.forChild({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (addonService: PepAddonService) => 
+                    PepAddonService.createMultiTranslateLoader(config.AddonUUID, addonService, ['ngx-lib', 'ngx-composite-lib']),
+                deps: [PepAddonService]
+            }, isolate: false
+        }),
     ],
     providers: [
         TranslateStore,

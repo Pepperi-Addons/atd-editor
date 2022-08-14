@@ -104,7 +104,7 @@ export class SettingsTabsComponent implements OnInit {
 
     getAtd() {
       return this.http.getPapiApiCall(`/meta_data/${this.route.snapshot.params.type}/types/${this.route.snapshot.params['type_id']}`).subscribe(atd => {
-          this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), atd ) : null);
+          this.tabs.forEach(tab => tab.remoteName === 'legacy_settings' ? tab.path = this.getIframePath(tab.title.toLowerCase(), atd ) : null);
           this.atd = atd;
           return atd;
       });
@@ -155,13 +155,14 @@ export class SettingsTabsComponent implements OnInit {
         //const selectedTab: RemoteModuleOptions = this.activeTab ? this.tabs.find(tab => tab?.title === e?.tab?.textLabel): this.tabs[this.tabs?.length-1];
 
         if (this.tabs[e.index]) {
-            this.activeTab = this.tabs[e.index];
-    
-            if (this.activeTab.remoteName === 'settings_iframe') {
-                this.activeTab.path = this.getIframePath(this.activeTab.title.toLowerCase(), this.atd);
+            const hostObject = this.tabs[e.index];
+            
+            if (hostObject.remoteName === 'legacy_settings') {
+                hostObject.path = this.getIframePath(hostObject.title.toLowerCase(), this.atd);
             }
-    
-            this.hostObject['options'] = this.tabs[e.index];
+            
+            this.activeTab = hostObject;
+            this.hostObject['options'] = hostObject;
             const blockRemoteEntry = this.utillity.getRemoteEntry(this.activeTab);
             this.addonBlockContainer.clear();
             const compRef = this.addonBlockLoaderService.loadAddonBlockInContainer({

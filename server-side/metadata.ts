@@ -43,7 +43,7 @@ export function tabsData(tabsKeys: string[]):Relation[] {
             Type: "NgComponent",
             Description: `Views/Agents/${key}Types.aspx`,
             SubType: "NG11",
-            AddonRelativeURL: 'settings_iframe',
+            AddonRelativeURL: 'legacy_settings',
             ComponentName: 'SettingsIframeComponent',
             ModuleName: 'SettingsIframeModule'
         }});
