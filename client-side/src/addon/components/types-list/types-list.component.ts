@@ -214,7 +214,7 @@ export class TypesListComponent implements OnInit {
             addonUUID: remoteModule.relation.AddonUUID,
             blockRemoteEntry: blockRemoteEntry,
             data: { title: remoteModule?.title, showFooter: false },
-            size: 'large',
+            size: 'inline',
             hostObject: remoteModule?.hostObject,
             hostEventsCallback: (event) => { 
                 this.onAddonChange(event);
