@@ -132,7 +132,9 @@ export class SettingsTabsComponent implements OnInit {
                 break;
             case 'account-types-config':
                 if (e?.configuration?.workflowV2){
-                    this.tabs.splice(this.workflowTab?.index, 0, this.workflowTab);
+                    if (!this.tabs.includes(this.workflowTab)) {
+                        this.tabs.splice(this.workflowTab?.index, 0, this.workflowTab);
+                    }
                 }
                 break;
             case 'content-loaded' :  //HOSTEVENTS, OUTPUT FROM REMOTE LOADER
