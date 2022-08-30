@@ -70,7 +70,7 @@ export class TypesListComponent implements OnInit {
         if (parentRoute?.params && parentParentRoute?.params) {
             // this.type = parentRoute.params.type;
             const pathArr = window.location.pathname.split('/');
-            this.type = pathArr?.length > 0 ? pathArr[pathArr.length -1] : parentRoute.params.type;
+            this.type = pathArr?.length > 3 ? pathArr[3] : parentRoute.params.type;
             this.settingsSectionName = parentParentRoute.params.settingsSectionName;
 
             this.menuItems = this.getMenu();

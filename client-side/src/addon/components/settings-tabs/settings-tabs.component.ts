@@ -73,33 +73,41 @@ export class SettingsTabsComponent implements OnInit {
     ngOnInit() {
         const params = this.route.snapshot.params;
         this.type = params.type;
+
+        const pathArr = window.location.pathname.split('/');
+        // this.type = pathArr?.length > 3 ? pathArr[3] : params.type;
         // const addonBaseURL = this.route.snapshot.queryParams.addon_base_url;
 
-        this.initFromServer(this.type, params.type_id).then((res: any) => {
-            const relationType = productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`];
-            const relationsData = this.utillity.getRelationsData(res);
-            this.tabs = this.utillity.divideEntries(relationsData.relationsEntries, relationType);
-
-            /*
-            this.activeTab = this.tabs.find((tab,index) => {
-                    this.activeTabIndex = index;
-                    tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
-                    return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
-            });
-            this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
-            */
-            if (this.type === 'accounts'){
-                this.tabs = this.tabs.filter((tab, i) => {
-                    tab.index = i;
-                    if (tab?.title == 'Workflows') this.workflowTab = tab;
-                    else return tab;
+        if (params.type !== pathArr[3]) {
+            this.goBack(pathArr[3]);
+        } else {
+            this.initFromServer(this.type, params.type_id).then((res: any) => {
+                const relationType = productObjectTypeTabs[`${relationTypesEnum[this.type]}TypeListTabs`];
+                const relationsData = this.utillity.getRelationsData(res);
+                this.tabs = this.utillity.divideEntries(relationsData.relationsEntries, relationType);
+    
+                /*
+                this.activeTab = this.tabs.find((tab,index) => {
+                        this.activeTabIndex = index;
+                        tab.remoteEntry = addonBaseURL ? `${addonBaseURL+tab.remoteName}.js` : tab.remoteEntry;
+                        return tab.title.toLowerCase() === this.route.snapshot.params['tab_id'];
                 });
-            }
+                this.tabs.forEach(tab => tab.remoteName === 'settings_iframe' ? tab.path = this.getIframePath(tab.title.toLowerCase(), res?.ATD ) : null);
+                */
+                if (this.type === 'accounts'){
+                    this.tabs = this.tabs.filter((tab, i) => {
+                        tab.index = i;
+                        if (tab?.title == 'Workflows') this.workflowTab = tab;
+                        else return tab;
+                    });
+                }
+    
+                // this.hostObject['options'] = this.activeTab;
+                this.atd = relationsData?.atd;
+                this.hostObject.objectList.push(this.atd?.UUID);
+            });
+        }
 
-            // this.hostObject['options'] = this.activeTab;
-            this.atd = relationsData?.atd;
-            this.hostObject.objectList.push(this.atd?.UUID);
-        });
     }
 
     getAtd() {
@@ -179,8 +187,10 @@ export class SettingsTabsComponent implements OnInit {
         }
     }
     
-    goBack() {
-        this.router.navigate(['../../'],
+    goBack(type: string = '') {
+        const navigateTo = type.length > 0 ? `../../../${type}` : '../../';
+        
+        this.router.navigate([navigateTo],
             {
                 // queryParams: {legacy_preload: false},
                 relativeTo: this.route,
