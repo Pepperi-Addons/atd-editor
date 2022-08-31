@@ -43,7 +43,7 @@
             <pep-textarea [mandatory]="true" [value]="data?.atdDescription" [label]="'Description' | translate" [rowSpan]="2" (valueChange)="atdDescription = $event"></pep-textarea>
         </ng-container>
         <div pep-dialog-actions class="pep-spacing-element-negative">
-                <button mat-button [mat-dialog-close]="null" class="pep-spacing-element pep-button md weak" (click)="closeAtdDialog()">
+                <button mat-button class="pep-spacing-element pep-button md weak" (click)="closeAtdDialog()">
                     {{ 'ACTIONS.CANCEL' | translate }}
                 </button>
                 <button [disabled]="!atdName || !atdDescription" mat-button class="pep-spacing-element pep-button md strong" 

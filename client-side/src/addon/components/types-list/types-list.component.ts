@@ -297,8 +297,8 @@ export class TypesListComponent implements OnInit {
             });
 
         this.atdDialogRef.afterClosed().subscribe(atd => {
-            if (atd) {
-                this.createObject(atd)
+            if (atd?.data) {
+                this.createObject(atd);
             }
         });
     }
