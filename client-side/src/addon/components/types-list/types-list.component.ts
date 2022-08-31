@@ -1,8 +1,7 @@
 import { UtillityService } from '../../services/utillity.service';
 import { ListSearch, ObjectType, productTypeListMenu, relationTypesEnum, RemoteModuleOptions } from './../../../../../model';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
-import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PepHttpService, PepSessionService } from '@pepperi-addons/ngx-lib';
@@ -46,6 +45,11 @@ export class TypesListComponent implements OnInit {
     // @Input() subType;
 
     editEntry: any;
+
+    @ViewChild('atdDialogTemplate', { read: TemplateRef }) atdDialogTemplate: TemplateRef<any>;
+    atdDialogRef;
+    atdName = '';
+    atdDescription = '';
 
     constructor(
         public translate: TranslateService,
@@ -281,10 +285,26 @@ export class TypesListComponent implements OnInit {
     }
 
     addObject(){
-        const dialogRef = this.dialogService.openDialog(
-            AddTypeDialogComponent,
-            { value: 'value', type: this.translate.instant(this.type), showAAComplient: 'showAAComplient' });
-        dialogRef.afterClosed().subscribe(atd => this.createObject(atd));
+        this.atdName = '';
+        this.atdDescription = '';
+        
+        this.atdDialogRef = this.dialogService.openDialog(
+            this.atdDialogTemplate,
+            {
+                atdName: this.atdName,
+                atdDescription: this.atdDescription,
+                type: this.translate.instant(this.type)
+            });
+
+        this.atdDialogRef.afterClosed().subscribe(atd => {
+            if (atd) {
+                this.createObject(atd)
+            }
+        });
+    }
+    
+    closeAtdDialog(data: any = null): void {
+        this.atdDialogRef.close({data});
     }
 
     onCustomizeFieldClick(customizeFieldClickedData: IPepFormFieldClickEvent) {

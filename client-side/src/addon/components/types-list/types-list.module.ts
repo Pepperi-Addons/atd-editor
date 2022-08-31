@@ -14,7 +14,7 @@ import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -22,7 +22,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { NavigationService } from '../../services/navigation.service';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 import { TypesListComponent } from './types-list.component';
-import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
+// import { AddTypeDialogComponent } from './add-type-dialog/add-type-dialog.component';
 import { PepperiTableComponent } from './pepperi-table/pepperi-table.component';
 import { RouterModule, Routes } from '@angular/router';
 import { UtillityService } from 'src/addon/services/utillity.service';
@@ -37,11 +37,16 @@ const routes: Routes = [
 @NgModule({
     declarations: [
         TypesListComponent,
-        AddTypeDialogComponent,
+        // AddTypeDialogComponent,
         PepperiTableComponent,
     ],
     imports: [
         CommonModule,
+        MatDialogModule,
+        MatIconModule,
+        MatButtonModule,
+        MatExpansionModule,
+        MatTabsModule,
         PepNgxLibModule,
         PepTopBarModule,
         //// When not using module as sub-addon please remark this for not loading twice resources
@@ -52,11 +57,6 @@ const routes: Routes = [
         PepTextareaModule,
         PepTextboxModule,
         PepIconModule,
-        MatIconModule,
-        MatButtonModule,
-        MatExpansionModule,
-        MatDialogModule,
-        MatTabsModule,
         PepRemoteLoaderModule,
         TranslateModule.forChild(),
         RouterModule.forChild(routes),

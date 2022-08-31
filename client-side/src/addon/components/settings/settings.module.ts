@@ -4,10 +4,6 @@ import { CommonModule } from '@angular/common';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { PepAddonService, PepNgxLibModule } from '@pepperi-addons/ngx-lib';
 
-import { SettingsTabsComponent } from '../settings-tabs/settings-tabs.component';
-import { AddTypeDialogComponent } from '../types-list/add-type-dialog/add-type-dialog.component';
-import { PepperiTableComponent } from '../types-list/pepperi-table/pepperi-table.component';
-
 import { SettingsComponent } from './settings.component';
 import { SettingsRoutingModule } from './settings.routes';
 import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';

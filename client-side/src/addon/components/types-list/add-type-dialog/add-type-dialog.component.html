@@ -1,4 +1,4 @@
-<pep-dialog class="dialog-new-type-container" [title]="'Add_New_Header' | translate: {objectType: data?.type }">
+<!-- <pep-dialog class="dialog-new-type-container" [title]="'Add_New_Header' | translate: {objectType: data?.type }" (close)="closeDialog()">
     <ng-container pep-dialog-content>
 
         <pep-textbox [mandatory]="true" [value]="atdName" [label]="'Name' | translate" (valueChange)="atdName = $event"></pep-textbox>
@@ -7,7 +7,7 @@
     </ng-container>
     <div pep-dialog-actions class="pep-spacing-element-negative">
 
-            <button mat-button [mat-dialog-close]="null" class="pep-spacing-element pep-button md weak">
+            <button mat-button [mat-dialog-close]="null" class="pep-spacing-element pep-button md weak" (click)="closeDialog()">
                 {{ 'ACTIONS.CANCEL' | translate }}
             </button>
             <button [disabled]="!atdName || !atdDescription" mat-button class="pep-spacing-element pep-button md strong" (click)="closeDialog({'name': atdName, 'description': atdDescription})"
@@ -15,4 +15,4 @@
                 {{ 'ACTIONS.SAVE' | translate }}
             </button>
     </div>
-</pep-dialog>
+</pep-dialog> -->
