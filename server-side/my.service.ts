@@ -163,7 +163,7 @@ class MyService {
         typeListMenuRelationNames.forEach(relationName => {
             typeListMenuRelations.forEach(relation => { 
                 relation.RelationName = relationName;
-                relationsToAdd.push(relation);
+                relationsToAdd.push(JSON.parse(JSON.stringify(relation)));
             });
         });;
 
