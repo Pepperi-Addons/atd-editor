@@ -1,4 +1,4 @@
-# Object type editor (ATD Editor)
+# ATD Editor (Object type editor)
 
 ## High Level
 - The ATD editor addon hosts other addons within it's UI, in its menus and tabs. The addons in the menu are then called for action, and their UI is displayed within the tabs.
