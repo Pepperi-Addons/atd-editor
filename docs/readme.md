@@ -84,7 +84,7 @@ see: [Architecture](./architecture.md)
 
 ## Usage
 - Install the addon & all his dependencies.
-- Navigate to Settings --> Pricing Policy --> Main Category Discount.
+- Navigate to Settings --> Sales Activities --> Transaction/Activity Types (and olso to Accounts --> Views & Forms).
 
 
 ## UI
