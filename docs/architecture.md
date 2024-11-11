@@ -19,9 +19,9 @@ The addon show a list of Transactions/Activities/Accounts types:
 
 ![Transaction Types tabs](https://support.pepperi.com/hc/article_attachments/6816543067676)
 
-- Each tab contain legacy page content from the Wsim, in HTML Iframe or addon.
+- Each tab can contain a legacy page content from the Wsim, in HTML Iframe or an Addon.
 
-- The addon loads URL into iFrame with the legacy setting addon or to load addons into ABI container.
+- The addon injects URL into iFrame src (works with the legacy setting addon) or loads addon into ABI container.
 
 - The content is determined by the remote name param. If it is "legacy_settings", then the legacy setting addon is loaded and the desired ifram is displayed in it, otherwise the addon is loaded and displayed directly in the ABI.
 

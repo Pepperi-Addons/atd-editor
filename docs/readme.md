@@ -84,7 +84,7 @@ see: [Architecture](./architecture.md)
 
 ## Usage
 - Install the addon & all his dependencies.
-- Navigate to Settings --> Sales Activities --> Transaction/Activity Types (and olso to Accounts --> Views & Forms).
+- Navigate to Settings --> Sales Activities --> Transaction/Activity Types (and also to Accounts --> Views & Forms).
 
 
 ## UI
