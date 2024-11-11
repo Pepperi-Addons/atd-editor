@@ -57,7 +57,7 @@ The addon loads 'Legacy pages' with the Legacy settings addon. or load addons th
 - On the tab click if the remote name is 'legacy_settings' we are running the Legacy Setting addon and build the iFrame URL according to the tab name & the ATD object. for example:
      - '"Views/Agents/OrdersTypes.aspx?objectUUID=266961&tabName=GENERAL&name=Sales Order&description=Default format for catalog orders&icon_name=icon9&share=true"'
 - If it's not 'legacy_settings', we are loading the specipic addon on ABI with hostObject data & other params to the #addonBlockContainer (under the Tabs).
-- When the User click on different tab, the tab click event trigger from the begining and brind different content to the ABI according to the tab. 
+- When the User click on a different tab, the tab click event trigger from the begining and bring a different content to the ABI according to the tab. 
 
 ---
 
