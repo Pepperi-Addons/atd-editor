@@ -1,4 +1,4 @@
-# Legacy Main Category Discount Architecture
+# ATD Editor (Object type editor)
 
 ## Overview
 - After the addon installation, two entries are added to the Setting menu, under Sales Activities:
