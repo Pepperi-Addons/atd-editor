@@ -21,8 +21,6 @@ The addon show a list of Transactions/Activities/Accounts types:
 
 - Each tab can contain a legacy page content from the Wsim, in HTML Iframe or an Addon.
 
-- The addon injects URL into iFrame src (works with the legacy setting addon) or loads addon into ABI container.
-
 - The content is determined by the remote name param. If it is "legacy_settings", then the legacy setting addon is loaded and the desired ifram is displayed in it, otherwise the addon is loaded and displayed directly in the ABI.
 
 - The tabs list consists of a hard coded list (from the model.ts file) that is combined with a list obtained from a server call that returns the addons that have a relation to the ATD editor addon.
@@ -58,8 +56,7 @@ The addon loads 'Legacy pages' with the Legacy settings addon. or load addons th
 - from the ngAfterContentChecked we emit the Tab click event and show the first tab.
 - On the tab click if the remote name is 'legacy_settings' we are running the Legacy Setting addon and build the iFrame URL according to the tab name & the ATD object. for example:
      - '"Views/Agents/OrdersTypes.aspx?objectUUID=266961&tabName=GENERAL&name=Sales Order&description=Default format for catalog orders&icon_name=icon9&share=true"'
-- then we bring the blockRemoteEntry: the addon js file.
-- Calling to addonBlockLoaderService and load ABI with hostObject data & other params to the #addonBlockContainer (under the Tabs).
+- If it's not 'legacy_settings', we are loading the specipic addon on ABI with hostObject data & other params to the #addonBlockContainer (under the Tabs).
 - When the User click on different tab the tabs the tab click event runing from the begining and brind different content to the ABI. 
 
 ---
